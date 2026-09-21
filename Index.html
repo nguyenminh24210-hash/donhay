@@ -1,0 +1,984 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SensGen — BGMI / FF / PUBG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --base:    #08090f;
+  --surf:    #0f111a;
+  --raised:  #161928;
+  --border:  #1e2235;
+  --border2: #252940;
+  --acc:     #c8ff00;
+  --acc2:    #ff2d55;
+  --text:    #e2e4f0;
+  --sub:     #8a8fa8;
+  --muted:   #3a3f52;
+  --mono:    'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--base);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── SCANLINE TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,.12) 2px,
+    rgba(0,0,0,.12) 4px
+  );
+  pointer-events: none;
+  z-index: 1000;
+  opacity: .4;
+}
+
+/* ── AMBIENT LIGHT ── */
+.ambient {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 50% 40% at 20% -10%, rgba(200,255,0,.04), transparent),
+    radial-gradient(ellipse 40% 30% at 80% 110%, rgba(255,45,85,.03), transparent);
+}
+
+/* ── LAYOUT ── */
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 16px 80px;
+}
+
+/* ── HEADER BAR ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 32px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 36px;
+}
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: -.3px;
+  color: #fff;
+}
+.logo span { color: var(--acc); }
+.build-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .06em;
+}
+
+/* ── SECTION LABEL ── */
+.sec-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: .08em;
+  margin-bottom: 14px;
+}
+
+/* ── OS SWITCH ── */
+.os-switch {
+  display: flex;
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 28px;
+  width: fit-content;
+}
+.os-btn {
+  padding: 9px 22px;
+  border: none;
+  border-radius: 7px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sub);
+  background: transparent;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.os-btn svg { opacity: .5; transition: opacity .2s; }
+.os-btn.active {
+  background: var(--raised);
+  color: #fff;
+  border: 1px solid var(--border2);
+}
+.os-btn.active svg { opacity: 1; }
+
+/* ── SEARCH INPUT ── */
+.field-row { margin-bottom: 28px; }
+.field-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--sub);
+  margin-bottom: 8px;
+  display: block;
+}
+.search-box {
+  position: relative;
+}
+.search-box input {
+  width: 100%;
+  background: var(--surf);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 13px 16px 13px 44px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  -webkit-appearance: none;
+}
+.search-box input:focus {
+  border-color: var(--border2);
+  box-shadow: 0 0 0 3px rgba(200,255,0,.07);
+}
+.search-box input::placeholder { color: var(--muted); }
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+/* ── DEVICE CONFIRM ── */
+.device-confirm {
+  display: none;
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: rgba(200,255,0,.05);
+  border: 1px solid rgba(200,255,0,.15);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--acc);
+  font-weight: 600;
+  align-items: center;
+  gap: 10px;
+}
+.device-confirm.show { display: flex; }
+.device-confirm .tier {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--acc);
+  opacity: .7;
+  letter-spacing: .06em;
+}
+
+/* ── ISSUE SELECTOR ── */
+.issue-section {
+  display: none;
+  margin-bottom: 28px;
+}
+.issue-section.show { display: block; }
+
+.issue-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.issue-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--sub);
+  background: var(--surf);
+  cursor: pointer;
+  transition: border-color .18s, color .18s, background .18s;
+  user-select: none;
+  position: relative;
+}
+.issue-pill:hover {
+  border-color: var(--border2);
+  color: var(--text);
+}
+.issue-pill.sel {
+  border-color: var(--acc);
+  color: var(--base);
+  background: var(--acc);
+  font-weight: 600;
+}
+.issue-pill .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+  opacity: .6;
+}
+.issue-pill.sel .dot { opacity: 1; }
+
+/* ── GENERATE BTN ── */
+.gen-btn {
+  width: 100%;
+  padding: 15px;
+  background: var(--acc);
+  color: var(--base);
+  border: none;
+  border-radius: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  cursor: pointer;
+  transition: opacity .2s, transform .15s;
+  position: relative;
+  overflow: hidden;
+}
+.gen-btn:hover:not(:disabled) { opacity: .92; transform: translateY(-1px); }
+.gen-btn:active:not(:disabled) { transform: translateY(0); }
+.gen-btn:disabled {
+  opacity: .2;
+  cursor: not-allowed;
+}
+.gen-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent);
+  transform: translateX(-100%);
+  transition: transform .5s;
+}
+.gen-btn:hover:not(:disabled)::after { transform: translateX(100%); }
+
+/* ── LOADING ── */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(8,9,15,.88);
+  backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+}
+.loading-overlay.show { display: flex; }
+.loader-ring {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--border2);
+  border-top-color: var(--acc);
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--sub);
+  font-family: var(--mono);
+  letter-spacing: .04em;
+}
+
+/* ── RESULT ── */
+.result-wrap {
+  display: none;
+}
+.result-wrap.show {
+  display: block;
+  animation: revealUp .35s cubic-bezier(.23,1,.32,1) both;
+}
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESULT HEADER ── */
+.result-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.result-device-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+}
+.result-meta {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+.meta-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 4px 9px;
+  border-radius: 4px;
+  background: var(--raised);
+  border: 1px solid var(--border2);
+  color: var(--sub);
+  letter-spacing: .04em;
+}
+.meta-tag.acc { background: rgba(200,255,0,.08); border-color: rgba(200,255,0,.2); color: var(--acc); }
+.issue-display {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--raised);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* ── ANALYSIS BLOCK ── */
+.analysis-block {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--acc);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 24px;
+}
+.analysis-block .ana-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--acc);
+  letter-spacing: .08em;
+  margin-bottom: 8px;
+  font-family: var(--mono);
+}
+.analysis-block .ana-text {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--sub);
+}
+.analysis-block .ana-text strong { color: var(--text); font-weight: 600; }
+
+/* ── SENSITIVITY TABLE ── */
+.sens-table {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.sens-table-header {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+}
+.sens-table-header span {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: .06em;
+  font-family: var(--mono);
+}
+.sens-table-header span:last-child { text-align: right; }
+
+.sens-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+  transition: background .15s;
+}
+.sens-row:last-child { border-bottom: none; }
+.sens-row:hover { background: rgba(255,255,255,.02); }
+.sens-row.fire-row {
+  background: rgba(200,255,0,.03);
+  border-left: 2px solid rgba(200,255,0,.3);
+  padding-left: 16px;
+}
+
+.row-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+.row-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.row-bar {
+  width: 80px;
+  height: 2px;
+  background: var(--border2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.row-bar-fill {
+  height: 100%;
+  background: var(--acc);
+  border-radius: 99px;
+  transition: width 1s cubic-bezier(.23,1,.32,1);
+  width: 0;
+}
+.fire-row .row-bar-fill { background: linear-gradient(90deg, var(--acc), #fff); }
+.row-val {
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  text-align: right;
+  min-width: 44px;
+}
+.fire-row .row-val { color: var(--acc); }
+
+/* ── TIPS ── */
+.tips-block {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+}
+.tips-block .tips-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--sub);
+  margin-bottom: 12px;
+  letter-spacing: .04em;
+}
+.tips-block ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.tips-block ul li {
+  font-size: 13px;
+  color: var(--sub);
+  display: flex;
+  gap: 10px;
+  line-height: 1.5;
+}
+.tips-block ul li::before {
+  content: '—';
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+/* ── NOTE ── */
+.result-note {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: var(--mono);
+  letter-spacing: .02em;
+}
+
+/* ── RESET BTN ── */
+.reset-btn {
+  width: 100%;
+  padding: 13px;
+  background: transparent;
+  color: var(--sub);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.reset-btn:hover {
+  border-color: var(--border2);
+  color: var(--text);
+}
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 32px 0;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--base); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  .result-device-name { font-size: 18px; }
+  .row-bar { width: 50px; }
+  .row-val { font-size: 18px; }
+  .os-switch { width: 100%; }
+  .os-btn { flex: 1; justify-content: center; }
+}
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<div class="loading-overlay" id="loading">
+  <div class="loader-ring"></div>
+  <div class="loader-text" id="loadMsg">analyzing device...</div>
+</div>
+
+<div class="wrap">
+  <div class="topbar">
+    <div class="logo">SENS<span>GEN</span></div>
+    <div class="build-tag">BGMI · FF · PUBG</div>
+  </div>
+
+  <!-- OS SWITCH -->
+  <div class="sec-label">Hệ điều hành</div>
+  <div class="os-switch">
+    <button class="os-btn active" id="iosBtn" onclick="setOS('ios')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      iOS / iPadOS
+    </button>
+    <button class="os-btn" id="androidBtn" onclick="setOS('android')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.341A5 5 0 0 1 12 19a5 5 0 0 1-5.523-3.659L4 7h16l-2.477 8.341zM8.5 2.5l-1.5-1.5M15.5 2.5l1.5-1.5M12 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg>
+      Android
+    </button>
+  </div>
+
+  <!-- DEVICE INPUT -->
+  <div class="field-row">
+    <label class="field-label" for="deviceInput">Tên thiết bị</label>
+    <div class="search-box">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="deviceInput" list="deviceList"
+        placeholder="Nhập chính xác tên máy..."
+        autocomplete="off"
+        oninput="onDeviceInput()" onchange="onDeviceInput()">
+    </div>
+    <datalist id="deviceList"></datalist>
+    <div class="device-confirm" id="deviceConfirm">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      <span id="confirmedName">–</span>
+      <span class="tier" id="confirmedTier">–</span>
+    </div>
+  </div>
+
+  <!-- ISSUE SELECTOR -->
+  <div class="issue-section" id="issueSection">
+    <div class="sec-label">Tình trạng aim (chọn một hoặc nhiều)</div>
+    <div class="issue-grid" id="issueGrid"></div>
+  </div>
+
+  <div class="divider" id="divider" style="margin:20px 0 24px"></div>
+
+  <button class="gen-btn" id="genBtn" onclick="generate()" disabled>
+    Phân tích &amp; tạo độ nhạy
+  </button>
+
+  <!-- RESULT -->
+  <div class="result-wrap" id="result">
+    <div class="divider" style="margin:28px 0 24px"></div>
+
+    <div class="result-header">
+      <div>
+        <div class="result-device-name" id="rDeviceName">–</div>
+        <div class="result-meta">
+          <span class="meta-tag" id="rOS">–</span>
+          <span class="meta-tag" id="rTier">–</span>
+          <span class="meta-tag acc">BGMI / FF / PUBG</span>
+        </div>
+      </div>
+      <div class="issue-display" id="rIssueDisplay">–</div>
+    </div>
+
+    <div class="analysis-block">
+      <div class="ana-label">PHÂN TÍCH</div>
+      <div class="ana-text" id="rAnaText">–</div>
+    </div>
+
+    <div class="sens-table">
+      <div class="sens-table-header">
+        <span>Chế độ ngắm</span>
+        <span></span>
+        <span>Độ nhạy</span>
+      </div>
+      <div class="sens-row"><div><div class="row-name">Nhìn xung quanh</div><div class="row-sub">Camera tự do</div></div><div class="row-bar"><div class="row-bar-fill" id="bLook"></div></div><div class="row-val" id="vLook">–</div></div>
+      <div class="sens-row"><div><div class="row-name">Hồng tâm (Red Dot)</div><div class="row-sub">ADS ống ngắm 1x</div></div><div class="row-bar"><div class="row-bar-fill" id="bRed"></div></div><div class="row-val" id="vRed">–</div></div>
+      <div class="sens-row"><div><div class="row-name">Ống ngắm 2x</div><div class="row-sub">Tầm trung</div></div><div class="row-bar"><div class="row-bar-fill" id="bX2"></div></div><div class="row-val" id="vX2">–</div></div>
+      <div class="sens-row"><div><div class="row-name">Ống ngắm 4x</div><div class="row-sub">Tầm xa</div></div><div class="row-bar"><div class="row-bar-fill" id="bX4"></div></div><div class="row-val" id="vX4">–</div></div>
+      <div class="sens-row"><div><div class="row-name">Sniper / 6x</div><div class="row-sub">Tầm cực xa</div></div><div class="row-bar"><div class="row-bar-fill" id="bSniper"></div></div><div class="row-val" id="vSniper">–</div></div>
+      <div class="sens-row"><div><div class="row-name">Camera tự do</div><div class="row-sub">Nút camera</div></div><div class="row-bar"><div class="row-bar-fill" id="bCamera"></div></div><div class="row-val" id="vCamera">–</div></div>
+      <div class="sens-row fire-row"><div><div class="row-name">Nút bắn (Fire / Gyro)</div><div class="row-sub">Ngẫu nhiên cá nhân hóa mỗi lần</div></div><div class="row-bar"><div class="row-bar-fill" id="bFire"></div></div><div class="row-val" id="vFire">–</div></div>
+    </div>
+
+    <div class="tips-block">
+      <div class="tips-label">Gợi ý tinh chỉnh</div>
+      <ul id="tipsList"></ul>
+    </div>
+
+    <div class="result-note">
+      Giá trị tính theo chip + màn hình + tình trạng aim. Thử và điều chỉnh ±5 nếu cần.
+    </div>
+
+    <button class="reset-btn" onclick="reset()">Tạo lại</button>
+  </div>
+</div>
+
+<script>
+const devices = {
+ios: [
+  "iPhone 6s","iPhone 6s Plus","iPhone SE (1st Gen)",
+  "iPhone 7","iPhone 7 Plus","iPhone 8","iPhone 8 Plus",
+  "iPhone X","iPhone XR","iPhone XS","iPhone XS Max",
+  "iPhone 11","iPhone 11 Pro","iPhone 11 Pro Max",
+  "iPhone SE (2nd Gen)",
+  "iPhone 12 mini","iPhone 12","iPhone 12 Pro","iPhone 12 Pro Max",
+  "iPhone 13 mini","iPhone 13","iPhone 13 Pro","iPhone 13 Pro Max",
+  "iPhone SE (3rd Gen)",
+  "iPhone 14","iPhone 14 Plus","iPhone 14 Pro","iPhone 14 Pro Max",
+  "iPhone 15","iPhone 15 Plus","iPhone 15 Pro","iPhone 15 Pro Max",
+  "iPhone 16","iPhone 16 Plus","iPhone 16 Pro","iPhone 16 Pro Max","iPhone 16e",
+  "iPhone 17","iPhone 17 Air","iPhone 17 Pro","iPhone 17 Pro Max","iPhone 17e",
+  "iPhone 18","iPhone 18 Air","iPhone 18 Pro","iPhone 18 Pro Max",
+  "iPad Air 4","iPad Air 5","iPad Air 6","iPad Air M2","iPad Air M3",
+  "iPad Pro 11 M1","iPad Pro 12.9 M1","iPad Pro 11 M2","iPad Pro 12.9 M2",
+  "iPad Pro 11 M4","iPad Pro 13 M4","iPad mini 6","iPad mini 7",
+],
+android: [
+  "Samsung Galaxy S21","Samsung Galaxy S21+","Samsung Galaxy S21 Ultra",
+  "Samsung Galaxy S22","Samsung Galaxy S22+","Samsung Galaxy S22 Ultra",
+  "Samsung Galaxy S23","Samsung Galaxy S23+","Samsung Galaxy S23 Ultra","Samsung Galaxy S23 FE",
+  "Samsung Galaxy S24","Samsung Galaxy S24+","Samsung Galaxy S24 Ultra",
+  "Samsung Galaxy S25","Samsung Galaxy S25+","Samsung Galaxy S25 Ultra","Samsung Galaxy S25 Edge",
+  "Samsung Galaxy S26","Samsung Galaxy S26+","Samsung Galaxy S26 Ultra","Samsung Galaxy S26 FE",
+  "Samsung Galaxy Z Fold 3","Samsung Galaxy Z Fold 4","Samsung Galaxy Z Fold 5","Samsung Galaxy Z Fold 6","Samsung Galaxy Z Fold 7",
+  "Samsung Galaxy Z Flip 3","Samsung Galaxy Z Flip 4","Samsung Galaxy Z Flip 5","Samsung Galaxy Z Flip 6","Samsung Galaxy Z Flip 7",
+  "Samsung Galaxy A54","Samsung Galaxy A55","Samsung Galaxy A56",
+  "Samsung Galaxy A35","Samsung Galaxy A36","Samsung Galaxy A15","Samsung Galaxy A25",
+  "Samsung Galaxy A23","Samsung Galaxy A24",
+  "Xiaomi 12","Xiaomi 12 Pro","Xiaomi 12 Ultra",
+  "Xiaomi 13","Xiaomi 13 Pro","Xiaomi 13 Ultra",
+  "Xiaomi 14","Xiaomi 14 Pro","Xiaomi 14 Ultra",
+  "Xiaomi 15","Xiaomi 15 Ultra","Xiaomi 15 Pro",
+  "Redmi Note 11 Pro","Redmi Note 12","Redmi Note 12 Pro",
+  "Redmi Note 13","Redmi Note 13 Pro","Redmi Note 13 Pro+",
+  "Redmi Note 14","Redmi Note 14 Pro","Redmi Note 14 Pro+",
+  "Redmi 12","Redmi 12C","Redmi 13","Redmi 13C","Redmi 10C",
+  "POCO F4 GT","POCO F4","POCO F5","POCO F5 Pro","POCO F6","POCO F6 Pro","POCO F7","POCO F7 Ultra","POCO F7 Pro",
+  "POCO X5 Pro","POCO X6 Pro","POCO X7 Pro","POCO X7",
+  "POCO M6 Pro","POCO M7 Pro",
+  "OPPO Find X5 Pro","OPPO Find X6 Pro","OPPO Find X7 Ultra",
+  "OPPO Find X8 Pro","OPPO Find X9 Pro","OPPO Find X9",
+  "OPPO Reno 12 Pro","OPPO Reno 13 Pro",
+  "OnePlus 10 Pro","OnePlus 10T","OnePlus 11","OnePlus 11R",
+  "OnePlus 12","OnePlus 12R","OnePlus 13","OnePlus 13R",
+  "OnePlus Nord 3","OnePlus Nord 4","OnePlus Nord CE 4",
+  "vivo X80 Pro","vivo X90 Pro","vivo X100 Pro","vivo X200 Pro","vivo X300 Pro",
+  "vivo V29 Pro","vivo V40 Pro","vivo V50 Pro",
+  "realme GT 5","realme GT 5 Pro","realme GT 6","realme GT 6T","realme GT 7","realme GT 7 Pro",
+  "realme 13 Pro+","realme 14 Pro+",
+  "Google Pixel 7","Google Pixel 7 Pro","Google Pixel 7a",
+  "Google Pixel 8","Google Pixel 8 Pro","Google Pixel 8a",
+  "Google Pixel 9","Google Pixel 9 Pro","Google Pixel 9 Pro XL","Google Pixel 9a",
+  "Google Pixel 10","Google Pixel 10 Pro",
+  "ASUS ROG Phone 6","ASUS ROG Phone 6 Pro","ASUS ROG Phone 7","ASUS ROG Phone 7 Ultimate",
+  "ASUS ROG Phone 8","ASUS ROG Phone 8 Pro","ASUS ROG Phone 9","ASUS ROG Phone 9 Pro",
+  "HONOR Magic5 Pro","HONOR Magic6 Pro","HONOR Magic7 Pro","HONOR Magic7 RSR",
+  "HONOR 200 Pro","HONOR 300 Pro",
+  "Huawei P50 Pro","Huawei P60 Pro","Huawei Pura 70 Ultra","Huawei Pura 80 Ultra",
+  "Huawei Mate 60 Pro","Huawei Mate 60 Pro+","Huawei Mate 70 Pro",
+  "Sony Xperia 1 V","Sony Xperia 1 VI","Sony Xperia 1 VII",
+  "Sony Xperia 5 V","Sony Xperia 5 VI",
+  "Motorola Edge 50 Pro","Motorola Edge 60 Pro","Motorola Edge 60 Fusion",
+  "Motorola Razr 50 Ultra","Motorola Razr 60 Ultra",
+  "Tecno Phantom X2 Pro","Tecno Phantom V Fold","Tecno Camon 30 Pro",
+  "Infinix Zero 40 5G","Infinix Zero 30 5G","Infinix Hot 40 Pro",
+  "Nubia Red Magic 9 Pro","Nubia Red Magic 10 Pro","Nubia Red Magic 10S Pro",
+]};
+
+const issues = [
+  { id: "nặng tâm",   label: "Nặng tâm",   desc: "Aim kéo xuống khi giữ bắn" },
+  { id: "lố đầu",     label: "Lố đầu",     desc: "Aim bắn lên trên đầu địch" },
+  { id: "lệch tâm",   label: "Lệch tâm",   desc: "Aim lệch sang trái hoặc phải" },
+  { id: "lạc đạn",    label: "Lạc đạn",    desc: "Đạn không trúng dù ngắm đúng" },
+  { id: "dật tâm",    label: "Dật tâm",    desc: "Aim giật mạnh khó kiểm soát" },
+  { id: "rung tâm",   label: "Rung tâm",   desc: "Tâm dao động rung liên tục" },
+  { id: "trượt địch", label: "Trượt địch", desc: "Aim trượt qua người địch" },
+];
+
+const issueMeta = {
+  "nặng tâm":  { analysis: "Tình trạng <strong>nặng tâm</strong> xảy ra khi độ nhạy Look quá cao hoặc gyroscope bị can thiệp bởi trọng lực. Tâm bị kéo xuống liên tục khi bắn dài đạn. Cấu hình bên dưới giảm Look và tăng ADS để bù trừ recoil tự nhiên hơn." },
+  "lố đầu":    { analysis: "Tình trạng <strong>lố đầu</strong> do ADS quá thấp, tay compensate quá mức và kéo lên trên. Thiết bị của bạn cần tăng nhẹ độ nhạy các ống ngắm để recoil tự nhiên và ngón tay không cần kéo nhiều." },
+  "lệch tâm":  { analysis: "Tình trạng <strong>lệch tâm</strong> đến từ cân chỉnh màn hình hoặc DPI không đồng đều trục X/Y. Máy refresh rate cao dễ gặp khi độ nhạy không tối ưu. Cấu hình bên dưới điều chỉnh tỷ lệ X/Y cân bằng hơn." },
+  "lạc đạn":   { analysis: "Tình trạng <strong>lạc đạn</strong> — đạn đi không khớp điểm ngắm — thường do độ nhạy bắn quá thấp hoặc quá cao gây trễ input. Nút bắn của bạn chưa được cá nhân hóa đúng frame rate màn hình." },
+  "dật tâm":   { analysis: "Tình trạng <strong>dật tâm</strong> xảy ra khi độ nhạy tổng thể quá cao, kết hợp chip nhanh khiến mỗi frame input được đọc cực nhạy. Toàn bộ giá trị cần giảm xuống ngưỡng kiểm soát và tăng dần từ đó." },
+  "rung tâm":  { analysis: "Tình trạng <strong>rung tâm</strong> là dấu hiệu độ nhạy không khớp refresh rate màn hình. 90Hz và 120Hz cần ngưỡng khác nhau. Cấu hình bên dưới được tối ưu riêng theo display tier của thiết bị bạn." },
+  "trượt địch":{ analysis: "Tình trạng <strong>trượt địch</strong> — tracking speed không theo kịp chuyển động địch. ADS quá thấp khi địch di chuyển ngang là nguyên nhân chính. Cần tăng 2x và hồng tâm để cải thiện lead shot." },
+};
+
+const tips = {
+  "nặng tâm":   ["Giảm thêm 3–5 điểm 'Nhìn xung quanh' nếu vẫn còn nặng", "Bật gyroscope nếu có — giúp bù recoil tự nhiên hơn", "Tư thế cầm máy ổn định hơn khi bắn liên thanh"],
+  "lố đầu":     ["Tăng nhẹ ADS hồng tâm +3 nếu vẫn thấy lố", "Luyện pull-down khi bắn AR ở 2x", "Giảm độ nhạy 4x nếu scope tầm xa vẫn lố nhiều"],
+  "lệch tâm":   ["Kiểm tra lại cài đặt cảm ứng trong system settings", "Thử chế độ một tay và hai tay để so sánh", "Đặt máy trên bàn thử — nếu hết lệch là do cầm máy"],
+  "lạc đạn":    ["Vào training range bắn 30 viên liên tục để cảm nhận pattern", "Đảm bảo FPS game ổn định — drop FPS gây lạc đạn mạnh", "Giảm graphic setting để ổn định frame rate"],
+  "dật tâm":    ["Giảm thêm 3–5 tất cả các giá trị nếu dật vẫn mạnh", "Luyện recoil control bằng cách bắn vào tường dài đạn", "AR cần kéo xuống nhiều hơn SMG — muscle memory riêng"],
+  "rung tâm":   ["Bật 'Gyroscope scope only' nếu máy hỗ trợ", "Tắt rung máy (haptic) khi chơi game", "Tay không bị run — uống đủ nước, hạn chế caffeine"],
+  "trượt địch": ["Tăng 2x thêm +5 nếu vẫn trượt khi địch chạy ngang", "Dự đoán hướng di chuyển địch — lead shot là kỹ năng cốt lõi", "Tập mode Team Deathmatch để quen tracking speed"],
+};
+
+function getDeviceTier(name) {
+  const high = ["Pro Max","Ultra","Pro","ROG","Red Magic","Fold","Find X","Magic7","Magic6","Pixel 9","Pixel 10","S25","S26","S24 Ultra","iPhone 17","iPhone 18","iPhone 16 Pro","iPhone 15 Pro"];
+  const mid  = ["Plus","S23","S22","Redmi Note 14","Redmi Note 13","A55","A56","POCO F7","POCO F6","OnePlus 13","vivo X200","realme GT 7","iPhone 14","iPhone 15","iPhone 13 Pro","Pixel 8"];
+  for (const k of high) if (name.includes(k)) return { tier: 'FLAGSHIP', hz: '120Hz+', mult: 1.0 };
+  for (const k of mid)  if (name.includes(k)) return { tier: 'MID-HIGH',  hz: '90-120Hz', mult: 1.08 };
+  return { tier: 'MID-RANGE', hz: '60-90Hz', mult: 1.15 };
+}
+
+let os = 'ios';
+let selIssues = new Set();
+
+function setOS(type) {
+  os = type;
+  document.getElementById('iosBtn').classList.toggle('active', os === 'ios');
+  document.getElementById('androidBtn').classList.toggle('active', os === 'android');
+  document.getElementById('deviceInput').value = '';
+  selIssues.clear();
+  document.getElementById('deviceConfirm').classList.remove('show');
+  document.getElementById('issueSection').classList.remove('show');
+  document.getElementById('genBtn').disabled = true;
+  hideResult();
+  fillList();
+}
+
+function fillList() {
+  const dl = document.getElementById('deviceList');
+  dl.innerHTML = '';
+  devices[os].forEach(d => {
+    const o = document.createElement('option');
+    o.value = d;
+    dl.appendChild(o);
+  });
+  document.getElementById('deviceInput').placeholder = os === 'ios' ? 'iPhone / iPad...' : 'Samsung / Xiaomi / OPPO...';
+}
+
+function buildIssueGrid() {
+  const grid = document.getElementById('issueGrid');
+  grid.innerHTML = '';
+  issues.forEach(issue => {
+    const btn = document.createElement('button');
+    btn.className = 'issue-pill';
+    btn.dataset.id = issue.id;
+    btn.title = issue.desc;
+    btn.innerHTML = `<span class="dot"></span>${issue.label}`;
+    btn.onclick = () => toggleIssue(issue.id);
+    grid.appendChild(btn);
+  });
+}
+
+function toggleIssue(id) {
+  if (selIssues.has(id)) {
+    selIssues.delete(id);
+  } else {
+    selIssues.add(id);
+  }
+  document.querySelectorAll('.issue-pill').forEach(p => {
+    p.classList.toggle('sel', selIssues.has(p.dataset.id));
+  });
+  checkReady();
+}
+
+function onDeviceInput() {
+  const v = document.getElementById('deviceInput').value.trim();
+  const valid = devices[os].includes(v);
+  const dc = document.getElementById('deviceConfirm');
+  const is = document.getElementById('issueSection');
+  if (valid) {
+    const tier = getDeviceTier(v);
+    document.getElementById('confirmedName').textContent = v;
+    document.getElementById('confirmedTier').textContent = `${tier.tier} · ${tier.hz}`;
+    dc.classList.add('show');
+    is.classList.add('show');
+    buildIssueGrid();
+  } else {
+    dc.classList.remove('show');
+    is.classList.remove('show');
+    selIssues.clear();
+  }
+  checkReady();
+}
+
+function checkReady() {
+  const v = document.getElementById('deviceInput').value.trim();
+  const valid = devices[os].includes(v);
+  document.getElementById('genBtn').disabled = !(valid && selIssues.size > 0);
+}
+
+function hash(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return Math.abs(h >>> 0);
+}
+function rng(seed, mn, mx) { return mn + (seed % (mx - mn + 1)); }
+
+function generate() {
+  const name = document.getElementById('deviceInput').value.trim();
+  if (!devices[os].includes(name) || selIssues.size === 0) return;
+
+  const msgs = ['analyzing device...', 'computing recoil pattern...', 'personalizing values...', 'done.'];
+  let mi = 0;
+  const el = document.getElementById('loadMsg');
+  el.textContent = msgs[0];
+  const iv = setInterval(() => { mi = (mi+1) % msgs.length; el.textContent = msgs[mi]; }, 500);
+  document.getElementById('loading').classList.add('show');
+
+  setTimeout(() => {
+    clearInterval(iv);
+    document.getElementById('loading').classList.remove('show');
+    _generate(name);
+  }, 1600);
+}
+
+function _generate(name) {
+  const tier = getDeviceTier(name);
+  const issueList = [...selIssues];
+  const h = hash(name + issueList.join(''));
+  const m = tier.mult;
+
+  // Aggregate adjustments across all selected issues
+  const issueAdj = {
+    "nặng tâm":   { look:-5, red:4,  x2:4,  x4:3,  sniper:2,  camera:0  },
+    "lố đầu":     { look:0,  red:5,  x2:6,  x4:4,  sniper:3,  camera:0  },
+    "lệch tâm":   { look:-3, red:2,  x2:2,  x4:2,  sniper:1,  camera:0  },
+    "lạc đạn":    { look:2,  red:-4, x2:-3, x4:-2, sniper:-3, camera:3  },
+    "dật tâm":    { look:-7, red:-5, x2:-6, x4:-5, sniper:-4, camera:-3 },
+    "rung tâm":   { look:-4, red:-3, x2:-4, x4:-3, sniper:-2, camera:-2 },
+    "trượt địch": { look:4,  red:6,  x2:7,  x4:5,  sniper:3,  camera:4  },
+  };
+
+  let adj = { look:0, red:0, x2:0, x4:0, sniper:0, camera:0 };
+  issueList.forEach(id => {
+    const a = issueAdj[id];
+    Object.keys(adj).forEach(k => { adj[k] += a[k]; });
+  });
+
+  // Scale down if multiple issues (average)
+  if (issueList.length > 1) {
+    Object.keys(adj).forEach(k => { adj[k] = Math.round(adj[k] / issueList.length); });
+  }
+
+  function sens(seed, base, offset, mn, mx) {
+    const raw = rng(seed, base - 4, base + 4) + offset + Math.round((m - 1) * 12);
+    return Math.max(mn, Math.min(mx, raw));
+  }
+
+  // Range: 130–200
+  const look   = sens(h,        170, adj.look,   130, 200);
+  const red    = sens(h>>>2,    165, adj.red,     130, 200);
+  const x2     = sens(h>>>4,    158, adj.x2,      130, 195);
+  const x4     = sens(h>>>6,    145, adj.x4,      125, 185);
+  const sniper = sens(h>>>8,    132, adj.sniper,  115, 170);
+  const camera = sens(h>>>10,   155, adj.camera,  130, 195);
+  const fire   = rng(Math.floor(Math.random() * 1e9), 38, 68);
+
+  // Fill result UI
+  document.getElementById('rDeviceName').textContent = name;
+  document.getElementById('rOS').textContent = os === 'ios' ? 'Apple iOS' : 'Android';
+  document.getElementById('rTier').textContent = `${tier.tier} · ${tier.hz}`;
+  document.getElementById('rIssueDisplay').textContent = issueList.map(i => issues.find(x=>x.id===i)?.label || i).join(' + ');
+
+  // Analysis — combine if multiple
+  const anaTexts = issueList.map(id => issueMeta[id]?.analysis || '').filter(Boolean);
+  document.getElementById('rAnaText').innerHTML = anaTexts.join(' ');
+
+  function setVal(vid, bid, v, max) {
+    document.getElementById(vid).textContent = v;
+    setTimeout(() => { document.getElementById(bid).style.width = (v / max * 100) + '%'; }, 80);
+  }
+  setVal('vLook',   'bLook',   look,   200);
+  setVal('vRed',    'bRed',    red,    200);
+  setVal('vX2',     'bX2',     x2,     200);
+  setVal('vX4',     'bX4',     x4,     200);
+  setVal('vSniper', 'bSniper', sniper, 200);
+  setVal('vCamera', 'bCamera', camera, 200);
+  setVal('vFire',   'bFire',   fire,   68);
+
+  // Tips — merge unique from all selected issues
+  const tl = document.getElementById('tipsList');
+  tl.innerHTML = '';
+  const seen = new Set();
+  issueList.forEach(id => {
+    (tips[id] || []).forEach(t => {
+      if (!seen.has(t)) {
+        seen.add(t);
+        const li = document.createElement('li');
+        li.textContent = t;
+        tl.appendChild(li);
+      }
+    });
+  });
+
+  const r = document.getElementById('result');
+  r.classList.remove('show');
+  r.style.display = 'block';
+  void r.offsetWidth;
+  r.classList.add('show');
+  setTimeout(() => r.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function hideResult() {
+  const r = document.getElementById('result');
+  r.classList.remove('show');
+  r.style.display = 'none';
+}
+
+function reset() {
+  hideResult();
+  document.getElementById('deviceInput').value = '';
+  document.getElementById('deviceConfirm').classList.remove('show');
+  document.getElementById('issueSection').classList.remove('show');
+  selIssues.clear();
+  document.getElementById('genBtn').disabled = true;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+fillList();
+</script>
+</body>
+</html>
