@@ -194,6 +194,7 @@ body::before{
 .logo-name em{font-style:normal;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .header-tagline{font-size:13px;color:var(--sub);letter-spacing:.03em}
 
+/* ═══ CARD — FIX z-index để đè lên nút generate ═══ */
 .card{
   background:linear-gradient(160deg,rgba(12,18,32,.9) 0%,rgba(8,13,24,.95) 100%);
   border:1px solid var(--rim);
@@ -208,7 +209,10 @@ body::before{
 .card:focus-within{
   border-color:rgba(245,166,35,.25);
   box-shadow:0 0 0 1px rgba(245,166,35,.06),0 20px 50px rgba(0,0,0,.3);
-  z-index:50;
+  z-index:500;
+}
+.card.has-drop{
+  z-index:500;
 }
 .card-top-line{
   position:absolute;top:0;left:0;right:0;height:1px;
@@ -287,16 +291,17 @@ body::before{
 }
 .ac-clear:hover{background:rgba(245,166,35,.12);color:var(--gold);transform:translateY(-50%) rotate(90deg) scale(1.1)}
 
+/* ═══ DROPDOWN — z-index rất cao + tự nổi lên trên hết ═══ */
 .ac-drop{
   position:absolute;
   top:calc(100% + 8px);
   left:0;right:0;
-  z-index:900;
+  z-index:2000;
   background:linear-gradient(160deg,rgba(8,13,24,.99),rgba(5,8,16,.99));
   border:1px solid rgba(245,166,35,.18);
   border-radius:16px;
   display:none;
-  box-shadow:0 32px 80px rgba(0,0,0,.9), 0 0 0 1px rgba(245,166,35,.06);
+  box-shadow:0 32px 80px rgba(0,0,0,.95), 0 0 0 1px rgba(245,166,35,.06);
   max-height:min(320px, 45vh);
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
@@ -350,7 +355,7 @@ body::before{
 @keyframes popIn{from{opacity:0;transform:scale(.94) translateY(-4px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .dc-tier{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--sub)}
 
-.issues-section{display:none}
+.issues-section{display:none;position:relative;z-index:1}
 .issues-section.show{display:block;animation:fadeUp .35s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
@@ -396,8 +401,10 @@ body::before{
   box-shadow:0 0 8px rgba(245,166,35,.8);
 }
 
+/* ═══ GENERATE — z-index THẤP để dropdown đè lên ═══ */
 .gen-wrap{
-  position:sticky;bottom:0;z-index:100;
+  position:sticky;bottom:0;
+  z-index:5;
   padding:14px 0 24px;
   background:linear-gradient(to top,var(--void) 50%,transparent);
   margin-top:6px;
@@ -701,7 +708,7 @@ body::before{
     <div class="header-tagline">Độ nhạy chuẩn theo máy · Tối ưu Free Fire</div>
   </div>
 
-  <div class="card">
+  <div class="card" id="inputCard">
     <div class="card-top-line"></div>
     <div class="section-lbl"><span class="lbl-line"></span>HỆ ĐIỀU HÀNH</div>
     <div class="os-row">
@@ -829,23 +836,46 @@ document.getElementById('genBtn').addEventListener('click',function(e){
 
 const DB={
 ios:[
-  "iPhone 6","iPhone 6 Plus","iPhone 6s","iPhone 6s Plus","iPhone SE (1st Gen)",
+  // ═══ iPHONE — DÒNG CŨ (2007–2015) ═══
+  "iPhone (1st Gen)","iPhone 3G","iPhone 3GS",
+  "iPhone 4","iPhone 4 CDMA","iPhone 4S",
+  "iPhone 5","iPhone 5c","iPhone 5s",
+  "iPhone 6","iPhone 6 Plus","iPhone 6s","iPhone 6s Plus",
+  "iPhone SE (1st Gen)",
   "iPhone 7","iPhone 7 Plus","iPhone 8","iPhone 8 Plus","iPhone X",
+  // ═══ XR/XS (2018) ═══
   "iPhone XR","iPhone XS","iPhone XS Max",
+  // ═══ 11 (2019) ═══
   "iPhone 11","iPhone 11 Pro","iPhone 11 Pro Max","iPhone SE (2nd Gen)",
+  // ═══ 12 (2020) ═══
   "iPhone 12 mini","iPhone 12","iPhone 12 Pro","iPhone 12 Pro Max",
-  "iPhone 13 mini","iPhone 13","iPhone 13 Pro","iPhone 13 Pro Max",
-  "iPhone SE (3rd Gen)",
+  // ═══ 13 (2021) ═══
+  "iPhone 13 mini","iPhone 13","iPhone 13 Pro","iPhone 13 Pro Max","iPhone SE (3rd Gen)",
+  // ═══ 14 (2022) ═══
   "iPhone 14","iPhone 14 Plus","iPhone 14 Pro","iPhone 14 Pro Max",
+  // ═══ 15 (2023) ═══
   "iPhone 15","iPhone 15 Plus","iPhone 15 Pro","iPhone 15 Pro Max",
+  // ═══ 16 (2024) ═══
   "iPhone 16","iPhone 16 Plus","iPhone 16 Pro","iPhone 16 Pro Max","iPhone 16e",
-  "iPhone 17","iPhone 17 Air","iPhone 17 Pro","iPhone 17 Pro Max",
-  "iPhone 18","iPhone 18 Plus","iPhone 18 Pro","iPhone 18 Pro Max",
-  "iPad 5","iPad 6","iPad 7","iPad 8","iPad 9","iPad 10","iPad A16",
-  "iPad Air 3","iPad Air 4","iPad Air 5","iPad Air M2","iPad Air M3",
-  "iPad mini 5","iPad mini 6","iPad mini 7","iPad mini A17 Pro",
+  // ═══ 17 (2025) ═══
+  "iPhone 17","iPhone 17 Air","iPhone 17 Pro","iPhone 17 Pro Max","iPhone 17e",
+  // ═══ 18 (2026) ═══
+  "iPhone 18","iPhone 18 Plus","iPhone 18 Pro","iPhone 18 Pro Max","iPhone 18 Air",
+  "iPhone Fold","iPhone Flip",
+  // ═══ iPad cơ bản ═══
+  "iPad (1st Gen)","iPad 2","iPad 3","iPad 4",
+  "iPad 5","iPad 6","iPad 7","iPad 8","iPad 9","iPad 10","iPad 11","iPad A16",
+  // ═══ iPad Air ═══
+  "iPad Air","iPad Air 2","iPad Air 3","iPad Air 4","iPad Air 5",
+  "iPad Air M2","iPad Air M2 13","iPad Air M3","iPad Air M3 13",
+  // ═══ iPad mini ═══
+  "iPad mini","iPad mini 2","iPad mini 3","iPad mini 4","iPad mini 5","iPad mini 6","iPad mini 7","iPad mini A17 Pro",
+  // ═══ iPad Pro ═══
+  "iPad Pro 9.7","iPad Pro 10.5","iPad Pro 12.9 (1st Gen)","iPad Pro 12.9 (2nd Gen)",
   "iPad Pro 11","iPad Pro 11 M1","iPad Pro 11 M2","iPad Pro 11 M4","iPad Pro 11 M5",
-  "iPad Pro 12.9 M1","iPad Pro 12.9 M2","iPad Pro 12.9 M4","iPad Pro 13 M4","iPad Pro 13 M5"
+  "iPad Pro 12.9 M1","iPad Pro 12.9 M2","iPad Pro 12.9 M4","iPad Pro 13 M4","iPad Pro 13 M5","iPad Pro 13 M6","iPad Pro 13 M7","iPad Pro 14 (2026)","iPad Pro Ultra",
+  // ═══ iPod touch ═══
+  "iPod touch 1","iPod touch 2","iPod touch 3","iPod touch 4","iPod touch 5","iPod touch 6","iPod touch 7"
 ],
 android: [
   // ═══════════ SAMSUNG ═══════════
@@ -1478,8 +1508,8 @@ const TIPS_MAP={
 };
 
 function getTier(n){
-  const FL=["Pro Max","Ultra","ROG Phone 9","ROG Phone 10","ROG Phone 8","ROG Phone 7","RedMagic 11","RedMagic 10","RedMagic 9","Magic7","Magic V4","Magic V5","Pixel 9","Pixel 10","S25","S26","S25 Ultra","S26 Ultra","iPhone 17","iPhone 18","iPhone 16 Pro","iPhone 15 Pro","Find X8","Find X9","Z Fold 7","Z Flip7","Ace 3 Pro","K80 Pro","OnePlus 13","POCO F7","Legion Phone","15 Ultra","15T Pro","14 Ultra"];
-  const HI=["S24","S23","Note 14 Pro","Note 13 Pro","POCO F6","POCO F5 Pro","POCO F4 GT","OnePlus 12","vivo X200","realme GT 7","iPhone 14","iPhone 15","iPhone 13 Pro","Pixel 8","ROG Phone 6","Zenfone 11","11T Pro","12T Pro","13T Pro","14T Pro","Reno 13 Pro","Reno 14 Pro","Find X7","X90 Pro","X100 Pro","V50 Pro","HONOR 300","HONOR 200","Note 15 Pro","K70 Pro","K60 Pro","POCO F7 Pro","Nothing Phone (3)"];
+  const FL=["Pro Max","Ultra","ROG Phone 9","ROG Phone 10","ROG Phone 8","ROG Phone 7","RedMagic 11","RedMagic 10","RedMagic 9","Magic7","Magic V4","Magic V5","Pixel 9","Pixel 10","S25","S26","S25 Ultra","S26 Ultra","iPhone 17","iPhone 18","iPhone 16 Pro","iPhone 15 Pro","Find X8","Find X9","Z Fold 7","Z Flip7","Ace 3 Pro","K80 Pro","OnePlus 13","POCO F7","Legion Phone","15 Ultra","15T Pro","14 Ultra","iPad Pro 13","iPad Pro 11 M4","iPad Pro M4"];
+  const HI=["S24","S23","Note 14 Pro","Note 13 Pro","POCO F6","POCO F5 Pro","POCO F4 GT","OnePlus 12","vivo X200","realme GT 7","iPhone 14","iPhone 15","iPhone 13 Pro","Pixel 8","ROG Phone 6","Zenfone 11","11T Pro","12T Pro","13T Pro","14T Pro","Reno 13 Pro","Reno 14 Pro","Find X7","X90 Pro","X100 Pro","V50 Pro","HONOR 300","HONOR 200","Note 15 Pro","K70 Pro","K60 Pro","POCO F7 Pro","Nothing Phone (3)","iPad Air M2","iPad Air M3","iPad Pro 11 M1","iPad Pro 11 M2"];
   const low=n.toLowerCase();
   for(const k of FL) if(low.includes(k.toLowerCase())) return{tier:"FLAGSHIP",hz:"120Hz+",mult:1.0};
   for(const k of HI) if(low.includes(k.toLowerCase())) return{tier:"HIGH-END",hz:"90–120Hz",mult:1.06};
@@ -1531,10 +1561,20 @@ function highlight(text,q){
   if(!q)return text;
   return text.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi'),'<mark>$1</mark>');
 }
+
+/* ═══ RENDER DROP — toggle class has-drop cho card ═══ */
 function renderDrop(q){
   const drop=document.getElementById('acDrop');
   const res=filter(q);
-  if(!res.length||!q){drop.classList.remove('open');acOpen=false;return;}
+  const card=document.getElementById('inputCard');
+
+  if(!res.length||!q){
+    drop.classList.remove('open');
+    if(card) card.classList.remove('has-drop');
+    acOpen=false;
+    return;
+  }
+
   drop.innerHTML=res.map((d,i)=>{
     const t=getTier(d);
     const safeVal=d.replace(/'/g,"\\'");
@@ -1546,7 +1586,9 @@ function renderDrop(q){
       <span class="tier-pill">${t.tier}</span>
     </div>`;
   }).join('');
-  drop.classList.add('open');acOpen=true;acIdx=-1;
+  drop.classList.add('open');
+  if(card) card.classList.add('has-drop');
+  acOpen=true;acIdx=-1;
 
   setTimeout(()=>{
     const wrap=document.querySelector('.ac-wrap');
@@ -1574,12 +1616,13 @@ function onKey(e){
   if(!acOpen)return;
   if(e.key==='ArrowDown'){e.preventDefault();acIdx=Math.min(acIdx+1,items.length-1);items.forEach((el,i)=>el.classList.toggle('focus',i===acIdx));items[acIdx]?.scrollIntoView({block:'nearest'});}
   else if(e.key==='ArrowUp'){e.preventDefault();acIdx=Math.max(acIdx-1,0);items.forEach((el,i)=>el.classList.toggle('focus',i===acIdx));items[acIdx]?.scrollIntoView({block:'nearest'});}
-  else if(e.key==='Enter'){if(acIdx>=0&&items[acIdx])pick(items[acIdx].dataset.val);drop.classList.remove('open');acOpen=false;}
-  else if(e.key==='Escape'){drop.classList.remove('open');acOpen=false;}
+  else if(e.key==='Enter'){if(acIdx>=0&&items[acIdx])pick(items[acIdx].dataset.val);drop.classList.remove('open');document.getElementById('inputCard')?.classList.remove('has-drop');acOpen=false;}
+  else if(e.key==='Escape'){drop.classList.remove('open');document.getElementById('inputCard')?.classList.remove('has-drop');acOpen=false;}
 }
 function pick(n){
   document.getElementById('devIn').value=n;
   document.getElementById('acDrop').classList.remove('open');
+  document.getElementById('inputCard')?.classList.remove('has-drop');
   document.getElementById('acClear').style.display='flex';
   acOpen=false;confirmDev(n);
 }
@@ -1599,11 +1642,16 @@ function clearConfirm(){
 function clearInput(){
   document.getElementById('devIn').value='';
   document.getElementById('acDrop').classList.remove('open');
+  document.getElementById('inputCard')?.classList.remove('has-drop');
   document.getElementById('acClear').style.display='none';
   acOpen=false;clearConfirm();hideResult();
 }
 document.addEventListener('click',e=>{
-  if(!e.target.closest('.ac-wrap')){document.getElementById('acDrop').classList.remove('open');acOpen=false;}
+  if(!e.target.closest('.ac-wrap')){
+    document.getElementById('acDrop').classList.remove('open');
+    document.getElementById('inputCard')?.classList.remove('has-drop');
+    acOpen=false;
+  }
 });
 
 function buildIssues(){
