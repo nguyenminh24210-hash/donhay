@@ -5,36 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>SensGen — Free Fire Sensitivity</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;-webkit-text-size-adjust:100%;touch-action:manipulation;scroll-behavior:smooth}
 :root{
-  /* Core palette — deep space with liquid gold */
-  --void:#03050a;
-  --deep:#06090f;
-  --panel:#0a0e17;
-  --lift:#0f1420;
-  --rim:#171f30;
-  --edge:#1e2840;
-  --gold:#c9a227;
-  --gold2:#e8c547;
-  --fire:#ff4e00;
-  --ember:#ff8c00;
-  --crimson:#d42b2b;
-  --ice:#a8c4e0;
-  --glow:rgba(201,162,39,.12);
-  --glow2:rgba(255,78,0,.1);
-  --txt:#e2e8f0;
-  --sub:#6b7fa0;
-  --mute:#2a3550;
+  --void:#020408;
+  --deep:#050810;
+  --panel:#080d18;
+  --lift:#0c1220;
+  --rim:rgba(255,190,50,.09);
+  --edge:rgba(255,190,50,.16);
+  --gold:#f5a623;
+  --gold2:#ffd166;
+  --goldsoft:#ffc84a;
+  --fire:#ff3d00;
+  --ember:#ff7300;
+  --diamond:#a8d8ff;
+  --txt:#eef2ff;
+  --sub:#7a90b8;
+  --mute:rgba(122,144,184,.35);
   --mono:'JetBrains Mono',monospace;
-  --display:'Syne',sans-serif;
+  --display:'Rajdhani',sans-serif;
   --body:'DM Sans',sans-serif;
-  --r:12px;
-  --spring:cubic-bezier(.34,1.56,.64,1);
-  --smooth:cubic-bezier(.23,1,.32,1);
+  --r:14px;
 }
+
 body{
   font-family:var(--body);
   background:var(--void);
@@ -44,674 +40,688 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* ══════ AMBIENT BACKGROUND ══════ */
-.bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-/* nebula layers */
-.nb{position:absolute;border-radius:50%;filter:blur(120px);mix-blend-mode:screen}
-.nb1{width:800px;height:600px;top:-200px;left:-200px;
-  background:radial-gradient(ellipse,rgba(201,162,39,.07) 0%,transparent 65%);
-  animation:nbDrift1 20s ease-in-out infinite alternate}
-.nb2{width:600px;height:800px;bottom:-200px;right:-150px;
-  background:radial-gradient(ellipse,rgba(255,78,0,.06) 0%,transparent 65%);
-  animation:nbDrift2 25s ease-in-out infinite alternate}
-.nb3{width:500px;height:500px;top:35%;left:35%;
-  background:radial-gradient(ellipse,rgba(168,196,224,.03) 0%,transparent 65%);
-  animation:nbDrift3 18s ease-in-out infinite alternate}
-@keyframes nbDrift1{0%{transform:translate(0,0) scale(1)}100%{transform:translate(60px,80px) scale(1.15)}}
-@keyframes nbDrift2{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-50px,-60px) scale(1.1)}}
-@keyframes nbDrift3{0%{transform:translate(-20px,-20px) scale(.9)}100%{transform:translate(30px,40px) scale(1.1)}}
-/* star field */
-.stars{position:absolute;inset:0}
-.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle ease-in-out infinite}
-@keyframes twinkle{0%,100%{opacity:.15;transform:scale(1)}50%{opacity:.7;transform:scale(1.4)}}
-/* scan */
-.scan{position:absolute;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(201,162,39,.08),rgba(201,162,39,.18),rgba(201,162,39,.08),transparent);
-  animation:scanDown 12s linear infinite;pointer-events:none}
-@keyframes scanDown{0%{top:-2px;opacity:0}5%{opacity:1}95%{opacity:.4}100%{top:100%;opacity:0}}
-/* grid */
-.grid-bg{position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(201,162,39,.022) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(201,162,39,.022) 1px,transparent 1px);
-  background-size:48px 48px;
-  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent)}
-/* particles */
-.pts{position:absolute;inset:0}
-.pt{position:absolute;border-radius:50%;animation:ptFloat linear infinite;opacity:0}
-@keyframes ptFloat{
-  0%{transform:translateY(100%) scale(0);opacity:0}
-  8%{opacity:.8}90%{opacity:.15}
-  100%{transform:translateY(-5%) scale(2);opacity:0}
+/* ═══ GRAIN OVERLAY ═══ */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:.45;
 }
 
-/* ══════ WELCOME GATE ══════ */
+/* ═══ BG CANVAS ═══ */
+.bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(100px);will-change:transform}
+.orb1{width:700px;height:700px;top:-250px;left:-200px;
+  background:radial-gradient(circle at 40% 40%,rgba(245,166,35,.1) 0%,transparent 65%);
+  animation:orbFloat1 22s ease-in-out infinite alternate}
+.orb2{width:600px;height:500px;bottom:-150px;right:-180px;
+  background:radial-gradient(circle at 60% 60%,rgba(255,61,0,.08) 0%,transparent 65%);
+  animation:orbFloat2 28s ease-in-out infinite alternate}
+.orb3{width:400px;height:400px;top:40%;left:45%;
+  background:radial-gradient(circle,rgba(168,216,255,.04) 0%,transparent 60%);
+  animation:orbFloat3 16s ease-in-out infinite alternate}
+@keyframes orbFloat1{from{transform:translate(0,0) scale(1)}to{transform:translate(70px,90px) scale(1.12)}}
+@keyframes orbFloat2{from{transform:translate(0,0) scale(1)}to{transform:translate(-60px,-70px) scale(1.08)}}
+@keyframes orbFloat3{from{transform:translate(-30px,-30px)}to{transform:translate(40px,50px)}}
+
+/* hex grid */
+.hex-grid{
+  position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='52'%3E%3Cpath d='M30 2l26 15v26L30 58 4 43V17z' fill='none' stroke='rgba(245,166,35,0.028)' stroke-width='1'/%3E%3C/svg%3E");
+  background-size:60px 52px;
+  mask-image:radial-gradient(ellipse 85% 85% at 50% 50%,black 10%,transparent);
+}
+
+/* scan line */
+.scan{
+  position:absolute;left:0;right:0;height:2px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(245,166,35,.06),rgba(245,166,35,.16),rgba(245,166,35,.06),transparent);
+  animation:scanDown 14s linear infinite;
+}
+@keyframes scanDown{0%{top:-2px;opacity:0}6%{opacity:1}94%{opacity:.3}100%{top:100%;opacity:0}}
+
+/* star field */
+#stars{position:absolute;inset:0}
+.star{position:absolute;background:#fff;border-radius:50%;animation:starTwinkle ease-in-out infinite}
+@keyframes starTwinkle{0%,100%{opacity:.1;transform:scale(1)}50%{opacity:.6;transform:scale(1.5)}}
+
+/* ═══ WELCOME GATE ═══ */
 #gate{
   position:fixed;inset:0;z-index:900;
-  background:rgba(3,5,10,.96);
-  backdrop-filter:blur(24px);
   display:flex;align-items:center;justify-content:center;
   padding:20px;
+  background:rgba(2,4,8,.97);
+  backdrop-filter:blur(32px) saturate(1.4);
 }
 .gate-box{
-  max-width:420px;width:100%;
-  background:linear-gradient(145deg,var(--panel),var(--lift));
-  border:1px solid rgba(201,162,39,.18);
-  border-radius:24px;
-  padding:44px 32px 32px;
+  max-width:400px;width:100%;
+  background:linear-gradient(145deg,rgba(8,13,24,.98) 0%,rgba(12,18,32,.98) 100%);
+  border:1px solid rgba(245,166,35,.18);
+  border-radius:28px;
+  padding:44px 32px 34px;
   text-align:center;
   position:relative;overflow:hidden;
-  box-shadow:0 0 60px rgba(201,162,39,.08),0 40px 80px rgba(0,0,0,.6);
-  animation:gateIn .7s var(--spring) both;
+  box-shadow:0 0 80px rgba(245,166,35,.07),0 60px 120px rgba(0,0,0,.7);
+  animation:gateSlide .65s cubic-bezier(.34,1.56,.64,1) both;
 }
-@keyframes gateIn{from{opacity:0;transform:scale(.85) translateY(32px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes gateSlide{from{opacity:0;transform:scale(.88) translateY(40px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .gate-box::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--gold),var(--gold2),var(--gold),transparent);
-  border-radius:24px 24px 0 0;
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:28px 28px 0 0;
+  background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--gold2) 50%,var(--gold) 70%,transparent 100%);
 }
-.gate-box::after{
-  content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);
-  width:200px;height:200px;border-radius:50%;
-  background:radial-gradient(circle,rgba(201,162,39,.12),transparent 65%);
+.gate-glow{
+  position:absolute;top:-80px;left:50%;transform:translateX(-50%);
+  width:300px;height:200px;
+  background:radial-gradient(ellipse,rgba(245,166,35,.1) 0%,transparent 65%);
   pointer-events:none;
 }
-.gate-icon{
-  width:72px;height:72px;margin:0 auto 22px;position:relative;
+
+/* FF diamond icon */
+.gate-diamond{
+  width:72px;height:72px;margin:0 auto 24px;
+  position:relative;display:flex;align-items:center;justify-content:center;
 }
-.gate-ring{
-  position:absolute;inset:0;border-radius:50%;
-  border:1.5px solid rgba(201,162,39,.3);
-  animation:gateRing 3s linear infinite;
+.gate-diamond::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 50%,var(--fire) 100%);
+  clip-path:polygon(50% 0%,100% 35%,80% 100%,20% 100%,0% 35%);
+  animation:diamondPulse 3s ease-in-out infinite;
+  box-shadow:0 0 40px rgba(245,166,35,.5);
 }
-.gate-ring::before{
-  content:'';position:absolute;top:-3px;left:50%;width:6px;height:6px;
-  background:var(--gold);border-radius:50%;transform:translateX(-50%);
-  box-shadow:0 0 8px var(--gold);
-}
-@keyframes gateRing{to{transform:rotate(360deg)}}
-.gate-inner{
-  position:absolute;inset:8px;border-radius:50%;
-  background:linear-gradient(135deg,var(--gold),var(--ember));
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 30px rgba(201,162,39,.4),0 0 60px rgba(201,162,39,.15);
-}
-.gate-inner svg{width:28px;height:28px;fill:var(--void)}
-.gate-title{
-  font-family:var(--display);font-size:26px;font-weight:800;
-  color:#fff;line-height:1.2;margin-bottom:10px;
-}
-.gate-title .hl{
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.gate-desc{
-  font-size:13.5px;color:var(--sub);line-height:1.85;margin-bottom:28px;
-}
+@keyframes diamondPulse{0%,100%{filter:brightness(1) drop-shadow(0 0 12px rgba(245,166,35,.5))}50%{filter:brightness(1.15) drop-shadow(0 0 28px rgba(245,166,35,.8))}}
+.gate-diamond svg{position:relative;z-index:1;fill:var(--void)}
+
+.gate-title{font-family:var(--display);font-size:28px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:10px;letter-spacing:.02em}
+.gate-title .hl{background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.gate-desc{font-size:13.5px;color:var(--sub);line-height:1.9;margin-bottom:30px}
 .gate-desc strong{color:var(--txt);font-weight:500}
+
 .gate-actions{display:flex;flex-direction:column;gap:10px}
-.btn-ok{
-  width:100%;padding:16px;border:none;border-radius:13px;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  font-family:var(--display);font-size:14px;font-weight:700;
-  color:var(--void);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:9px;
-  box-shadow:0 4px 20px rgba(201,162,39,.3),0 0 40px rgba(201,162,39,.1);
-  transition:transform .2s var(--spring),box-shadow .2s;
-  letter-spacing:.03em;
+.btn-enter{
+  width:100%;padding:17px;border:none;border-radius:14px;cursor:pointer;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 50%,var(--goldsoft) 100%);
+  font-family:var(--display);font-size:16px;font-weight:700;letter-spacing:.04em;
+  color:var(--void);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 6px 28px rgba(245,166,35,.38),0 0 0 1px rgba(255,255,255,.1) inset;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .22s ease,filter .2s;
+  position:relative;overflow:hidden;
 }
-.btn-ok:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(201,162,39,.45)}
-.btn-ok:active{transform:scale(.97)}
+.btn-enter::before{
+  content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
+  transition:left .5s ease;
+}
+.btn-enter:hover{transform:translateY(-3px);box-shadow:0 14px 42px rgba(245,166,35,.5);filter:brightness(1.06)}
+.btn-enter:hover::before{left:160%}
+.btn-enter:active{transform:scale(.97)}
+
 .btn-admin{
-  width:100%;padding:14px;border-radius:13px;
-  background:rgba(201,162,39,.06);
-  border:1px solid rgba(201,162,39,.2);
-  color:var(--gold);
-  font-family:var(--body);font-size:13px;font-weight:600;
+  width:100%;padding:14px;border-radius:12px;
+  background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);
+  color:var(--gold);font-family:var(--body);font-size:13px;font-weight:600;
   cursor:pointer;text-decoration:none;
   display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .2s ease;
+}
+.btn-admin:hover{background:rgba(245,166,35,.13);border-color:rgba(245,166,35,.4);transform:translateY(-1px)}
+
+.btn-skip{
+  background:transparent;border:1px solid rgba(255,255,255,.07);color:rgba(122,144,184,.6);
+  border-radius:10px;padding:11px;width:100%;cursor:pointer;
+  font-family:var(--body);font-size:12px;letter-spacing:.08em;
   transition:all .2s;
 }
-.btn-admin:hover{background:rgba(201,162,39,.12);border-color:rgba(201,162,39,.4)}
-.btn-skip{
-  width:100%;padding:11px;background:transparent;
-  border:1px solid var(--rim);color:var(--sub);
-  border-radius:10px;font-family:var(--body);font-size:12px;font-weight:500;
-  cursor:pointer;transition:all .2s;letter-spacing:.06em;text-transform:uppercase;
+.btn-skip:hover{color:var(--sub);border-color:rgba(255,255,255,.12)}
+
+/* ═══ MAIN WRAP ═══ */
+.wrap{position:relative;z-index:1;max-width:620px;margin:0 auto;padding:0 16px 160px}
+
+/* ═══ HEADER ═══ */
+.header{padding:40px 0 30px;text-align:center}
+.ff-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:5px 14px 5px 10px;border-radius:99px;margin-bottom:20px;
+  background:rgba(255,61,0,.08);border:1px solid rgba(255,61,0,.2);
+  font-family:var(--mono);font-size:10px;color:var(--ember);letter-spacing:.1em;font-weight:600;
 }
-.btn-skip:hover{color:var(--txt);border-color:var(--edge)}
+.ff-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--fire);box-shadow:0 0 8px var(--fire);animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.5)}}
 
-/* ══════ LAYOUT ══════ */
-.wrap{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:0 16px 140px}
-
-/* ══════ HEADER ══════ */
-.header{padding:36px 0 28px;text-align:center;animation:headerIn .9s var(--smooth) both}
-@keyframes headerIn{from{opacity:0;transform:translateY(-24px)}to{opacity:1;transform:translateY(0)}}
-.logo-lockup{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:12px}
-.logo-mark{
-  width:54px;height:54px;border-radius:16px;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
+.logo-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px}
+.logo-gem{
+  width:52px;height:52px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2) 50%,var(--fire) 100%);
+  clip-path:polygon(50% 0%,100% 35%,80% 100%,20% 100%,0% 35%);
   display:flex;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;
-  box-shadow:0 0 0 1px rgba(201,162,39,.25),0 0 40px rgba(201,162,39,.35),0 8px 24px rgba(0,0,0,.4);
-  animation:markPulse 4s ease-in-out infinite;
+  box-shadow:0 0 36px rgba(245,166,35,.4),0 0 80px rgba(245,166,35,.12);
+  flex-shrink:0;
+  animation:gemGlow 4s ease-in-out infinite;
 }
-.logo-mark::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.2),transparent 55%);
-}
-.logo-mark::after{
-  content:'';position:absolute;
-  width:180%;height:40%;top:-20%;left:-40%;
-  background:rgba(255,255,255,.12);
-  transform:rotate(-30deg);
-  animation:markSheen 5s ease-in-out 2s infinite;
-}
-@keyframes markSheen{0%,65%,100%{transform:rotate(-30deg) translateX(-200%)}40%{transform:rotate(-30deg) translateX(200%)}}
-@keyframes markPulse{
-  0%,100%{box-shadow:0 0 0 1px rgba(201,162,39,.25),0 0 40px rgba(201,162,39,.3),0 8px 24px rgba(0,0,0,.4)}
-  50%{box-shadow:0 0 0 2px rgba(201,162,39,.5),0 0 70px rgba(201,162,39,.55),0 12px 36px rgba(0,0,0,.5)}
-}
-.logo-mark svg{width:26px;height:26px;fill:var(--void);position:relative;z-index:1}
-.logo-name{font-family:var(--display);font-size:36px;font-weight:800;letter-spacing:-.02em;color:#fff;line-height:1}
-.logo-name em{
-  font-style:normal;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.header-sub{font-size:13px;color:var(--sub);letter-spacing:.04em;margin-bottom:16px}
-.ff-pill{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:8px 18px;border-radius:99px;
-  background:rgba(255,78,0,.07);
-  border:1px solid rgba(255,78,0,.18);
-  font-size:11px;color:var(--ember);font-family:var(--mono);
-  letter-spacing:.08em;font-weight:600;
-  animation:pillPulse 2.5s ease-in-out infinite;
-}
-@keyframes pillPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,78,0,0)}50%{box-shadow:0 0 0 5px rgba(255,78,0,.06)}}
-.ff-dot{width:6px;height:6px;border-radius:50%;background:var(--fire);box-shadow:0 0 6px var(--fire);animation:dotBlink 1.5s ease-in-out infinite}
-@keyframes dotBlink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.6)}}
+@keyframes gemGlow{0%,100%{box-shadow:0 0 36px rgba(245,166,35,.35),0 0 80px rgba(245,166,35,.1)}50%{box-shadow:0 0 60px rgba(245,166,35,.6),0 0 120px rgba(245,166,35,.2)}}
+.logo-gem svg{width:24px;height:24px;fill:var(--void)}
+.logo-name{font-family:var(--display);font-size:42px;font-weight:700;letter-spacing:-.01em;color:#fff;line-height:1}
+.logo-name em{font-style:normal;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header-tagline{font-size:13px;color:var(--sub);letter-spacing:.03em}
 
-/* ══════ SECTION CARD ══════ */
-.section{
-  background:linear-gradient(145deg,var(--panel),var(--lift));
+/* ═══ CARD ═══ */
+.card{
+  background:linear-gradient(160deg,rgba(12,18,32,.9) 0%,rgba(8,13,24,.95) 100%);
   border:1px solid var(--rim);
   border-radius:20px;
-  padding:24px;margin-bottom:12px;
+  padding:22px 20px;
+  margin-bottom:10px;
   position:relative;overflow:hidden;
-  animation:secIn .6s var(--smooth) both;
-  transition:border-color .3s,box-shadow .3s;
+  backdrop-filter:blur(8px);
+  transition:border-color .3s ease,box-shadow .3s ease;
 }
-@keyframes secIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-.section::before{
-  content:'';position:absolute;top:0;left:20px;right:20px;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(201,162,39,.15),transparent);
+.card:focus-within{
+  border-color:rgba(245,166,35,.25);
+  box-shadow:0 0 0 1px rgba(245,166,35,.06),0 20px 50px rgba(0,0,0,.3);
 }
-.section:focus-within{
-  border-color:rgba(201,162,39,.25);
-  box-shadow:0 0 0 1px rgba(201,162,39,.08),0 12px 40px rgba(0,0,0,.25);
+.card-top-line{
+  position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(245,166,35,.12),rgba(245,166,35,.25),rgba(245,166,35,.12),transparent);
 }
-.section-label{
+.section-lbl{
   font-family:var(--mono);font-size:10px;font-weight:600;
-  color:var(--sub);letter-spacing:.12em;text-transform:uppercase;
-  margin-bottom:18px;display:flex;align-items:center;gap:10px;
+  color:rgba(122,144,184,.7);letter-spacing:.14em;
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
 }
-.section-label::before{
-  content:'';width:18px;height:2px;border-radius:99px;
-  background:linear-gradient(90deg,var(--gold),var(--ember));flex-shrink:0;
-}
+.lbl-line{width:14px;height:1.5px;background:linear-gradient(90deg,var(--gold),var(--ember));border-radius:99px;flex-shrink:0}
 
-/* ══════ OS PICKER ══════ */
-.os-row{display:flex;gap:8px;margin-bottom:20px}
+/* ═══ OS PICKER ═══ */
+.os-row{display:flex;gap:8px;margin-bottom:22px}
 .os-btn{
-  flex:1;padding:14px;border-radius:13px;
-  background:transparent;border:1px solid var(--rim);
+  flex:1;padding:13px 10px;border-radius:13px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--rim);
   color:var(--sub);font-family:var(--body);font-size:13px;font-weight:600;
   cursor:pointer;
   display:flex;align-items:center;justify-content:center;gap:8px;
-  transition:all .28s var(--smooth);position:relative;overflow:hidden;
+  transition:all .28s cubic-bezier(.34,1.56,.64,1);
+  position:relative;overflow:hidden;
 }
 .os-btn::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(201,162,39,.06),rgba(255,78,0,.04));
+  content:'';position:absolute;inset:0;border-radius:13px;
+  background:linear-gradient(135deg,rgba(245,166,35,.08),rgba(255,115,0,.06));
   opacity:0;transition:opacity .25s;
 }
-.os-btn:active{transform:scale(.97)}
 .os-btn.active{
-  background:linear-gradient(135deg,rgba(201,162,39,.1),rgba(255,78,0,.06));
-  border-color:rgba(201,162,39,.35);color:#fff;
-  box-shadow:0 0 0 1px rgba(201,162,39,.1),0 4px 20px rgba(201,162,39,.08);
+  background:linear-gradient(135deg,rgba(245,166,35,.1),rgba(255,115,0,.06));
+  border-color:rgba(245,166,35,.38);color:#fff;
+  box-shadow:0 0 0 1px rgba(245,166,35,.08),0 6px 20px rgba(245,166,35,.08),0 1px 0 rgba(255,255,255,.06) inset;
 }
 .os-btn.active::after{opacity:1}
-.os-btn svg{width:16px;height:16px;flex-shrink:0;opacity:.5;transition:opacity .25s;position:relative;z-index:1}
+.os-btn:active{transform:scale(.96)}
+.os-btn svg{width:16px;height:16px;flex-shrink:0;transition:opacity .2s;position:relative;z-index:1}
 .os-btn span{position:relative;z-index:1}
-.os-btn.active svg{opacity:1}
-.os-btn.pop{animation:btnPop .22s var(--spring)}
-@keyframes btnPop{0%{transform:scale(1)}45%{transform:scale(.94)}100%{transform:scale(1)}}
+.os-btn:not(.active) svg{opacity:.4}
+.os-pop{animation:osPop .2s cubic-bezier(.34,1.56,.64,1)}
+@keyframes osPop{0%{transform:scale(1)}50%{transform:scale(.95)}100%{transform:scale(1)}}
 
-/* ══════ AUTOCOMPLETE — FIXED DROPDOWN ══════ */
+/* ═══ SEARCH / AUTOCOMPLETE ═══ */
 .ac-wrap{position:relative}
+.ac-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--mute);transition:color .2s;pointer-events:none;z-index:1}
 .ac-field{
-  width:100%;background:var(--deep);
-  border:1px solid var(--rim);color:var(--txt);
-  border-radius:13px;padding:15px 48px 15px 50px;
-  font-size:14px;font-family:var(--body);outline:none;
+  width:100%;
+  background:rgba(2,4,8,.7);
+  border:1px solid var(--rim);
+  color:var(--txt);
+  border-radius:13px;
+  padding:15px 46px 15px 46px;
+  font-size:14px;font-family:var(--body);
+  outline:none;
   transition:border-color .25s,box-shadow .25s,background .25s;
   -webkit-appearance:none;
 }
+.ac-field::placeholder{color:rgba(122,144,184,.3)}
 .ac-field:focus{
-  border-color:rgba(201,162,39,.45);
-  box-shadow:0 0 0 3px rgba(201,162,39,.08),0 4px 20px rgba(0,0,0,.2);
-  background:var(--lift);
+  background:rgba(8,13,24,.9);
+  border-color:rgba(245,166,35,.4);
+  box-shadow:0 0 0 3px rgba(245,166,35,.07),0 8px 24px rgba(0,0,0,.25);
 }
-.ac-field::placeholder{color:var(--mute)}
-.ac-search-ico{
-  position:absolute;left:16px;top:50%;transform:translateY(-50%);
-  color:var(--mute);pointer-events:none;transition:color .25s;
-}
-.ac-field:focus~.ac-search-ico{color:var(--gold)}
-.ac-x{
-  position:absolute;right:14px;top:50%;transform:translateY(-50%);
-  background:var(--rim);border:none;color:var(--sub);cursor:pointer;
-  width:26px;height:26px;border-radius:50%;
+.ac-field:focus~.ac-icon,.ac-wrap:focus-within .ac-icon{color:var(--gold)}
+.ac-clear{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(255,255,255,.06);border:none;
+  color:var(--sub);cursor:pointer;
   display:none;align-items:center;justify-content:center;
-  transition:all .2s;
+  transition:all .2s cubic-bezier(.34,1.56,.64,1);
+  z-index:1;
 }
-.ac-x:hover{background:var(--edge);color:var(--txt);transform:translateY(-50%) rotate(90deg)}
+.ac-clear:hover{background:rgba(245,166,35,.12);color:var(--gold);transform:translateY(-50%) rotate(90deg) scale(1.1)}
 
-/* DROPDOWN — z-index above sticky button */
 .ac-drop{
   position:absolute;top:calc(100% + 10px);left:0;right:0;
   z-index:600;
-  background:var(--panel);
-  border:1px solid var(--edge);
+  background:linear-gradient(160deg,rgba(8,13,24,.98),rgba(5,8,16,.98));
+  border:1px solid rgba(245,166,35,.14);
   border-radius:16px;
-  overflow:hidden;display:none;
-  box-shadow:0 32px 80px rgba(0,0,0,.8),0 0 0 1px rgba(201,162,39,.06);
-  max-height:260px;overflow-y:auto;
+  display:none;
+  box-shadow:0 32px 80px rgba(0,0,0,.85),0 0 0 1px rgba(245,166,35,.04);
+  max-height:264px;overflow-y:auto;
 }
-.ac-drop.open{display:block;animation:dropIn .16s var(--smooth)}
-@keyframes dropIn{from{opacity:0;transform:translateY(-10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.ac-drop.open{display:block;animation:dropFade .15s ease}
+@keyframes dropFade{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 .ac-item{
-  padding:13px 18px;font-size:13px;cursor:pointer;
+  padding:13px 16px;font-size:13px;cursor:pointer;
   display:flex;align-items:center;gap:12px;
-  transition:background .1s;color:var(--txt);
-  border-bottom:1px solid rgba(255,255,255,.03);
+  color:var(--txt);border-bottom:1px solid rgba(255,255,255,.03);
+  transition:background .1s;
 }
 .ac-item:last-child{border-bottom:none}
-.ac-item:hover,.ac-item.focus{background:var(--lift)}
-.ac-item:active{background:rgba(201,162,39,.07)}
+.ac-item:hover,.ac-item.focus{background:rgba(245,166,35,.05)}
 .ac-item mark{background:none;color:var(--gold);font-weight:700}
-.tier-badge{
+.tier-pill{
   margin-left:auto;font-family:var(--mono);font-size:9px;
-  padding:3px 8px;border-radius:6px;
-  background:rgba(201,162,39,.08);color:var(--gold);
-  letter-spacing:.06em;flex-shrink:0;
-  border:1px solid rgba(201,162,39,.15);
+  padding:3px 9px;border-radius:6px;
+  background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.15);
+  color:var(--gold);letter-spacing:.06em;flex-shrink:0;
 }
+.ac-empty{padding:18px;text-align:center;font-size:12px;color:var(--mute)}
 
-/* CONFIRM */
 .dev-confirm{
   display:none;margin-top:10px;padding:12px 16px;
-  background:rgba(48,209,88,.05);border:1px solid rgba(48,209,88,.18);
-  border-radius:10px;font-size:12px;color:#30d158;font-weight:600;
+  background:rgba(46,213,115,.05);border:1px solid rgba(46,213,115,.18);
+  border-radius:10px;font-size:12px;color:#4ade80;font-weight:600;
   align-items:center;gap:10px;
 }
-.dev-confirm.show{display:flex;animation:confirmPop .32s var(--spring)}
-@keyframes confirmPop{from{opacity:0;transform:scale(.95) translateY(-5px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.dev-confirm.show{display:flex;animation:popIn .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.94) translateY(-4px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .dc-tier{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--sub)}
 
-/* ══════ ISSUES ══════ */
+/* ═══ ISSUE TAGS — FIXED VISIBILITY ═══ */
 .issues-section{display:none}
-.issues-section.show{display:block;animation:slideIn .35s var(--smooth)}
-@keyframes slideIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.issue-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.issues-section.show{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.issue-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+
 .issue-tag{
-  display:flex;align-items:center;gap:7px;
-  padding:10px 18px;border-radius:99px;
-  border:1px solid var(--rim);
-  font-size:12.5px;font-weight:600;color:var(--sub);
-  background:var(--deep);cursor:pointer;
-  transition:all .22s var(--smooth);user-select:none;
+  /* FIXED: solid background so it's always visible */
+  display:inline-flex;align-items:center;gap:7px;
+  padding:11px 18px;
+  border-radius:99px;
+  border:1.5px solid rgba(255,255,255,.1);
+  background:rgba(12,18,32,.9);
+  color:rgba(200,215,240,.8);
+  font-family:var(--body);font-size:12.5px;font-weight:600;
+  cursor:pointer;
+  user-select:none;
   position:relative;overflow:hidden;
+  transition:border-color .22s ease, background .22s ease, color .22s ease, transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s ease;
+  -webkit-tap-highlight-color:transparent;
 }
-.issue-tag::before{
-  content:'';position:absolute;inset:0;border-radius:99px;
-  background:linear-gradient(135deg,var(--gold),var(--ember));
-  opacity:0;transition:opacity .22s;
+.issue-tag:hover{
+  background:rgba(245,166,35,.07);
+  border-color:rgba(245,166,35,.3);
+  color:#fff;
+  transform:translateY(-2px);
 }
-.issue-tag:hover{border-color:var(--edge);color:var(--txt);transform:translateY(-1px)}
 .issue-tag:active{transform:scale(.95)}
 .issue-tag.on{
-  border-color:var(--gold);color:#fff;
-  box-shadow:0 0 20px rgba(201,162,39,.2),inset 0 0 0 1px rgba(201,162,39,.15);
+  background:linear-gradient(135deg,rgba(245,166,35,.15),rgba(255,115,0,.09));
+  border-color:var(--gold);
+  color:#fff;
+  box-shadow:0 0 22px rgba(245,166,35,.18),0 4px 16px rgba(0,0,0,.3),0 0 0 1px rgba(245,166,35,.08) inset;
 }
-.issue-tag.on::before{opacity:.1}
-.issue-tag.on{animation:tagOn .25s var(--spring)}
-@keyframes tagOn{0%{transform:scale(1)}45%{transform:scale(1.07)}100%{transform:scale(1)}}
-.i-dot{
-  width:5px;height:5px;border-radius:50%;background:currentColor;
-  flex-shrink:0;opacity:.4;transition:all .22s;position:relative;z-index:1;
-}
-.issue-tag.on .i-dot{opacity:1;background:var(--gold);box-shadow:0 0 6px rgba(201,162,39,.8);}
-.issue-tag span:last-child{position:relative;z-index:1}
+.issue-tag.on{animation:tagPop .28s cubic-bezier(.34,1.56,.64,1)}
+@keyframes tagPop{0%{transform:scale(1)}45%{transform:scale(1.09)}100%{transform:scale(1)}}
 
-/* ══════ GEN BUTTON WRAP ══════ */
+.tag-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(122,144,184,.4);flex-shrink:0;
+  transition:background .22s,box-shadow .22s;
+}
+.issue-tag.on .tag-dot{
+  background:var(--gold);
+  box-shadow:0 0 8px rgba(245,166,35,.8);
+}
+
+/* ═══ GENERATE BTN ═══ */
 .gen-wrap{
   position:sticky;bottom:0;z-index:100;
-  padding:16px 0 22px;
-  background:linear-gradient(to top,var(--void) 55%,transparent);
+  padding:14px 0 24px;
+  background:linear-gradient(to top,var(--void) 50%,transparent);
   margin-top:6px;
 }
 .gen-btn{
-  width:100%;padding:19px;border:none;border-radius:15px;
-  background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 50%,var(--ember) 100%);
-  font-family:var(--display);font-size:15px;font-weight:700;
+  width:100%;padding:20px;border:none;border-radius:16px;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 50%,var(--goldsoft) 100%);
+  font-family:var(--display);font-size:17px;font-weight:700;letter-spacing:.05em;
   color:var(--void);cursor:pointer;
   position:relative;overflow:hidden;
-  box-shadow:0 4px 24px rgba(201,162,39,.3),0 0 60px rgba(201,162,39,.08),0 1px 0 rgba(255,255,255,.2) inset;
-  transition:transform .2s var(--spring),box-shadow .2s,opacity .2s;
-  letter-spacing:.04em;display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 6px 28px rgba(245,166,35,.35),0 1px 0 rgba(255,255,255,.25) inset;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease,filter .2s;
+  display:flex;align-items:center;justify-content:center;gap:11px;
 }
 .gen-btn::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.22) 50%,transparent 100%);
-  transform:translateX(-100%);transition:transform .8s ease;
+  content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+  transition:left .7s ease;
 }
 .gen-btn:not(:disabled):hover{
-  transform:translateY(-2px);
-  box-shadow:0 12px 40px rgba(201,162,39,.45),0 0 80px rgba(201,162,39,.12);
+  transform:translateY(-3px);
+  box-shadow:0 16px 48px rgba(245,166,35,.5),0 0 100px rgba(245,166,35,.12);
+  filter:brightness(1.06);
 }
-.gen-btn:not(:disabled):hover::before{transform:translateX(100%)}
+.gen-btn:not(:disabled):hover::before{left:160%}
 .gen-btn:not(:disabled):active{transform:scale(.97)}
-.gen-btn:disabled{opacity:.18;cursor:not-allowed;box-shadow:none}
-.gen-btn .rpl{
-  position:absolute;border-radius:50%;
-  background:rgba(3,5,10,.3);
-  transform:scale(0);animation:rplOut .6s ease-out forwards;pointer-events:none;
+.gen-btn:disabled{opacity:.15;cursor:not-allowed;box-shadow:none;filter:none}
+.gen-btn-icon{
+  width:24px;height:24px;background:rgba(2,4,8,.2);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
-@keyframes rplOut{to{transform:scale(4);opacity:0}}
-.gen-icon{
-  width:22px;height:22px;background:rgba(3,5,10,.2);
-  border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.gen-icon svg{width:12px;height:12px}
+.gen-btn-icon svg{width:13px;height:13px}
 
-/* ══════ LOADING ══════ */
+/* ripple */
+.rpl{
+  position:absolute;border-radius:50%;
+  background:rgba(2,4,8,.25);
+  transform:scale(0);animation:rplAnim .6s ease-out forwards;pointer-events:none;
+}
+@keyframes rplAnim{to{transform:scale(5);opacity:0}}
+
+/* ═══ LOADING ═══ */
 .loading{
   display:none;position:fixed;inset:0;z-index:800;
-  background:rgba(3,5,10,.94);backdrop-filter:blur(20px);
+  background:rgba(2,4,8,.95);backdrop-filter:blur(24px);
   align-items:center;justify-content:center;flex-direction:column;gap:28px;
 }
-.loading.show{display:flex;animation:fadeIn .25s ease}
+.loading.show{display:flex;animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.spin-wrap{position:relative;width:76px;height:76px}
-.ring-o{position:absolute;inset:0;border-radius:50%;border:2px solid var(--rim);border-top-color:var(--gold);animation:spin .7s linear infinite}
-.ring-i{position:absolute;inset:10px;border-radius:50%;border:1px solid rgba(201,162,39,.15);border-bottom-color:rgba(255,140,0,.5);animation:spin .95s linear infinite reverse}
-.ring-core{
+.spin-rig{position:relative;width:80px;height:80px}
+.ring-a{
+  position:absolute;inset:0;border-radius:50%;
+  border:2px solid transparent;border-top-color:var(--gold);
+  animation:spin .65s linear infinite;
+}
+.ring-b{
+  position:absolute;inset:10px;border-radius:50%;
+  border:1.5px solid transparent;border-bottom-color:rgba(255,115,0,.5);
+  animation:spin .9s linear infinite reverse;
+}
+.ring-c{
   position:absolute;inset:20px;border-radius:50%;
-  background:radial-gradient(circle,rgba(201,162,39,.2),transparent);
-  animation:corePulse 1.5s ease-in-out infinite;
+  background:radial-gradient(circle,rgba(245,166,35,.18) 0%,transparent);
+  animation:pulseCore 1.4s ease-in-out infinite;
 }
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes corePulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
-.load-msg{font-family:var(--mono);font-size:12px;color:var(--sub);letter-spacing:.1em}
-.load-bar{width:240px;height:2px;background:var(--rim);border-radius:99px;overflow:hidden}
-.load-fill{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:99px;transition:width .4s var(--smooth);box-shadow:0 0 8px rgba(201,162,39,.6)}
+@keyframes pulseCore{0%,100%{transform:scale(.7);opacity:.3}50%{transform:scale(1.15);opacity:1}}
+.load-label{font-family:var(--mono);font-size:11px;color:var(--sub);letter-spacing:.12em}
+.load-track{width:220px;height:2px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.load-prog{height:100%;width:0;border-radius:99px;transition:width .4s ease;
+  background:linear-gradient(90deg,var(--gold),var(--gold2));
+  box-shadow:0 0 10px rgba(245,166,35,.6);}
 
-/* ══════ RESULT ══════ */
+/* ═══ RESULT ═══ */
 .result{display:none}
-.result.show{display:block;animation:resultIn .5s var(--smooth)}
-@keyframes resultIn{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+.result.show{display:block;animation:resultReveal .5s ease}
+@keyframes resultReveal{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+.div-sep{
+  height:1px;margin:28px 0;
+  background:linear-gradient(90deg,transparent,rgba(245,166,35,.15),transparent);
+}
 
 /* result header */
 .r-head{
-  background:linear-gradient(145deg,var(--panel),var(--lift));
+  background:linear-gradient(160deg,rgba(12,18,32,.95),rgba(8,13,24,.98));
   border:1px solid var(--rim);border-radius:20px;
-  padding:28px;margin-bottom:12px;
+  padding:28px 24px;margin-bottom:10px;
   position:relative;overflow:hidden;
 }
-.r-head::after{
+.r-head::before{
   content:'';position:absolute;top:0;left:0;right:0;height:3px;
   background:linear-gradient(90deg,var(--gold),var(--gold2),var(--ember));
-  animation:barIn .7s var(--smooth);
+  animation:barReveal .8s ease forwards;transform-origin:left;
 }
-@keyframes barIn{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1)}}
-.rh-glow{
-  position:absolute;top:-50px;left:-50px;width:240px;height:240px;
-  background:radial-gradient(circle,rgba(201,162,39,.07),transparent 65%);pointer-events:none;
+@keyframes barReveal{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.rh-orb{
+  position:absolute;top:-60px;right:-40px;width:220px;height:220px;
+  background:radial-gradient(circle,rgba(245,166,35,.06) 0%,transparent 65%);
+  pointer-events:none;
 }
-.r-device{font-family:var(--display);font-size:24px;font-weight:800;color:#fff;margin-bottom:12px}
-.r-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
-.r-tag{
-  font-family:var(--mono);font-size:10px;padding:4px 11px;
-  border-radius:7px;background:var(--lift);border:1px solid var(--rim);
+.r-device-name{font-family:var(--display);font-size:26px;font-weight:700;color:#fff;letter-spacing:.02em;margin-bottom:14px}
+.r-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.chip{
+  font-family:var(--mono);font-size:10px;padding:5px 12px;
+  border-radius:8px;border:1px solid var(--rim);background:rgba(12,18,32,.8);
   color:var(--sub);letter-spacing:.06em;
-  animation:tagIn .4s var(--smooth) both;
 }
-.r-tag:nth-child(1){animation-delay:.1s}
-.r-tag:nth-child(2){animation-delay:.17s}
-.r-tag:nth-child(3){animation-delay:.24s}
-@keyframes tagIn{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
-.r-tag.gold{background:rgba(201,162,39,.08);border-color:rgba(201,162,39,.22);color:var(--gold)}
-.r-issue{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:9px 16px;border-radius:9px;
-  background:rgba(212,43,43,.07);border:1px solid rgba(212,43,43,.18);
+.chip.gold{background:rgba(245,166,35,.08);border-color:rgba(245,166,35,.22);color:var(--gold)}
+.chip.fire{background:rgba(255,61,0,.07);border-color:rgba(255,61,0,.22);color:var(--ember)}
+.issue-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.issue-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:8px;
+  background:rgba(255,61,0,.07);border:1px solid rgba(255,61,0,.18);
   font-size:12px;font-weight:600;color:#f87171;
-  animation:tagIn .4s var(--smooth) .3s both;
 }
+.issue-chip::before{content:'⚠';font-size:10px}
 
 /* stats */
-.stat-row{display:flex;gap:10px;margin-bottom:12px}
-.stat-box{
-  flex:1;background:linear-gradient(145deg,var(--panel),var(--lift));
+.stat-grid{display:flex;gap:8px;margin-bottom:10px}
+.stat-card{
+  flex:1;
+  background:linear-gradient(160deg,rgba(12,18,32,.9),rgba(8,13,24,.95));
   border:1px solid var(--rim);border-radius:14px;
-  padding:14px;text-align:center;
-  animation:secIn .5s var(--smooth) both;transition:all .25s;
+  padding:16px 12px;text-align:center;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1),border-color .2s;
 }
-.stat-box:hover{border-color:var(--edge);transform:translateY(-2px)}
-.stat-box:nth-child(1){animation-delay:.05s}
-.stat-box:nth-child(2){animation-delay:.12s}
-.stat-box:nth-child(3){animation-delay:.19s}
-.stat-v{font-family:var(--mono);font-size:16px;font-weight:700;color:#fff}
-.stat-l{font-size:10px;color:var(--mute);margin-top:3px;letter-spacing:.05em}
+.stat-card:hover{transform:translateY(-3px);border-color:var(--edge)}
+.stat-val{font-family:var(--mono);font-size:17px;font-weight:700;color:#fff}
+.stat-lbl{font-size:10px;color:var(--mute);margin-top:4px;letter-spacing:.04em}
 
 /* analysis */
-.ana{
-  background:linear-gradient(145deg,var(--panel),var(--lift));
-  border:1px solid var(--rim);
-  border-left:3px solid var(--gold);
-  border-radius:16px;padding:20px 22px;margin-bottom:12px;
-  position:relative;overflow:hidden;
-  animation:secIn .5s var(--smooth) .1s both;
+.analysis-card{
+  background:linear-gradient(160deg,rgba(12,18,32,.9),rgba(8,13,24,.95));
+  border:1px solid var(--rim);border-left:3px solid var(--gold);
+  border-radius:16px;padding:20px 22px;margin-bottom:10px;
+  position:relative;
 }
-.ana::after{
-  content:'';position:absolute;top:0;right:0;bottom:0;width:80px;
-  background:linear-gradient(270deg,rgba(201,162,39,.03),transparent);pointer-events:none;
+.analysis-card::after{
+  content:'';position:absolute;top:0;right:0;bottom:0;width:100px;
+  background:linear-gradient(270deg,rgba(245,166,35,.025),transparent);
+  pointer-events:none;border-radius:0 16px 16px 0;
 }
-.ana-lbl{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--gold);letter-spacing:.12em;margin-bottom:10px}
-.ana-txt{font-size:13.5px;line-height:1.88;color:var(--sub)}
-.ana-txt strong{color:var(--txt);font-weight:500}
+.ana-label{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--gold);letter-spacing:.12em;margin-bottom:10px}
+.ana-body{font-size:13.5px;line-height:1.9;color:var(--sub)}
+.ana-body strong{color:var(--txt);font-weight:500}
 
 /* sens table */
-.sens-tbl{
-  background:linear-gradient(145deg,var(--panel),var(--lift));
+.sens-table{
+  background:linear-gradient(160deg,rgba(12,18,32,.9),rgba(8,13,24,.95));
   border:1px solid var(--rim);border-radius:20px;
-  overflow:hidden;margin-bottom:12px;
-  animation:secIn .5s var(--smooth) .15s both;
+  overflow:hidden;margin-bottom:10px;
 }
-.tbl-head{
-  display:grid;grid-template-columns:1fr 110px 72px;
-  padding:13px 20px;border-bottom:1px solid var(--rim);gap:8px;
-  background:rgba(201,162,39,.025);
+.tbl-header{
+  display:grid;grid-template-columns:1fr 90px;
+  padding:13px 20px;background:rgba(245,166,35,.025);
+  border-bottom:1px solid var(--rim);
 }
-.tbl-head span{
-  font-family:var(--mono);font-size:9.5px;font-weight:600;
-  color:var(--mute);letter-spacing:.1em;
-}
-.tbl-head span:last-child{text-align:right}
+.tbl-header span{font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--mute);letter-spacing:.1em}
+.tbl-header span:last-child{text-align:right}
+
 .s-row{
-  display:grid;grid-template-columns:1fr 110px 72px;
-  align-items:center;padding:17px 20px;
-  border-bottom:1px solid rgba(255,255,255,.03);gap:10px;
-  transition:background .12s;
-  opacity:0;transform:translateX(-10px);
-  animation:rowIn .4s var(--smooth) forwards;
+  display:grid;grid-template-columns:1fr 90px;
+  align-items:center;padding:16px 20px;
+  border-bottom:1px solid rgba(255,255,255,.03);
+  transition:background .1s;
+  opacity:0;transform:translateX(-12px);
+  animation:rowReveal .4s ease forwards;
 }
-@keyframes rowIn{to{opacity:1;transform:translateX(0)}}
+@keyframes rowReveal{to{opacity:1;transform:translateX(0)}}
 .s-row:last-child{border-bottom:none}
-.s-row:hover{background:rgba(255,255,255,.015)}
-.s-row.hl{
-  background:linear-gradient(90deg,rgba(201,162,39,.06),rgba(201,162,39,.02),transparent);
+.s-row:hover{background:rgba(255,255,255,.012)}
+
+/* highlighted row */
+.s-row.gold-row{
+  background:linear-gradient(90deg,rgba(245,166,35,.06),rgba(245,166,35,.02),transparent);
   border-left:3px solid var(--gold);padding-left:17px;
 }
-.row-n{font-size:13px;font-weight:600;color:var(--txt)}
-.row-s{font-size:11px;color:var(--mute);margin-top:2px}
-.row-bar{width:100%;height:3px;background:var(--rim);border-radius:99px;overflow:hidden;margin-top:7px}
-.row-fill{height:100%;width:0;border-radius:99px;transition:width 1.5s var(--smooth);
-  background:linear-gradient(90deg,var(--gold),var(--gold2));
-  box-shadow:0 0 6px rgba(201,162,39,.4);}
-.hl .row-fill{background:linear-gradient(90deg,var(--gold),var(--gold2),#fff176);box-shadow:0 0 12px rgba(201,162,39,.6)}
-.row-v{
-  font-family:var(--mono);font-size:26px;font-weight:700;
+.row-name{font-size:13.5px;font-weight:600;color:var(--txt)}
+.row-sub{font-size:11px;color:var(--mute);margin-top:2px}
+.row-bar-wrap{width:100%;height:3px;background:rgba(255,255,255,.05);border-radius:99px;overflow:hidden;margin-top:8px}
+.row-bar-fill{height:100%;width:0;border-radius:99px;transition:width 1.6s cubic-bezier(.23,1,.32,1);
+  background:linear-gradient(90deg,var(--gold),var(--gold2));}
+.gold-row .row-bar-fill{background:linear-gradient(90deg,var(--gold),var(--gold2),#ffe066);box-shadow:0 0 10px rgba(245,166,35,.5)}
+.row-val{
+  font-family:var(--mono);font-size:28px;font-weight:700;
   color:#fff;text-align:right;
-  transition:all .3s var(--smooth);
+  transition:all .3s cubic-bezier(.23,1,.32,1);
 }
-.hl .row-v{
+.gold-row .row-val{
   color:var(--gold);
-  text-shadow:0 0 30px rgba(201,162,39,.55);
-  filter:drop-shadow(0 0 8px rgba(201,162,39,.3));
+  text-shadow:0 0 28px rgba(245,166,35,.5);
+  filter:drop-shadow(0 0 6px rgba(245,166,35,.3));
 }
-.row-v.flash{animation:numFlash .32s ease}
-@keyframes numFlash{0%{transform:scale(1.18)}100%{transform:scale(1)}}
+.row-val.flash{animation:numFlash .3s ease}
+@keyframes numFlash{0%{transform:scale(1.2)}100%{transform:scale(1)}}
 
 /* tips */
-.tips{
-  background:linear-gradient(145deg,var(--panel),var(--lift));
+.tips-card{
+  background:linear-gradient(160deg,rgba(12,18,32,.9),rgba(8,13,24,.95));
   border:1px solid var(--rim);border-radius:16px;
-  padding:20px 22px;margin-bottom:12px;
-  animation:secIn .5s var(--smooth) .2s both;
+  padding:20px 22px;margin-bottom:10px;
 }
-.tips-ttl{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--sub);letter-spacing:.1em;margin-bottom:14px}
-.tips-list{list-style:none;display:flex;flex-direction:column;gap:13px}
+.tips-label{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--sub);letter-spacing:.1em;margin-bottom:16px}
+.tips-list{list-style:none;display:flex;flex-direction:column;gap:14px}
 .tips-list li{
-  font-size:13px;color:var(--sub);display:flex;gap:12px;
-  line-height:1.7;align-items:flex-start;
-  animation:tipIn .4s var(--smooth) both;
+  font-size:13px;color:var(--sub);line-height:1.75;
+  display:flex;align-items:flex-start;gap:12px;
+  animation:tipReveal .4s ease both;
 }
-@keyframes tipIn{from{opacity:0;transform:translateX(-7px)}to{opacity:1;transform:translateX(0)}}
-.tip-d{
-  width:5px;height:5px;border-radius:50%;
-  background:var(--gold);flex-shrink:0;margin-top:7px;opacity:.6;
-  box-shadow:0 0 5px rgba(201,162,39,.5);
+@keyframes tipReveal{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.tip-bullet{
+  width:5px;height:5px;border-radius:50%;background:var(--gold);
+  flex-shrink:0;margin-top:7px;opacity:.65;
+  box-shadow:0 0 6px rgba(245,166,35,.5);
 }
-.div-line{height:1px;background:linear-gradient(90deg,transparent,var(--edge),transparent);margin:28px 0}
-.r-note{font-family:var(--mono);font-size:10.5px;color:var(--mute);line-height:1.8;text-align:center;margin-bottom:20px}
+
+.r-note{
+  font-family:var(--mono);font-size:10.5px;color:var(--mute);
+  line-height:1.85;text-align:center;margin-bottom:20px;
+}
+
 .reset-btn{
-  width:100%;padding:16px;background:transparent;
-  border:1px solid var(--edge);color:var(--sub);
-  border-radius:13px;font-family:var(--body);font-size:13px;font-weight:600;
+  width:100%;padding:17px;background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);color:var(--sub);
+  border-radius:14px;font-family:var(--body);font-size:13px;font-weight:600;
   cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;
-  transition:all .25s var(--smooth);position:relative;overflow:hidden;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  position:relative;overflow:hidden;
 }
 .reset-btn::before{
   content:'';position:absolute;inset:0;
-  background:rgba(201,162,39,.05);
-  transform:scaleX(0);transform-origin:left;transition:transform .3s var(--smooth);
+  background:rgba(245,166,35,.05);
+  transform:scaleX(0);transform-origin:left;transition:transform .3s ease;
 }
-.reset-btn:hover{border-color:rgba(201,162,39,.35);color:var(--gold)}
+.reset-btn:hover{border-color:rgba(245,166,35,.3);color:var(--gold);transform:translateY(-2px)}
 .reset-btn:hover::before{transform:scaleX(1)}
 .reset-btn:active{transform:scale(.98)}
 
+/* scrollbar */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--edge);border-radius:99px}
-::-webkit-scrollbar-thumb:hover{background:rgba(201,162,39,.4)}
+::-webkit-scrollbar-thumb{background:rgba(245,166,35,.2);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:rgba(245,166,35,.4)}
 .ac-drop::-webkit-scrollbar{width:3px}
-@media(max-width:480px){.r-device{font-size:20px}.row-v{font-size:21px}.logo-name{font-size:30px}.wrap{padding:0 12px 140px}}
+
+@media(max-width:480px){
+  .r-device-name{font-size:21px}
+  .row-val{font-size:22px}
+  .logo-name{font-size:36px}
+  .wrap{padding:0 12px 160px}
+}
 </style>
 </head>
 <body>
 
-<!-- WELCOME GATE -->
+<!-- GATE -->
 <div id="gate">
   <div class="gate-box">
-    <div class="gate-icon">
-      <div class="gate-ring"></div>
-      <div class="gate-inner">
-        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      </div>
+    <div class="gate-glow"></div>
+    <div class="gate-diamond">
+      <svg width="26" height="26" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
     </div>
-    <div class="gate-title">Xin chào đến với<br><span class="hl">Hệ Thống SensGen</span></div>
-    <p class="gate-desc">Tạo độ nhạy Free Fire <strong>tự động theo dòng máy</strong> của bạn.<br>Phân tích chip · màn hình · vấn đề aim cá nhân.</p>
+    <div class="gate-title">Xin chào đến với<br><span class="hl">SensGen System</span></div>
+    <p class="gate-desc">Tạo độ nhạy <strong>Free Fire</strong> cá nhân hoá theo từng dòng máy.<br>Phân tích chip · màn hình · vấn đề aim.</p>
     <div class="gate-actions">
-      <button class="btn-ok" onclick="closeGate()">
+      <button class="btn-enter" onclick="closeGate()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-        OK — Vào hệ thống
+        Vào hệ thống
       </button>
       <a class="btn-admin" href="https://zalo.me/g/kcxhjyespoj6yty7zymw" target="_blank" rel="noopener">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Vào Box Admin
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Box Admin
       </a>
       <button class="btn-skip" onclick="closeGate()">Bỏ qua</button>
     </div>
   </div>
 </div>
 
-<!-- AMBIENT BG -->
+<!-- AMBIENT -->
 <div class="bg-canvas">
-  <div class="nb nb1"></div><div class="nb nb2"></div><div class="nb nb3"></div>
-  <div class="stars" id="stars"></div>
-  <div class="grid-bg"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="hex-grid"></div>
   <div class="scan"></div>
-  <div class="pts" id="pts"></div>
+  <div id="stars"></div>
 </div>
 
 <!-- LOADING -->
 <div class="loading" id="loading">
-  <div class="spin-wrap">
-    <div class="ring-o"></div><div class="ring-i"></div><div class="ring-core"></div>
+  <div class="spin-rig">
+    <div class="ring-a"></div>
+    <div class="ring-b"></div>
+    <div class="ring-c"></div>
   </div>
-  <div class="load-msg" id="lmsg">scanning device...</div>
-  <div class="load-bar"><div class="load-fill" id="lfill"></div></div>
+  <div class="load-label" id="lmsg">scanning device...</div>
+  <div class="load-track"><div class="load-prog" id="lprog"></div></div>
 </div>
 
 <div class="wrap">
   <div class="header">
-    <div class="logo-lockup">
-      <div class="logo-mark">
-        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    <div class="ff-badge">
+      <div class="ff-badge-dot"></div>
+      FREE FIRE · SENSITIVITY OPTIMIZER
+    </div>
+    <div class="logo-row">
+      <div class="logo-gem">
+        <svg viewBox="0 0 24 24" width="22" height="22"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       </div>
       <div class="logo-name">SENS<em>GEN</em></div>
     </div>
-    <div class="header-sub">Công cụ tối ưu độ nhạy chuẩn cho từng máy</div>
-    <div class="ff-pill">
-      <div class="ff-dot"></div>FREE FIRE · SENSITIVITY OPTIMIZER
-    </div>
+    <div class="header-tagline">Độ nhạy chuẩn theo máy · Tối ưu Free Fire</div>
   </div>
 
-  <div class="section">
-    <div class="section-label">Hệ điều hành</div>
+  <!-- INPUT SECTION -->
+  <div class="card">
+    <div class="card-top-line"></div>
+    <div class="section-lbl"><span class="lbl-line"></span>HỆ ĐIỀU HÀNH</div>
     <div class="os-row">
       <button class="os-btn active" id="iosBtn" onclick="setOS('ios')">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
         <span>iOS / iPadOS</span>
       </button>
-      <button class="os-btn" id="dBtn" onclick="setOS('android')">
+      <button class="os-btn" id="andBtn" onclick="setOS('android')">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48A5.84 5.84 0 0 0 12 1.5c-.96 0-1.86.23-2.66.63L7.88.65c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.3 1.3C7.14 3.53 6 5.11 6 7h12c0-1.89-1.14-3.47-2.47-4.84zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/></svg>
         <span>Android</span>
       </button>
     </div>
-    <div class="section-label" style="margin-bottom:12px">Tên thiết bị</div>
+
+    <div class="section-lbl" style="margin-bottom:12px"><span class="lbl-line"></span>TÊN THIẾT BỊ</div>
     <div class="ac-wrap">
-      <svg class="ac-search-ico" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <svg class="ac-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input class="ac-field" id="devIn"
-        placeholder="Nhập tên máy... (vd: iPhone 16 Pro, Redmi Note 14 Pro)"
+        placeholder="Nhập tên máy... vd: iPhone 16 Pro, Redmi Note 14 Pro"
         autocomplete="off" autocorrect="off" spellcheck="false"
-        oninput="onInp()" onfocus="onFoc()" onkeydown="onKey(event)">
-      <button class="ac-x" id="acX" onclick="clearIn()">
+        oninput="onInput()" onfocus="onFocus()" onkeydown="onKey(event)">
+      <button class="ac-clear" id="acClear" onclick="clearInput()">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
       <div class="ac-drop" id="acDrop"></div>
@@ -723,50 +733,65 @@ body{
     </div>
   </div>
 
+  <!-- ISSUES -->
   <div class="issues-section" id="issuesEl">
-    <div class="section">
-      <div class="section-label">Vấn đề aim gặp phải</div>
+    <div class="card">
+      <div class="card-top-line"></div>
+      <div class="section-lbl"><span class="lbl-line"></span>VẤN ĐỀ AIM GẶP PHẢI <span style="color:var(--gold);margin-left:4px;font-size:9px">(chọn 1 hoặc nhiều)</span></div>
       <div class="issue-grid" id="issueGrid"></div>
     </div>
   </div>
 
+  <!-- GENERATE -->
   <div class="gen-wrap">
     <button class="gen-btn" id="genBtn" onclick="generate()" disabled>
-      <div class="gen-icon">
+      <div class="gen-btn-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       </div>
-      Phân tích &amp; tạo độ nhạy Free Fire
+      Phân tích &amp; Tạo độ nhạy Free Fire
     </button>
   </div>
 
+  <!-- RESULT -->
   <div class="result" id="result">
-    <div class="div-line"></div>
+    <div class="div-sep"></div>
+
     <div class="r-head">
-      <div class="rh-glow"></div>
-      <div class="r-device" id="rDev">–</div>
-      <div class="r-tags">
-        <span class="r-tag" id="rOS">–</span>
-        <span class="r-tag" id="rTier">–</span>
-        <span class="r-tag gold">⚡ FREE FIRE</span>
+      <div class="rh-orb"></div>
+      <div class="r-device-name" id="rDevice">–</div>
+      <div class="r-chips">
+        <span class="chip" id="rOS">–</span>
+        <span class="chip gold" id="rTier">–</span>
+        <span class="chip fire">⚡ FREE FIRE</span>
       </div>
-      <div class="r-issue" id="rIssue">–</div>
+      <div class="issue-chips" id="rIssues"></div>
     </div>
-    <div class="stat-row" id="statRow"></div>
-    <div class="ana">
-      <div class="ana-lbl">📊 PHÂN TÍCH AIM</div>
-      <div class="ana-txt" id="rAna">–</div>
+
+    <div class="stat-grid" id="statGrid"></div>
+
+    <div class="analysis-card">
+      <div class="ana-label">📊 PHÂN TÍCH AIM</div>
+      <div class="ana-body" id="anaBody">–</div>
     </div>
-    <div class="sens-tbl">
-      <div class="tbl-head">
-        <span>CHẾ ĐỘ NGẮM</span><span></span><span>ĐỘ NHẠY</span>
+
+    <div class="sens-table">
+      <div class="tbl-header">
+        <span>CHẾ ĐỘ NGẮM</span>
+        <span>ĐỘ NHẠY</span>
       </div>
       <div id="sensRows"></div>
     </div>
-    <div class="tips">
-      <div class="tips-ttl">💡 GỢI Ý TINH CHỈNH</div>
+
+    <div class="tips-card">
+      <div class="tips-label">💡 GỢI Ý TINH CHỈNH THEO VẤN ĐỀ CỦA BẠN</div>
       <ul class="tips-list" id="tipsList"></ul>
     </div>
-    <div class="r-note">Giá trị tính theo chip · màn hình · tình trạng aim<br>Thử và điều chỉnh ±5 nếu cần · Mỗi ngón tay mỗi khác</div>
+
+    <div class="r-note">
+      Giá trị được tính theo chip · màn hình · loại vấn đề aim<br>
+      Thử và điều chỉnh ±3–5 nếu cần · Mỗi ngón tay mỗi khác
+    </div>
+
     <button class="reset-btn" onclick="doReset()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.56"/></svg>
       Tạo lại
@@ -775,47 +800,39 @@ body{
 </div>
 
 <script>
-/* ── WELCOME ── */
+/* ── GATE ── */
 function closeGate(){
   const g=document.getElementById('gate');
-  g.style.transition='opacity .45s ease, transform .45s ease';
-  g.style.opacity='0'; g.style.transform='scale(1.05)';
-  setTimeout(()=>g.style.display='none',460);
+  g.style.transition='opacity .4s ease,transform .4s ease';
+  g.style.opacity='0';g.style.transform='scale(1.04)';
+  setTimeout(()=>g.style.display='none',420);
 }
 
-/* ── AMBIENT ── */
-(function(){
-  // stars
-  const s=document.getElementById('stars');
-  for(let i=0;i<120;i++){
-    const el=document.createElement('div');
-    el.className='star';
-    const sz=Math.random()*2.2+.4;
-    el.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${Math.random()*5+3}s;animation-delay:${Math.random()*8}s`;
-    s.appendChild(el);
-  }
-  // particles
-  const p=document.getElementById('pts');
-  for(let i=0;i<25;i++){
-    const el=document.createElement('div');
-    el.className='pt';
-    const sz=Math.random()*4+1.5;
-    el.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;background:rgba(${Math.random()>.5?'201,162,39':'255,78,0'},${Math.random()*.35+.1});animation-duration:${Math.random()*20+14}s;animation-delay:${Math.random()*15}s`;
-    p.appendChild(el);
+/* ── STARS ── */
+(()=>{
+  const c=document.getElementById('stars');
+  for(let i=0;i<130;i++){
+    const el=document.createElement('div');el.className='star';
+    const s=Math.random()*2.5+.4;
+    Object.assign(el.style,{
+      width:s+'px',height:s+'px',
+      top:Math.random()*100+'%',left:Math.random()*100+'%',
+      animationDuration:Math.random()*6+3+'s',
+      animationDelay:Math.random()*10+'s'
+    });
+    c.appendChild(el);
   }
 })();
 
-/* ── RIPPLE ── */
+/* ── RIPPLE on gen btn ── */
 document.getElementById('genBtn').addEventListener('click',function(e){
   const r=document.createElement('span');r.className='rpl';
-  const rc=this.getBoundingClientRect(),sz=Math.max(rc.width,rc.height);
-  r.style.cssText=`width:${sz}px;height:${sz}px;left:${e.clientX-rc.left-sz/2}px;top:${e.clientY-rc.top-sz/2}px`;
+  const rc=this.getBoundingClientRect(),s=Math.max(rc.width,rc.height);
+  Object.assign(r.style,{width:s+'px',height:s+'px',left:e.clientX-rc.left-s/2+'px',top:e.clientY-rc.top-s/2+'px'});
   this.appendChild(r);setTimeout(()=>r.remove(),700);
 });
 
-/* ─────────────────────────────────────────────
-   DEVICE DATABASE — iOS + 900+ Android devices
-   ───────────────────────────────────────────── */
+/* ── DATA ── */
 const DB={
 ios:[
   "iPhone 6","iPhone 6 Plus","iPhone 6s","iPhone 6s Plus","iPhone SE (1st Gen)",
@@ -837,10 +854,8 @@ ios:[
   "iPad Pro 12.9 M1","iPad Pro 12.9 M2","iPad Pro 12.9 M4","iPad Pro 13 M4","iPad Pro 13 M5"
 ],
 android:[
-  // ── Samsung Galaxy S series ──
   "Samsung Galaxy S6","Samsung Galaxy S6 Edge","Samsung Galaxy S6 Edge+",
-  "Samsung Galaxy S7","Samsung Galaxy S7 Edge","Samsung Galaxy S7 Active",
-  "Samsung Galaxy S8","Samsung Galaxy S8+","Samsung Galaxy S8 Active",
+  "Samsung Galaxy S7","Samsung Galaxy S7 Edge","Samsung Galaxy S8","Samsung Galaxy S8+",
   "Samsung Galaxy S9","Samsung Galaxy S9+",
   "Samsung Galaxy S10e","Samsung Galaxy S10","Samsung Galaxy S10+","Samsung Galaxy S10 5G","Samsung Galaxy S10 Lite",
   "Samsung Galaxy S20","Samsung Galaxy S20+","Samsung Galaxy S20 Ultra","Samsung Galaxy S20 FE","Samsung Galaxy S20 FE 5G",
@@ -850,436 +865,225 @@ android:[
   "Samsung Galaxy S24","Samsung Galaxy S24+","Samsung Galaxy S24 Ultra","Samsung Galaxy S24 FE",
   "Samsung Galaxy S25","Samsung Galaxy S25+","Samsung Galaxy S25 Ultra","Samsung Galaxy S25 Edge",
   "Samsung Galaxy S26","Samsung Galaxy S26+","Samsung Galaxy S26 Ultra",
-  // ── Samsung Note ──
-  "Samsung Galaxy Note 8","Samsung Galaxy Note 9",
-  "Samsung Galaxy Note 10","Samsung Galaxy Note 10+","Samsung Galaxy Note 10 Lite",
-  "Samsung Galaxy Note 20","Samsung Galaxy Note 20 Ultra",
-  // ── Samsung Z Fold / Flip ──
-  "Samsung Galaxy Z Fold2","Samsung Galaxy Z Fold3","Samsung Galaxy Z Fold4",
-  "Samsung Galaxy Z Fold5","Samsung Galaxy Z Fold6","Samsung Galaxy Z Fold7",
-  "Samsung Galaxy Z Flip3","Samsung Galaxy Z Flip4","Samsung Galaxy Z Flip5",
-  "Samsung Galaxy Z Flip6","Samsung Galaxy Z Flip7",
-  // ── Samsung A series ──
-  "Samsung Galaxy A02","Samsung Galaxy A02s","Samsung Galaxy A03","Samsung Galaxy A03s","Samsung Galaxy A03 Core",
-  "Samsung Galaxy A04","Samsung Galaxy A04s","Samsung Galaxy A04e",
+  "Samsung Galaxy Note 8","Samsung Galaxy Note 9","Samsung Galaxy Note 10","Samsung Galaxy Note 10+","Samsung Galaxy Note 20","Samsung Galaxy Note 20 Ultra",
+  "Samsung Galaxy Z Fold2","Samsung Galaxy Z Fold3","Samsung Galaxy Z Fold4","Samsung Galaxy Z Fold5","Samsung Galaxy Z Fold6","Samsung Galaxy Z Fold7",
+  "Samsung Galaxy Z Flip3","Samsung Galaxy Z Flip4","Samsung Galaxy Z Flip5","Samsung Galaxy Z Flip6","Samsung Galaxy Z Flip7",
+  "Samsung Galaxy A02","Samsung Galaxy A02s","Samsung Galaxy A03","Samsung Galaxy A03s","Samsung Galaxy A04","Samsung Galaxy A04s",
   "Samsung Galaxy A05","Samsung Galaxy A05s","Samsung Galaxy A06",
-  "Samsung Galaxy A10","Samsung Galaxy A10s","Samsung Galaxy A10e",
-  "Samsung Galaxy A11","Samsung Galaxy A12","Samsung Galaxy A12 Nacho",
-  "Samsung Galaxy A13","Samsung Galaxy A13 5G","Samsung Galaxy A14","Samsung Galaxy A14 5G",
-  "Samsung Galaxy A15","Samsung Galaxy A15 5G","Samsung Galaxy A16","Samsung Galaxy A16 5G",
-  "Samsung Galaxy A17","Samsung Galaxy A17 5G",
-  "Samsung Galaxy A20","Samsung Galaxy A20s","Samsung Galaxy A20e",
-  "Samsung Galaxy A21","Samsung Galaxy A21s",
-  "Samsung Galaxy A22","Samsung Galaxy A22 5G",
-  "Samsung Galaxy A23","Samsung Galaxy A23 5G",
-  "Samsung Galaxy A24","Samsung Galaxy A24 5G","Samsung Galaxy A25 5G","Samsung Galaxy A26 5G",
-  "Samsung Galaxy A30","Samsung Galaxy A30s",
-  "Samsung Galaxy A31","Samsung Galaxy A32","Samsung Galaxy A32 5G",
-  "Samsung Galaxy A33 5G","Samsung Galaxy A34 5G","Samsung Galaxy A35 5G","Samsung Galaxy A36 5G",
-  "Samsung Galaxy A40","Samsung Galaxy A41","Samsung Galaxy A42 5G",
-  "Samsung Galaxy A50","Samsung Galaxy A50s",
-  "Samsung Galaxy A51","Samsung Galaxy A51 5G",
-  "Samsung Galaxy A52","Samsung Galaxy A52 5G","Samsung Galaxy A52s 5G",
-  "Samsung Galaxy A53 5G","Samsung Galaxy A54 5G","Samsung Galaxy A55 5G","Samsung Galaxy A56 5G",
-  "Samsung Galaxy A60","Samsung Galaxy A70","Samsung Galaxy A70s",
-  "Samsung Galaxy A71","Samsung Galaxy A71 5G",
-  "Samsung Galaxy A72","Samsung Galaxy A73 5G","Samsung Galaxy A80","Samsung Galaxy A90 5G",
-  // ── Samsung M series ──
-  "Samsung Galaxy M02","Samsung Galaxy M02s","Samsung Galaxy M03","Samsung Galaxy M03s",
-  "Samsung Galaxy M04","Samsung Galaxy M05","Samsung Galaxy M06",
-  "Samsung Galaxy M10","Samsung Galaxy M11","Samsung Galaxy M12","Samsung Galaxy M13","Samsung Galaxy M14","Samsung Galaxy M15","Samsung Galaxy M16",
-  "Samsung Galaxy M20","Samsung Galaxy M21","Samsung Galaxy M21 2021","Samsung Galaxy M22","Samsung Galaxy M23",
-  "Samsung Galaxy M30","Samsung Galaxy M30s","Samsung Galaxy M31","Samsung Galaxy M31s",
-  "Samsung Galaxy M32","Samsung Galaxy M33","Samsung Galaxy M34","Samsung Galaxy M35","Samsung Galaxy M36",
-  "Samsung Galaxy M40","Samsung Galaxy M42 5G","Samsung Galaxy M51",
+  "Samsung Galaxy A10","Samsung Galaxy A10s","Samsung Galaxy A11","Samsung Galaxy A12","Samsung Galaxy A13","Samsung Galaxy A13 5G",
+  "Samsung Galaxy A14","Samsung Galaxy A14 5G","Samsung Galaxy A15","Samsung Galaxy A15 5G","Samsung Galaxy A16","Samsung Galaxy A16 5G",
+  "Samsung Galaxy A23 5G","Samsung Galaxy A24","Samsung Galaxy A25 5G","Samsung Galaxy A26 5G",
+  "Samsung Galaxy A32","Samsung Galaxy A33 5G","Samsung Galaxy A34 5G","Samsung Galaxy A35 5G","Samsung Galaxy A36 5G",
+  "Samsung Galaxy A52","Samsung Galaxy A52 5G","Samsung Galaxy A52s 5G","Samsung Galaxy A53 5G","Samsung Galaxy A54 5G","Samsung Galaxy A55 5G","Samsung Galaxy A56 5G",
+  "Samsung Galaxy A73 5G","Samsung Galaxy A72","Samsung Galaxy A71","Samsung Galaxy A70",
+  "Samsung Galaxy M12","Samsung Galaxy M13","Samsung Galaxy M14","Samsung Galaxy M15","Samsung Galaxy M16",
+  "Samsung Galaxy M23","Samsung Galaxy M33","Samsung Galaxy M34","Samsung Galaxy M35","Samsung Galaxy M36",
   "Samsung Galaxy M52 5G","Samsung Galaxy M53 5G","Samsung Galaxy M54 5G","Samsung Galaxy M55 5G","Samsung Galaxy M56 5G",
-  "Samsung Galaxy M62",
-  // ── Samsung F series ──
-  "Samsung Galaxy F02s","Samsung Galaxy F04","Samsung Galaxy F05",
-  "Samsung Galaxy F12","Samsung Galaxy F13","Samsung Galaxy F14 5G","Samsung Galaxy F15 5G","Samsung Galaxy F16 5G",
-  "Samsung Galaxy F22","Samsung Galaxy F23","Samsung Galaxy F23 5G",
-  "Samsung Galaxy F34 5G","Samsung Galaxy F35 5G","Samsung Galaxy F36 5G",
-  "Samsung Galaxy F42 5G","Samsung Galaxy F54 5G","Samsung Galaxy F55 5G",
-  // ── Samsung J series ──
-  "Samsung Galaxy J2 Prime","Samsung Galaxy J4","Samsung Galaxy J4+",
-  "Samsung Galaxy J6","Samsung Galaxy J6+","Samsung Galaxy J7","Samsung Galaxy J7 Prime","Samsung Galaxy J7 Pro","Samsung Galaxy J8",
-  // ── Xiaomi / MIUI ──
-  "Xiaomi Mi 9","Xiaomi Mi 9T","Xiaomi Mi 9T Pro",
-  "Xiaomi Mi 10","Xiaomi Mi 10 Pro","Xiaomi Mi 10T","Xiaomi Mi 10T Pro","Xiaomi Mi 10T Lite","Xiaomi Mi 10i","Xiaomi Mi 10s",
-  "Xiaomi Mi 11","Xiaomi Mi 11 Lite","Xiaomi Mi 11 Lite 5G","Xiaomi Mi 11 Lite NE 5G","Xiaomi Mi 11 Pro","Xiaomi Mi 11 Ultra","Xiaomi Mi 11i",
-  "Xiaomi 11T","Xiaomi 11T Pro","Xiaomi 11 Lite 5G NE",
-  "Xiaomi 12","Xiaomi 12 Pro","Xiaomi 12 Lite","Xiaomi 12 Ultra","Xiaomi 12T","Xiaomi 12T Pro","Xiaomi 12S","Xiaomi 12S Pro","Xiaomi 12S Ultra",
-  "Xiaomi 13","Xiaomi 13 Pro","Xiaomi 13 Lite","Xiaomi 13 Ultra","Xiaomi 13T","Xiaomi 13T Pro","Xiaomi 13C","Xiaomi 13C 5G",
-  "Xiaomi 14","Xiaomi 14 Pro","Xiaomi 14 Lite","Xiaomi 14 Ultra","Xiaomi 14T","Xiaomi 14T Pro","Xiaomi 14C","Xiaomi 14 Civi",
+  "Xiaomi Mi 10","Xiaomi Mi 10 Pro","Xiaomi Mi 10T","Xiaomi Mi 10T Pro","Xiaomi Mi 10T Lite",
+  "Xiaomi Mi 11","Xiaomi Mi 11 Lite","Xiaomi Mi 11 Lite 5G","Xiaomi Mi 11 Pro","Xiaomi Mi 11 Ultra",
+  "Xiaomi 11T","Xiaomi 11T Pro",
+  "Xiaomi 12","Xiaomi 12 Pro","Xiaomi 12 Lite","Xiaomi 12 Ultra","Xiaomi 12T","Xiaomi 12T Pro",
+  "Xiaomi 13","Xiaomi 13 Pro","Xiaomi 13 Lite","Xiaomi 13 Ultra","Xiaomi 13T","Xiaomi 13T Pro","Xiaomi 13C",
+  "Xiaomi 14","Xiaomi 14 Pro","Xiaomi 14 Lite","Xiaomi 14 Ultra","Xiaomi 14T","Xiaomi 14T Pro","Xiaomi 14C",
   "Xiaomi 15","Xiaomi 15 Pro","Xiaomi 15 Ultra","Xiaomi 15T","Xiaomi 15T Pro","Xiaomi 15C",
-  "Xiaomi Mix Fold 2","Xiaomi Mix Fold 3","Xiaomi Mix Fold 4",
-  "Xiaomi Civi 2","Xiaomi Civi 3","Xiaomi Civi 4 Pro",
   "Xiaomi Pad 5","Xiaomi Pad 6","Xiaomi Pad 6 Pro","Xiaomi Pad 6s Pro",
-  // ── Redmi ──
-  "Redmi 9","Redmi 9A","Redmi 9C","Redmi 9C NFC","Redmi 9T","Redmi 9 Power","Redmi 9i","Redmi 9 Prime","Redmi 9AT",
-  "Redmi 10","Redmi 10A","Redmi 10C","Redmi 10 2022","Redmi 10 Prime","Redmi 10 Prime+",
-  "Redmi 11","Redmi 11 Prime","Redmi 11 Prime 5G",
-  "Redmi 12","Redmi 12 5G","Redmi 12C","Redmi 12R",
-  "Redmi 13","Redmi 13C","Redmi 13C 5G","Redmi 13 5G","Redmi 13R","Redmi 13R 5G",
-  "Redmi 14","Redmi 14C","Redmi 14C 5G","Redmi 14R 5G",
+  "Redmi 9","Redmi 9A","Redmi 9C","Redmi 9T","Redmi 10","Redmi 10A","Redmi 10C",
+  "Redmi 11","Redmi 11 Prime","Redmi 12","Redmi 12 5G","Redmi 12C",
+  "Redmi 13","Redmi 13C","Redmi 13C 5G","Redmi 13 5G","Redmi 14","Redmi 14C","Redmi 14C 5G",
   "Redmi 15","Redmi 15 5G","Redmi 15C","Redmi 15 Pro",
-  "Redmi Note 9","Redmi Note 9 Pro","Redmi Note 9 Pro Max","Redmi Note 9S","Redmi Note 9T","Redmi Note 9 Power",
-  "Redmi Note 10","Redmi Note 10 5G","Redmi Note 10S","Redmi Note 10 Pro","Redmi Note 10 Pro Max","Redmi Note 10T","Redmi Note 10 Lite",
-  "Redmi Note 11","Redmi Note 11 5G","Redmi Note 11S","Redmi Note 11S 5G","Redmi Note 11 Pro","Redmi Note 11 Pro 5G","Redmi Note 11 Pro+ 5G","Redmi Note 11T 5G","Redmi Note 11 SE","Redmi Note 11E","Redmi Note 11E Pro",
-  "Redmi Note 12","Redmi Note 12 5G","Redmi Note 12S","Redmi Note 12 Pro","Redmi Note 12 Pro 5G","Redmi Note 12 Pro+ 5G","Redmi Note 12 Turbo","Redmi Note 12 Explorer","Redmi Note 12R","Redmi Note 12 4G",
-  "Redmi Note 13","Redmi Note 13 5G","Redmi Note 13 Pro","Redmi Note 13 Pro 5G","Redmi Note 13 Pro+ 5G","Redmi Note 13R","Redmi Note 13R Pro","Redmi Note 13 Explorer",
-  "Redmi Note 14","Redmi Note 14 5G","Redmi Note 14 Pro","Redmi Note 14 Pro 5G","Redmi Note 14 Pro+ 5G","Redmi Note 14 Pro Ultra","Redmi Note 14R",
+  "Redmi Note 9","Redmi Note 9 Pro","Redmi Note 9S","Redmi Note 9T",
+  "Redmi Note 10","Redmi Note 10 5G","Redmi Note 10S","Redmi Note 10 Pro","Redmi Note 10 Pro Max",
+  "Redmi Note 11","Redmi Note 11 5G","Redmi Note 11S","Redmi Note 11 Pro","Redmi Note 11 Pro 5G",
+  "Redmi Note 12","Redmi Note 12 5G","Redmi Note 12S","Redmi Note 12 Pro","Redmi Note 12 Pro 5G","Redmi Note 12 Pro+ 5G","Redmi Note 12 Turbo",
+  "Redmi Note 13","Redmi Note 13 5G","Redmi Note 13 Pro","Redmi Note 13 Pro 5G","Redmi Note 13 Pro+ 5G",
+  "Redmi Note 14","Redmi Note 14 5G","Redmi Note 14 Pro","Redmi Note 14 Pro 5G","Redmi Note 14 Pro+ 5G","Redmi Note 14 Pro Ultra",
   "Redmi Note 15","Redmi Note 15 5G","Redmi Note 15 Pro","Redmi Note 15 Pro 5G","Redmi Note 15 Pro+ 5G",
   "Redmi K50","Redmi K50 Pro","Redmi K50 Ultra","Redmi K50 Gaming",
-  "Redmi K60","Redmi K60 Pro","Redmi K60 Ultra","Redmi K60E",
-  "Redmi K70","Redmi K70 Pro","Redmi K70 Ultra","Redmi K70E",
+  "Redmi K60","Redmi K60 Pro","Redmi K60 Ultra","Redmi K70","Redmi K70 Pro","Redmi K70 Ultra",
   "Redmi K80","Redmi K80 Pro","Redmi K80 Ultra",
-  // ── POCO ──
   "POCO F3","POCO F3 GT","POCO F4","POCO F4 GT","POCO F5","POCO F5 Pro",
   "POCO F6","POCO F6 Pro","POCO F7","POCO F7 Pro","POCO F7 Ultra",
-  "POCO X3","POCO X3 NFC","POCO X3 Pro","POCO X3 GT",
-  "POCO X4 Pro 5G","POCO X4 GT","POCO X4 NFC",
-  "POCO X5","POCO X5 Pro 5G","POCO X5 5G",
-  "POCO X6","POCO X6 5G","POCO X6 Pro","POCO X6 Neo",
-  "POCO X7","POCO X7 Pro","POCO X7 Neo",
-  "POCO M3","POCO M3 Pro 5G","POCO M4","POCO M4 Pro","POCO M4 Pro 5G","POCO M4 5G",
-  "POCO M5","POCO M5s","POCO M5 4G","POCO M6","POCO M6 Pro","POCO M6 Pro 5G","POCO M6 5G","POCO M6 4G",
-  "POCO M7","POCO M7 Pro 5G","POCO M7 5G",
-  "POCO C40","POCO C50","POCO C51","POCO C55","POCO C65","POCO C75","POCO C75 5G",
-  // ── OPPO Find X ──
-  "OPPO Find X3","OPPO Find X3 Pro","OPPO Find X3 Neo","OPPO Find X3 Lite",
-  "OPPO Find X5","OPPO Find X5 Pro","OPPO Find X5 Lite",
-  "OPPO Find X6","OPPO Find X6 Pro",
-  "OPPO Find X7","OPPO Find X7 Ultra","OPPO Find X7 Pro",
-  "OPPO Find X8","OPPO Find X8 Pro","OPPO Find X8 Ultra",
+  "POCO X3","POCO X3 NFC","POCO X3 Pro","POCO X4 Pro 5G","POCO X5","POCO X5 Pro 5G",
+  "POCO X6","POCO X6 5G","POCO X6 Pro","POCO X7","POCO X7 Pro","POCO X7 Neo",
+  "POCO M5","POCO M5s","POCO M6","POCO M6 Pro","POCO M6 Pro 5G","POCO M7","POCO M7 Pro 5G",
+  "POCO C65","POCO C75","POCO C75 5G",
+  "OPPO Find X5","OPPO Find X5 Pro","OPPO Find X6","OPPO Find X6 Pro",
+  "OPPO Find X7","OPPO Find X7 Ultra","OPPO Find X8","OPPO Find X8 Pro","OPPO Find X8 Ultra",
   "OPPO Find X9","OPPO Find X9 Pro",
-  // ── OPPO Reno ──
-  "OPPO Reno 4","OPPO Reno 4 Pro","OPPO Reno 4 F","OPPO Reno 4 Z 5G",
-  "OPPO Reno 5","OPPO Reno 5 Pro","OPPO Reno 5 Pro+","OPPO Reno 5 F","OPPO Reno 5 Z","OPPO Reno 5 Lite","OPPO Reno 5A",
-  "OPPO Reno 6","OPPO Reno 6 Pro","OPPO Reno 6 Pro+","OPPO Reno 6 Z","OPPO Reno 6 Lite",
-  "OPPO Reno 7","OPPO Reno 7 Pro","OPPO Reno 7 Z","OPPO Reno 7 Lite","OPPO Reno 7A",
-  "OPPO Reno 8","OPPO Reno 8 Pro","OPPO Reno 8 Pro+","OPPO Reno 8 Z","OPPO Reno 8 Lite","OPPO Reno 8 T","OPPO Reno 8 T 5G",
-  "OPPO Reno 9","OPPO Reno 9 Pro","OPPO Reno 9 Pro+","OPPO Reno 9 A",
-  "OPPO Reno 10","OPPO Reno 10 Pro","OPPO Reno 10 Pro+","OPPO Reno 10 F",
-  "OPPO Reno 11","OPPO Reno 11 Pro","OPPO Reno 11 F",
-  "OPPO Reno 12","OPPO Reno 12 Pro","OPPO Reno 12 F",
-  "OPPO Reno 13","OPPO Reno 13 Pro","OPPO Reno 13 F",
-  "OPPO Reno 14","OPPO Reno 14 Pro","OPPO Reno 15","OPPO Reno 15 Pro",
-  // ── OPPO A / K series ──
-  "OPPO A15","OPPO A15s","OPPO A16","OPPO A16s","OPPO A16k","OPPO A16e",
-  "OPPO A17","OPPO A17k","OPPO A18","OPPO A18 5G",
-  "OPPO A31","OPPO A32","OPPO A33","OPPO A35","OPPO A36",
-  "OPPO A52","OPPO A53","OPPO A53s","OPPO A54","OPPO A54s","OPPO A55","OPPO A56","OPPO A57","OPPO A57s","OPPO A57e",
-  "OPPO A58","OPPO A58x","OPPO A59","OPPO A59 5G",
-  "OPPO A72","OPPO A74","OPPO A74 5G","OPPO A75","OPPO A76","OPPO A77","OPPO A77s","OPPO A78","OPPO A78 5G","OPPO A79 5G",
-  "OPPO A91","OPPO A92","OPPO A93","OPPO A93s","OPPO A94","OPPO A95","OPPO A96","OPPO A97","OPPO A98",
-  "OPPO K9","OPPO K9 Pro","OPPO K9s","OPPO K9x",
-  "OPPO K10","OPPO K10 Pro","OPPO K10x","OPPO K10 5G",
-  "OPPO K11","OPPO K11x","OPPO K11 5G",
-  "OPPO K12","OPPO K12x","OPPO K12 Plus",
-  "OPPO K13","OPPO K13x",
-  // ── vivo X ──
-  "vivo X60","vivo X60 Pro","vivo X60 Pro+",
-  "vivo X70","vivo X70 Pro","vivo X70 Pro+",
-  "vivo X80","vivo X80 Pro","vivo X80 Lite",
-  "vivo X90","vivo X90 Pro","vivo X90 Pro+","vivo X90s",
-  "vivo X100","vivo X100 Pro","vivo X100 Ultra","vivo X100s","vivo X100s Pro",
-  "vivo X200","vivo X200 Pro","vivo X200 Ultra","vivo X200 Mini","vivo X200e",
+  "OPPO Reno 6","OPPO Reno 6 Pro","OPPO Reno 7","OPPO Reno 7 Pro","OPPO Reno 7 Z",
+  "OPPO Reno 8","OPPO Reno 8 Pro","OPPO Reno 8 T","OPPO Reno 8 T 5G",
+  "OPPO Reno 9","OPPO Reno 9 Pro","OPPO Reno 10","OPPO Reno 10 Pro","OPPO Reno 10 Pro+",
+  "OPPO Reno 11","OPPO Reno 11 Pro","OPPO Reno 12","OPPO Reno 12 Pro",
+  "OPPO Reno 13","OPPO Reno 13 Pro","OPPO Reno 14","OPPO Reno 14 Pro","OPPO Reno 15","OPPO Reno 15 Pro",
+  "OPPO A54","OPPO A54s","OPPO A55","OPPO A56","OPPO A57","OPPO A57s","OPPO A57e",
+  "OPPO A58","OPPO A59","OPPO A74","OPPO A74 5G","OPPO A76","OPPO A77","OPPO A77s","OPPO A78","OPPO A78 5G","OPPO A79 5G",
+  "vivo X80","vivo X80 Pro","vivo X90","vivo X90 Pro","vivo X90 Pro+",
+  "vivo X100","vivo X100 Pro","vivo X100 Ultra","vivo X200","vivo X200 Pro","vivo X200 Ultra","vivo X200 Mini",
   "vivo X300","vivo X300 Pro","vivo X300 Ultra",
-  // ── vivo V / S / Y ──
-  "vivo V20","vivo V20 Pro","vivo V20 SE",
-  "vivo V21","vivo V21e","vivo V21s",
-  "vivo V23","vivo V23e","vivo V23 5G","vivo V23 Pro",
-  "vivo V25","vivo V25e","vivo V25 Pro",
-  "vivo V27","vivo V27e","vivo V27 Pro","vivo V27s",
-  "vivo V29","vivo V29e","vivo V29 Pro","vivo V29 Lite",
-  "vivo V30","vivo V30e","vivo V30 Pro","vivo V30 Lite",
-  "vivo V40","vivo V40e","vivo V40 Pro","vivo V40 Lite","vivo V40 SE",
-  "vivo V50","vivo V50e","vivo V50 Pro","vivo V50 Lite",
-  "vivo V60","vivo V60 Pro",
-  "vivo S12","vivo S12 Pro","vivo S15","vivo S15 Pro","vivo S15e",
-  "vivo S16","vivo S16 Pro","vivo S16e",
-  "vivo S17","vivo S17 Pro","vivo S17t","vivo S17e",
-  "vivo S18","vivo S18 Pro","vivo S18e",
-  "vivo S19","vivo S19 Pro",
-  "vivo Y12","vivo Y12s","vivo Y12G","vivo Y12A",
-  "vivo Y15","vivo Y15s","vivo Y15A",
-  "vivo Y16","vivo Y17","vivo Y17s",
-  "vivo Y19","vivo Y20","vivo Y20s","vivo Y20G","vivo Y20A",
-  "vivo Y21","vivo Y21s","vivo Y21G","vivo Y21A","vivo Y21e","vivo Y21T",
-  "vivo Y22","vivo Y22s","vivo Y22G","vivo Y23","vivo Y27","vivo Y27s","vivo Y27 5G","vivo Y27 4G",
-  "vivo Y28","vivo Y28s","vivo Y28t","vivo Y28e",
-  "vivo Y30","vivo Y30 5G","vivo Y30G",
-  "vivo Y33","vivo Y33s","vivo Y33T","vivo Y33e",
-  "vivo Y35","vivo Y35+","vivo Y35 5G","vivo Y36","vivo Y36 5G",
-  "vivo Y38","vivo Y38 5G","vivo Y38m",
-  "vivo Y50","vivo Y51","vivo Y51A","vivo Y52","vivo Y52s","vivo Y52t","vivo Y53s",
-  "vivo Y55","vivo Y55s","vivo Y55 5G","vivo Y56","vivo Y56 5G","vivo Y57","vivo Y57e",
-  "vivo Y72","vivo Y73","vivo Y75","vivo Y75s","vivo Y76","vivo Y76s","vivo Y77","vivo Y77e",
-  "vivo Y91","vivo Y93","vivo Y95",
-  // ── realme ──
-  "realme 6","realme 6i","realme 6 Pro","realme 6s",
-  "realme 7","realme 7i","realme 7 Pro","realme 7 5G",
-  "realme 8","realme 8i","realme 8 Pro","realme 8 5G","realme 8s 5G",
-  "realme 9","realme 9i","realme 9 Pro","realme 9 Pro+","realme 9 5G","realme 9 Speed Edition",
-  "realme 10","realme 10 Pro","realme 10 Pro+","realme 10 5G","realme 10 4G","realme 10s",
-  "realme 11","realme 11 Pro","realme 11 Pro+","realme 11 5G","realme 11x 5G",
-  "realme 12","realme 12 Pro","realme 12 Pro+","realme 12 5G","realme 12x 5G","realme 12 Lite",
-  "realme 13","realme 13 Pro","realme 13 Pro+","realme 13 5G","realme 13 4G","realme 13 Lite",
-  "realme 14","realme 14 Pro","realme 14 Pro+","realme 14 5G","realme 14 Ultra","realme 14x",
-  "realme GT","realme GT Neo","realme GT Neo 2","realme GT Neo 2T","realme GT Neo 3","realme GT Neo 3T","realme GT Neo 5","realme GT Neo 5 SE","realme GT Neo 6","realme GT Neo 6 SE",
-  "realme GT 2","realme GT 2 Pro","realme GT 3","realme GT 5","realme GT 5 Pro","realme GT 5 240W",
+  "vivo V25","vivo V25 Pro","vivo V27","vivo V27 Pro","vivo V29","vivo V29 Pro",
+  "vivo V30","vivo V30 Pro","vivo V40","vivo V40 Pro","vivo V50","vivo V50 Pro",
+  "vivo Y17s","vivo Y27","vivo Y27s","vivo Y28","vivo Y28s","vivo Y35","vivo Y36","vivo Y38 5G",
+  "realme 8","realme 8 Pro","realme 9","realme 9 Pro","realme 9 Pro+",
+  "realme 10","realme 10 Pro","realme 10 Pro+","realme 11","realme 11 Pro","realme 11 Pro+",
+  "realme 12","realme 12 Pro","realme 12 Pro+","realme 13","realme 13 Pro","realme 13 Pro+",
+  "realme 14","realme 14 Pro","realme 14 Pro+","realme 14 Ultra",
   "realme GT 6","realme GT 6T","realme GT 7","realme GT 7 Pro","realme GT 7T",
-  "realme C11","realme C12","realme C15","realme C17","realme C20","realme C21","realme C21Y","realme C25",
-  "realme C25s","realme C25Y","realme C30","realme C30s","realme C31","realme C33","realme C33 2023",
-  "realme C35","realme C51","realme C51s","realme C53","realme C55","realme C61","realme C63","realme C65","realme C67","realme C67 5G","realme C75","realme C75 5G",
-  "realme Narzo 50","realme Narzo 50A","realme Narzo 50A Prime","realme Narzo 50i","realme Narzo 50 Pro",
-  "realme Narzo 60","realme Narzo 60 Pro","realme Narzo 60x",
-  "realme Narzo 70","realme Narzo 70 Pro","realme Narzo 70x","realme Narzo 70 Turbo",
-  // ── OnePlus ──
-  "OnePlus 8","OnePlus 8 Pro","OnePlus 8T",
-  "OnePlus 9","OnePlus 9 Pro","OnePlus 9R","OnePlus 9RT",
-  "OnePlus 10 Pro","OnePlus 10T","OnePlus 10R","OnePlus 10 Pro 5G",
-  "OnePlus 11","OnePlus 11R","OnePlus 11 5G",
-  "OnePlus 12","OnePlus 12R","OnePlus 12 5G",
-  "OnePlus 13","OnePlus 13R","OnePlus 13s",
-  "OnePlus Nord","OnePlus Nord N10 5G","OnePlus Nord N100",
-  "OnePlus Nord 2","OnePlus Nord 2T","OnePlus Nord 2 5G",
-  "OnePlus Nord 3","OnePlus Nord 3 5G",
-  "OnePlus Nord 4","OnePlus Nord 4 5G",
-  "OnePlus Nord CE","OnePlus Nord CE 2","OnePlus Nord CE 2 Lite","OnePlus Nord CE 3","OnePlus Nord CE 3 Lite","OnePlus Nord CE 4","OnePlus Nord CE 4 Lite",
-  "OnePlus Nord N20","OnePlus Nord N20 SE","OnePlus Nord N30","OnePlus Nord N30 SE","OnePlus Nord N300",
-  "OnePlus Ace","OnePlus Ace Pro","OnePlus Ace 2","OnePlus Ace 2 Pro","OnePlus Ace 2V",
-  "OnePlus Ace 3","OnePlus Ace 3 Pro","OnePlus Ace 3V","OnePlus Ace 3 Speed",
-  // ── Google Pixel ──
-  "Google Pixel 6","Google Pixel 6 Pro","Google Pixel 6a",
+  "realme C51","realme C53","realme C55","realme C61","realme C63","realme C65","realme C67","realme C67 5G","realme C75","realme C75 5G",
+  "realme Narzo 70","realme Narzo 70 Pro","realme Narzo 70 Turbo",
+  "OnePlus 9","OnePlus 9 Pro","OnePlus 10 Pro","OnePlus 10T","OnePlus 11","OnePlus 11R",
+  "OnePlus 12","OnePlus 12R","OnePlus 13","OnePlus 13R","OnePlus 13s",
+  "OnePlus Nord CE 4","OnePlus Nord CE 4 Lite","OnePlus Nord 4","OnePlus Ace 3 Pro",
   "Google Pixel 7","Google Pixel 7 Pro","Google Pixel 7a",
   "Google Pixel 8","Google Pixel 8 Pro","Google Pixel 8a",
-  "Google Pixel 9","Google Pixel 9 Pro","Google Pixel 9 Pro XL","Google Pixel 9 Pro Fold","Google Pixel 9a",
+  "Google Pixel 9","Google Pixel 9 Pro","Google Pixel 9 Pro XL","Google Pixel 9a",
   "Google Pixel 10","Google Pixel 10 Pro","Google Pixel 10 Pro XL","Google Pixel 10a",
-  "Google Pixel Fold","Google Pixel Fold 2",
-  // ── ASUS ROG / Zenfone ──
-  "ASUS ROG Phone 3","ASUS ROG Phone 5","ASUS ROG Phone 5s","ASUS ROG Phone 5 Pro",
-  "ASUS ROG Phone 6","ASUS ROG Phone 6D","ASUS ROG Phone 6D Ultimate","ASUS ROG Phone 6 Pro",
-  "ASUS ROG Phone 7","ASUS ROG Phone 7 Ultimate",
-  "ASUS ROG Phone 8","ASUS ROG Phone 8 Pro",
-  "ASUS ROG Phone 9","ASUS ROG Phone 9 Pro",
-  "ASUS Zenfone 8","ASUS Zenfone 8 Flip",
-  "ASUS Zenfone 9","ASUS Zenfone 10","ASUS Zenfone 11 Ultra",
-  // ── Sony Xperia ──
-  "Sony Xperia 1 II","Sony Xperia 1 III","Sony Xperia 1 IV","Sony Xperia 1 V","Sony Xperia 1 VI","Sony Xperia 1 VII",
-  "Sony Xperia 5 II","Sony Xperia 5 III","Sony Xperia 5 IV","Sony Xperia 5 V",
-  "Sony Xperia 10 II","Sony Xperia 10 III","Sony Xperia 10 IV","Sony Xperia 10 V","Sony Xperia 10 VI",
-  "Sony Xperia Pro","Sony Xperia Pro-I",
-  // ── Motorola ──
-  "Motorola Moto G7","Motorola Moto G7 Plus","Motorola Moto G7 Play","Motorola Moto G7 Power",
-  "Motorola Moto G8","Motorola Moto G8 Plus","Motorola Moto G8 Play","Motorola Moto G8 Power","Motorola Moto G8 Power Lite",
-  "Motorola Moto G9","Motorola Moto G9 Plus","Motorola Moto G9 Play","Motorola Moto G9 Power",
-  "Motorola Moto G10","Motorola Moto G10 Power",
-  "Motorola Moto G20","Motorola Moto G30","Motorola Moto G31","Motorola Moto G40 Fusion","Motorola Moto G41","Motorola Moto G42",
-  "Motorola Moto G50","Motorola Moto G50 5G","Motorola Moto G51 5G","Motorola Moto G52","Motorola Moto G53 5G","Motorola Moto G54 5G","Motorola Moto G55 5G","Motorola Moto G56 5G",
-  "Motorola Moto G60","Motorola Moto G60s","Motorola Moto G62 5G","Motorola Moto G63 5G",
-  "Motorola Moto G71 5G","Motorola Moto G72","Motorola Moto G73 5G","Motorola Moto G84 5G","Motorola Moto G85 5G","Motorola Moto G86 5G",
-  "Motorola Moto G100","Motorola Moto G200 5G","Motorola Moto G Power 2021","Motorola Moto G Power 2022","Motorola Moto G Power 2023",
-  "Motorola Edge 20","Motorola Edge 20 Lite","Motorola Edge 20 Pro","Motorola Edge 20 Fusion",
-  "Motorola Edge 30","Motorola Edge 30 Lite","Motorola Edge 30 Pro","Motorola Edge 30 Fusion","Motorola Edge 30 Neo","Motorola Edge 30 Ultra",
-  "Motorola Edge 40","Motorola Edge 40 Neo","Motorola Edge 40 Pro","Motorola Edge 40 Fusion",
-  "Motorola Edge 50","Motorola Edge 50 Fusion","Motorola Edge 50 Neo","Motorola Edge 50 Pro","Motorola Edge 50 Ultra",
-  "Motorola Edge 60","Motorola Edge 60 Fusion","Motorola Edge 60 Pro","Motorola Edge 60 Ultra",
-  "Motorola Razr 40","Motorola Razr 40 Ultra","Motorola Razr 50","Motorola Razr 50 Ultra","Motorola Razr 60","Motorola Razr 60 Ultra",
-  "Motorola ThinkPhone","Motorola ThinkPhone 25",
-  // ── HONOR ──
-  "HONOR 50","HONOR 50 Lite","HONOR 50 SE","HONOR 60","HONOR 60 Pro","HONOR 60 SE",
-  "HONOR 70","HONOR 70 Lite","HONOR 70 Pro","HONOR 70 Pro+",
-  "HONOR 80","HONOR 80 GT","HONOR 80 Pro","HONOR 80 SE",
-  "HONOR 90","HONOR 90 GT","HONOR 90 Pro","HONOR 90 Lite","HONOR 90 Smart",
-  "HONOR 100","HONOR 100 Pro","HONOR 100 Lite",
-  "HONOR 200","HONOR 200 Pro","HONOR 200 Lite",
-  "HONOR 300","HONOR 300 Pro","HONOR 300 Ultra","HONOR 300 Lite",
-  "HONOR 400","HONOR 400 Pro","HONOR 400 Ultra","HONOR 400 Lite",
-  "HONOR Magic3","HONOR Magic4 Pro","HONOR Magic5 Pro","HONOR Magic6 Pro","HONOR Magic7 Pro","HONOR Magic7 RSR",
-  "HONOR Magic V","HONOR Magic V2","HONOR Magic V3","HONOR Magic V4","HONOR Magic V5",
-  "HONOR Magic V Purse","HONOR Magic V Flip","HONOR Magic V Flip2",
-  "HONOR X6","HONOR X6a","HONOR X6b","HONOR X7","HONOR X7a","HONOR X7b","HONOR X7c",
-  "HONOR X8","HONOR X8a","HONOR X8b","HONOR X8c","HONOR X9","HONOR X9a","HONOR X9b","HONOR X9c",
-  "HONOR Play 30","HONOR Play 40","HONOR Play 50","HONOR Play 6T","HONOR Play 7T",
-  // ── Nubia / RedMagic ──
-  "Nubia RedMagic 6","Nubia RedMagic 6 Pro","Nubia RedMagic 6R",
-  "Nubia RedMagic 7","Nubia RedMagic 7 Pro","Nubia RedMagic 7S Pro",
-  "Nubia RedMagic 8 Pro","Nubia RedMagic 8S Pro",
-  "Nubia RedMagic 9 Pro","Nubia RedMagic 9 Pro+","Nubia RedMagic 9S Pro",
-  "Nubia RedMagic 10 Pro","Nubia RedMagic 10 Pro+","Nubia RedMagic 10S Pro","Nubia RedMagic 10 Air",
-  "Nubia RedMagic 11 Pro","Nubia RedMagic 11S Pro","Nubia RedMagic 11 Turbo",
-  "Nubia Z50","Nubia Z50 Ultra","Nubia Z50S Pro","Nubia Z60 Ultra","Nubia Z70 Ultra",
-  // ── Infinix ──
-  "Infinix Hot 10","Infinix Hot 10s","Infinix Hot 10 Play","Infinix Hot 10i","Infinix Hot 10T",
-  "Infinix Hot 11","Infinix Hot 11s","Infinix Hot 11 Play","Infinix Hot 11s NFC","Infinix Hot 11 2022",
-  "Infinix Hot 12","Infinix Hot 12 Play","Infinix Hot 12i","Infinix Hot 12 Pro","Infinix Hot 12 2022",
-  "Infinix Hot 20","Infinix Hot 20 Play","Infinix Hot 20i","Infinix Hot 20s","Infinix Hot 20 NFC","Infinix Hot 20 Pro",
-  "Infinix Hot 30","Infinix Hot 30 Play","Infinix Hot 30i","Infinix Hot 30 5G",
-  "Infinix Hot 40","Infinix Hot 40 Pro","Infinix Hot 40i","Infinix Hot 40 Play",
-  "Infinix Hot 50","Infinix Hot 50 Pro","Infinix Hot 50 Pro+","Infinix Hot 50 Play","Infinix Hot 50 5G",
+  "ASUS ROG Phone 6","ASUS ROG Phone 7","ASUS ROG Phone 7 Ultimate",
+  "ASUS ROG Phone 8","ASUS ROG Phone 8 Pro","ASUS ROG Phone 9","ASUS ROG Phone 9 Pro",
+  "ASUS Zenfone 10","ASUS Zenfone 11 Ultra",
+  "HONOR 90","HONOR 90 GT","HONOR 90 Pro","HONOR 100","HONOR 100 Pro",
+  "HONOR 200","HONOR 200 Pro","HONOR 300","HONOR 300 Pro","HONOR 300 Ultra",
+  "HONOR 400","HONOR 400 Pro","HONOR 400 Ultra",
+  "HONOR Magic6 Pro","HONOR Magic7 Pro","HONOR Magic V3","HONOR Magic V4","HONOR Magic V5",
+  "Nubia RedMagic 9 Pro","Nubia RedMagic 9 Pro+","Nubia RedMagic 10 Pro","Nubia RedMagic 10 Pro+","Nubia RedMagic 11 Pro",
+  "Infinix Hot 30","Infinix Hot 30 5G","Infinix Hot 40","Infinix Hot 40 Pro","Infinix Hot 50","Infinix Hot 50 Pro","Infinix Hot 50 5G",
   "Infinix Hot 60","Infinix Hot 60 Pro","Infinix Hot 60 5G",
-  "Infinix Note 10","Infinix Note 10 Pro","Infinix Note 11","Infinix Note 11 Pro","Infinix Note 11s",
-  "Infinix Note 12","Infinix Note 12 Pro","Infinix Note 12 G88","Infinix Note 12 2023","Infinix Note 12 VIP",
-  "Infinix Note 30","Infinix Note 30 Pro","Infinix Note 30 VIP","Infinix Note 30 5G",
-  "Infinix Note 40","Infinix Note 40 Pro","Infinix Note 40 Pro+ 5G","Infinix Note 40X 5G",
-  "Infinix Note 50","Infinix Note 50 Pro","Infinix Note 50 Pro+ 5G",
-  "Infinix Zero 20","Infinix Zero 30","Infinix Zero 30 5G","Infinix Zero 40 5G","Infinix Zero Ultra",
+  "Infinix Note 30","Infinix Note 30 Pro","Infinix Note 40","Infinix Note 40 Pro","Infinix Note 50","Infinix Note 50 Pro",
   "Infinix GT 10 Pro","Infinix GT 20 Pro",
-  // ── Tecno ──
-  "Tecno Camon 17","Tecno Camon 17 Pro","Tecno Camon 18","Tecno Camon 18 Pro","Tecno Camon 18 Premier",
-  "Tecno Camon 19","Tecno Camon 19 Pro","Tecno Camon 19 Neo",
-  "Tecno Camon 20","Tecno Camon 20 Pro","Tecno Camon 20 Premier","Tecno Camon 20 Pro 5G",
-  "Tecno Camon 30","Tecno Camon 30 Pro","Tecno Camon 30 Pro 5G","Tecno Camon 30 Premier",
-  "Tecno Camon 40","Tecno Camon 40 Pro","Tecno Camon 40 Pro 5G",
-  "Tecno Pova 3","Tecno Pova 4","Tecno Pova 4 Pro","Tecno Pova 5","Tecno Pova 5 Pro",
-  "Tecno Pova 6","Tecno Pova 6 Neo","Tecno Pova 6 Pro","Tecno Pova 7","Tecno Pova 7 Pro",
-  "Tecno Phantom X","Tecno Phantom X2","Tecno Phantom X2 Pro",
-  "Tecno Phantom V Fold","Tecno Phantom V Fold2","Tecno Phantom V Flip","Tecno Phantom V Flip2",
-  "Tecno Spark 8","Tecno Spark 8C","Tecno Spark 8P","Tecno Spark 8T",
-  "Tecno Spark 9","Tecno Spark 9 Pro","Tecno Spark 9T",
-  "Tecno Spark 10","Tecno Spark 10 Pro","Tecno Spark 10C","Tecno Spark 10 NFC",
-  "Tecno Spark 20","Tecno Spark 20 Pro","Tecno Spark 20 Pro+","Tecno Spark 20C","Tecno Spark 20 NFC",
-  "Tecno Spark 30","Tecno Spark 30 Pro","Tecno Spark 30 Pro+","Tecno Spark 30C",
-  "Tecno Pop 5","Tecno Pop 6 Pro","Tecno Pop 7","Tecno Pop 8",
-  // ── Huawei ──
-  "Huawei P40","Huawei P40 Pro","Huawei P40 Pro+","Huawei P40 Lite","Huawei P40 Lite E",
-  "Huawei P50","Huawei P50 Pro","Huawei P50 Pocket","Huawei P50E",
-  "Huawei P60","Huawei P60 Pro","Huawei P60 Art",
-  "Huawei Pura 70","Huawei Pura 70 Pro","Huawei Pura 70 Ultra","Huawei Pura 70 Art",
-  "Huawei Mate 40","Huawei Mate 40 Pro","Huawei Mate 40 Pro+","Huawei Mate 40 RS",
-  "Huawei Mate 50","Huawei Mate 50 Pro","Huawei Mate 50 RS",
-  "Huawei Mate 60","Huawei Mate 60 Pro","Huawei Mate 60 Pro+","Huawei Mate 60 RS",
-  "Huawei Mate 70","Huawei Mate 70 Pro","Huawei Mate 70 Pro+","Huawei Mate 70 RS",
-  "Huawei Nova 8","Huawei Nova 9","Huawei Nova 10","Huawei Nova 11","Huawei Nova 12","Huawei Nova 12 Pro","Huawei Nova 13","Huawei Nova 13 Pro",
-  "Huawei Enjoy 50","Huawei Enjoy 60","Huawei Enjoy 70",
-  // ── Nothing ──
-  "Nothing Phone (1)","Nothing Phone (2)","Nothing Phone (2a)","Nothing Phone (2a) Plus","Nothing Phone (3)","Nothing Phone (3a)","Nothing Phone (3a) Pro",
-  // ── Nokia ──
-  "Nokia G10","Nokia G20","Nokia G21","Nokia G22","Nokia G42 5G","Nokia G50","Nokia G60 5G",
-  "Nokia XR20","Nokia XR21","Nokia C21","Nokia C31","Nokia C32",
-  // ── Lenovo Legion ──
-  "Lenovo Legion Duel","Lenovo Legion Duel 2","Lenovo Legion Y70","Lenovo Legion Pro",
-  "Lenovo Legion Phone Ultimate","Lenovo Legion Phone 3 Pro",
-  // ── ZTE ──
-  "ZTE Axon 30","ZTE Axon 30 Pro","ZTE Axon 30 Ultra","ZTE Axon 40","ZTE Axon 40 Pro","ZTE Axon 40 Ultra",
-  "ZTE Axon 50","ZTE Axon 50 Ultra","ZTE Axon 60","ZTE Axon 60 Ultra",
-  "ZTE Blade A54","ZTE Blade A72","ZTE Blade V40",
-  // ── Meizu ──
-  "Meizu 18","Meizu 18 Pro","Meizu 18s","Meizu 18s Pro",
-  "Meizu 19","Meizu 19 Pro","Meizu 20","Meizu 20 Pro","Meizu 20 Infinity",
-  "Meizu 21","Meizu 21 Pro","Meizu 21 Note","Meizu 22","Meizu 22 Pro",
-  // ── Sharp ──
-  "Sharp Aquos R6","Sharp Aquos R7","Sharp Aquos R8","Sharp Aquos R8 Pro","Sharp Aquos R9",
-  "Sharp Aquos Sense7","Sharp Aquos Sense8","Sharp Aquos Sense9",
-  // ── TCL ──
-  "TCL 20 Pro 5G","TCL 30","TCL 30 5G","TCL 30 SE","TCL 40 SE","TCL 40 XL","TCL 50 SE","TCL 50 XL"
+  "Tecno Camon 30","Tecno Camon 30 Pro","Tecno Camon 40","Tecno Camon 40 Pro",
+  "Tecno Pova 5","Tecno Pova 5 Pro","Tecno Pova 6","Tecno Pova 6 Pro","Tecno Pova 7","Tecno Pova 7 Pro",
+  "Tecno Spark 20","Tecno Spark 20 Pro","Tecno Spark 30","Tecno Spark 30 Pro",
+  "Motorola Edge 50","Motorola Edge 50 Pro","Motorola Edge 50 Ultra","Motorola Edge 60","Motorola Edge 60 Pro",
+  "Motorola Moto G85 5G","Motorola Moto G86 5G","Motorola Razr 50","Motorola Razr 50 Ultra",
+  "Nothing Phone (2)","Nothing Phone (2a)","Nothing Phone (3)","Nothing Phone (3a)","Nothing Phone (3a) Pro",
+  "Lenovo Legion Phone 3 Pro","Lenovo Legion Phone Ultimate",
+  "Huawei Pura 70","Huawei Pura 70 Pro","Huawei Pura 70 Ultra",
+  "Huawei Mate 60","Huawei Mate 60 Pro","Huawei Mate 70","Huawei Mate 70 Pro"
 ]};
 
 const ISSUES=[
-  {id:"nặng tâm",label:"Nặng tâm",desc:"Aim kéo xuống khi giữ bắn"},
-  {id:"lố đầu",label:"Lố đầu",desc:"Aim bắn lên trên đầu địch"},
-  {id:"lệch tâm",label:"Lệch tâm",desc:"Aim lệch sang trái / phải"},
-  {id:"lạc đạn",label:"Lạc đạn",desc:"Đạn không trúng dù ngắm đúng"},
-  {id:"dật tâm",label:"Dật tâm",desc:"Aim giật mạnh khó kiểm soát"},
-  {id:"rung tâm",label:"Rung tâm",desc:"Tâm dao động liên tục"},
-  {id:"trượt địch",label:"Trượt địch",desc:"Aim trượt qua người địch"},
+  {id:"nặng tâm",  label:"Nặng tâm",   icon:"↓",desc:"Aim kéo xuống khi giữ bắn"},
+  {id:"lố đầu",   label:"Lố đầu",     icon:"↑",desc:"Aim bắn lên trên đầu địch"},
+  {id:"lệch tâm", label:"Lệch tâm",   icon:"↔",desc:"Aim lệch trái hoặc phải"},
+  {id:"lạc đạn",  label:"Lạc đạn",    icon:"✗",desc:"Đạn không trúng dù ngắm đúng"},
+  {id:"dật tâm",  label:"Dật tâm",    icon:"⚡",desc:"Aim giật mạnh khó kiểm soát"},
+  {id:"rung tâm", label:"Rung tâm",   icon:"〰",desc:"Tâm dao động liên tục"},
+  {id:"trượt địch",label:"Trượt địch", icon:"→",desc:"Aim trượt qua người địch"},
 ];
+
 const ISSUE_ANA={
-  "nặng tâm":`Tình trạng <strong>nặng tâm</strong> xảy ra khi độ nhạy Look quá cao hoặc gyroscope bị ảnh hưởng bởi trọng lực. Cấu hình bên dưới giảm Look và tăng ADS để bù recoil tự nhiên hơn.`,
-  "lố đầu":`Tình trạng <strong>lố đầu</strong> do ADS quá thấp, ngón tay compensate quá mức kéo lên. Cần tăng nhẹ độ nhạy các ống ngắm để recoil không cần kéo nhiều.`,
-  "lệch tâm":`Tình trạng <strong>lệch tâm</strong> đến từ cân chỉnh DPI không đồng đều trục X/Y. Cấu hình bên dưới điều chỉnh tỷ lệ cân bằng hơn.`,
-  "lạc đạn":`Tình trạng <strong>lạc đạn</strong> thường do input lag hoặc FPS drop. Nút bắn chưa được cá nhân hóa đúng frame rate màn hình.`,
-  "dật tâm":`Tình trạng <strong>dật tâm</strong> khi độ nhạy tổng thể quá cao. Toàn bộ giá trị cần giảm xuống ngưỡng kiểm soát.`,
-  "rung tâm":`Tình trạng <strong>rung tâm</strong> là dấu hiệu độ nhạy không khớp refresh rate màn hình. Cấu hình được tối ưu riêng theo display tier.`,
-  "trượt địch":`Tình trạng <strong>trượt địch</strong> — tracking speed không theo kịp địch di chuyển ngang. Cần tăng các ống ngắm để cải thiện lead shot.`,
+  "nặng tâm":`Tình trạng <strong>nặng tâm</strong> xảy ra khi độ nhạy Look quá cao hoặc gyroscope bị ảnh hưởng bởi trọng lực tay. Cấu hình dưới giảm Look và tăng ADS để bù recoil tự nhiên hơn.`,
+  "lố đầu":`Tình trạng <strong>lố đầu</strong> do ADS quá thấp, tay compensate kéo xuống nhiều. Cần tăng nhẹ độ nhạy các ống ngắm để recoil không cần kéo nhiều.`,
+  "lệch tâm":`Tình trạng <strong>lệch tâm</strong> đến từ cân chỉnh cảm ứng không đồng đều. Cấu hình dưới điều chỉnh tỷ lệ cân bằng trục ngang và dọc.`,
+  "lạc đạn":`Tình trạng <strong>lạc đạn</strong> thường do input lag hoặc FPS không ổn định. Nút bắn chưa được cá nhân hóa đúng theo frame rate màn hình của bạn.`,
+  "dật tâm":`Tình trạng <strong>dật tâm</strong> khi tổng độ nhạy vượt ngưỡng kiểm soát của tay. Toàn bộ giá trị cần giảm xuống ngưỡng có thể điều khiển được.`,
+  "rung tâm":`Tình trạng <strong>rung tâm</strong> là dấu hiệu độ nhạy không khớp với refresh rate màn hình. Cấu hình được tối ưu riêng theo display tier của thiết bị.`,
+  "trượt địch":`Tình trạng <strong>trượt địch</strong> — tracking speed không theo kịp địch di chuyển ngang. Cần tăng độ nhạy các ống ngắm để lead shot tốt hơn.`,
 };
+
 const ISSUE_ADJ={
-  "nặng tâm":  {look:-5,red:4,x2:4,x4:3,sniper:2,cam:0,gyro:-3},
-  "lố đầu":   {look:0,red:5,x2:6,x4:4,sniper:3,cam:0,gyro:2},
-  "lệch tâm": {look:-3,red:2,x2:2,x4:2,sniper:1,cam:0,gyro:-2},
-  "lạc đạn":  {look:2,red:-4,x2:-3,x4:-2,sniper:-3,cam:3,gyro:-4},
-  "dật tâm":  {look:-7,red:-5,x2:-6,x4:-5,sniper:-4,cam:-3,gyro:-5},
-  "rung tâm": {look:-4,red:-3,x2:-4,x4:-3,sniper:-2,cam:-2,gyro:-4},
+  "nặng tâm":   {look:-5,red:4,x2:4,x4:3,sniper:2,cam:0,gyro:-3},
+  "lố đầu":    {look:0,red:5,x2:6,x4:4,sniper:3,cam:0,gyro:2},
+  "lệch tâm":  {look:-3,red:2,x2:2,x4:2,sniper:1,cam:0,gyro:-2},
+  "lạc đạn":   {look:2,red:-4,x2:-3,x4:-2,sniper:-3,cam:3,gyro:-4},
+  "dật tâm":   {look:-7,red:-5,x2:-6,x4:-5,sniper:-4,cam:-3,gyro:-5},
+  "rung tâm":  {look:-4,red:-3,x2:-4,x4:-3,sniper:-2,cam:-2,gyro:-4},
   "trượt địch":{look:4,red:6,x2:7,x4:5,sniper:3,cam:4,gyro:4},
 };
-const TIPS={
-  "nặng tâm":["Giảm thêm 3–5 điểm 'Nhìn xung quanh' nếu vẫn còn nặng","Bật gyroscope nếu có — bù recoil tự nhiên hơn","Tư thế cầm máy ổn định hơn khi bắn liên thanh"],
-  "lố đầu":["Tăng nhẹ ADS hồng tâm +3 nếu vẫn thấy lố","Luyện pull-down khi bắn SMG ở tầm gần","Giảm độ nhạy tầm xa nếu scope 4x vẫn lố nhiều"],
-  "lệch tâm":["Kiểm tra lại cài đặt cảm ứng trong hệ thống","Thử chế độ một tay và hai tay để so sánh","Đặt máy trên bàn thử — nếu hết lệch là do cầm máy"],
-  "lạc đạn":["Vào Training bắn 30 viên liên tục để cảm nhận pattern","Đảm bảo FPS ổn định — drop FPS gây lạc đạn mạnh","Giảm đồ họa để ổn định frame rate"],
-  "dật tâm":["Giảm thêm 3–5 tất cả giá trị nếu dật vẫn mạnh","Luyện recoil control bằng cách bắn vào tường dài đạn","AR cần kéo xuống nhiều hơn SMG — cơ bắp riêng"],
-  "rung tâm":["Bật 'Gyroscope scope only' nếu máy hỗ trợ","Tắt rung máy (haptic) khi chơi","Uống đủ nước, tránh caffeine trước khi chơi"],
-  "trượt địch":["Tăng ống ngắm 2x thêm +5 nếu vẫn trượt khi địch chạy ngang","Dự đoán hướng di chuyển địch — lead shot là kỹ năng cốt lõi","Tập Clash Squad để quen tracking tốc độ cao"],
+
+const TIPS_MAP={
+  "nặng tâm":["Giảm thêm 3–5 điểm 'Nhìn xung quanh' nếu vẫn còn nặng","Bật gyroscope nếu máy hỗ trợ — bù recoil tự nhiên","Giữ máy ổn định, không để khuỷu tay lơ lửng khi bắn liên thanh","Dùng súng Scar hoặc XM8 để tập recoil pattern trước khi vào rank"],
+  "lố đầu":  ["Tăng nhẹ ADS hồng tâm +3 nếu vẫn thấy lố sau khi dùng config","Luyện pull-down khi bắn SMG tầm gần — MP40 là chuẩn để tập","Giảm độ nhạy scope 4x nếu bắn tầm xa vẫn lố lên nhiều","Thử training mode bắn dummy ở tầm 30m để check recoil"],
+  "lệch tâm":["Kiểm tra cài đặt cảm ứng trong hệ thống — độ nhạy màn hình","Đặt máy trên bàn thử: nếu hết lệch thì do cách cầm máy","Điều chỉnh vị trí ngón tay cái trên màn hình","Thử đổi layout nút bắn nếu ngón cái phải với quá xa"],
+  "lạc đạn": ["Vào Training bắn 30 viên liên tục để cảm nhận pattern súng","Đảm bảo FPS ổn định — vào Settings > Graphic chọn thấp hơn","Giảm đồ họa xuống một bậc để ổn định frame rate","Kiểm tra nhiệt độ máy — quá nóng gây input delay"],
+  "dật tâm": ["Giảm thêm 3–5 tất cả giá trị nếu dật vẫn còn mạnh sau config","Luyện recoil bằng cách bắn vào tường với M14 hoặc AK","AR cần kéo xuống nhiều hơn SMG — tập từng loại súng riêng","Thử ngưỡng 150–160 làm điểm bắt đầu, tăng dần từng 5"],
+  "rung tâm":["Bật 'Gyroscope scope only' nếu máy hỗ trợ (iOS và một số Android)","Tắt rung máy (haptic feedback) khi chơi trong Settings","Uống đủ nước trước khi chơi — tay run do mất nước ảnh hưởng aim","Cầm máy hai tay cân bằng, không kê máy lên một tay"],
+  "trượt địch":["Tăng ống ngắm 2x thêm +5 nếu vẫn trượt khi địch chạy ngang","Dự đoán hướng di chuyển địch — lead shot là kỹ năng cốt lõi","Tập Clash Squad để quen tracking tốc độ cao trong không gian nhỏ","Dùng M1014 hoặc SPAS để tập tracking — shotgun yêu cầu aim chính xác"],
 };
 
 function getTier(n){
-  const FL=["Pro Max","Ultra","ROG Phone 9","ROG Phone 8","ROG Phone 7","RedMagic 11","RedMagic 10","RedMagic 9","Magic7","Magic V4","Magic V5","Pixel 9","Pixel 10","S25","S26","S25 Ultra","S26 Ultra","iPhone 17","iPhone 18","iPhone 16 Pro","iPhone 15 Pro","Find X8","Find X9","Z Fold 7","Z Flip7","Ace 3 Pro","K80 Pro","OnePlus 13"];
-  const HI=["S24","S23","Note 14 Pro","Note 13 Pro","POCO F7","POCO F6","POCO F5 Pro","POCO F4 GT","OnePlus 12","vivo X200","realme GT 7","iPhone 14","iPhone 15","iPhone 13 Pro","Pixel 8","ROG Phone 6","Zenfone 10","Zenfone 11"];
-  for(const k of FL) if(n.includes(k)) return{tier:"FLAGSHIP",hz:"120Hz+",mult:1.0};
-  for(const k of HI) if(n.includes(k)) return{tier:"HIGH-END",hz:"90–120Hz",mult:1.06};
+  const FL=["Pro Max","Ultra","ROG Phone 9","ROG Phone 8","ROG Phone 7","RedMagic 11","RedMagic 10","RedMagic 9","Magic7","Magic V4","Magic V5","Pixel 9","Pixel 10","S25","S26","S25 Ultra","S26 Ultra","iPhone 17","iPhone 18","iPhone 16 Pro","iPhone 15 Pro","Find X8","Find X9","Z Fold 7","Z Flip7","Ace 3 Pro","K80 Pro","OnePlus 13","POCO F7","Legion Phone","15 Ultra","15T Pro","14 Ultra"];
+  const HI=["S24","S23","Note 14 Pro","Note 13 Pro","POCO F6","POCO F5 Pro","POCO F4 GT","OnePlus 12","vivo X200","realme GT 7","iPhone 14","iPhone 15","iPhone 13 Pro","Pixel 8","ROG Phone 6","Zenfone 11","11T Pro","12T Pro","13T Pro","14T Pro","Reno 13 Pro","Reno 14 Pro","Find X7","X90 Pro","X100 Pro","V50 Pro","HONOR 300","HONOR 200","Note 15 Pro","K70 Pro","K60 Pro","POCO F7 Pro","Nothing Phone (3)"];
+  const low=n.toLowerCase();
+  for(const k of FL) if(low.includes(k.toLowerCase())) return{tier:"FLAGSHIP",hz:"120Hz+",mult:1.0};
+  for(const k of HI) if(low.includes(k.toLowerCase())) return{tier:"HIGH-END",hz:"90–120Hz",mult:1.06};
   return{tier:"MID-RANGE",hz:"60–90Hz",mult:1.13};
 }
 
 let os='ios',sel=new Set(),acIdx=-1,acOpen=false;
 
+function hash(s){let h=2166136261n;for(let i=0;i<s.length;i++){h^=BigInt(s.charCodeAt(i));h=(h*16777619n)&0xFFFFFFFFn;}return Number(h)}
+function rng(seed,mn,mx){return mn+(seed%(mx-mn+1))}
+
 function burst(){
-  const p=document.getElementById('pts');
-  for(let i=0;i<16;i++){
-    const el=document.createElement('div');el.className='pt';
-    const s=Math.random()*8+3;
-    el.style.cssText=`width:${s}px;height:${s}px;left:${15+Math.random()*70}%;background:rgba(${Math.random()>.5?'201,162,39':'255,140,0'},.95);animation-duration:${Math.random()*2.5+1.5}s;animation-delay:${Math.random()*.3}s`;
-    p.appendChild(el);setTimeout(()=>el.remove(),5000);
+  const c=document.querySelector('.bg-canvas');
+  for(let i=0;i<20;i++){
+    const el=document.createElement('div');
+    const s=Math.random()*10+4;
+    const col=Math.random()>.5?'245,166,35':'255,115,0';
+    Object.assign(el.style,{
+      position:'absolute',borderRadius:'50%',pointerEvents:'none',
+      width:s+'px',height:s+'px',
+      left:20+Math.random()*60+'%',bottom:'0',
+      background:`rgba(${col},.9)`,
+      animation:`ptFloat ${Math.random()*2+1}s ease-out forwards`,
+      animationDelay:Math.random()*.4+'s',
+    });
+    c.appendChild(el);
+    setTimeout(()=>el.remove(),4000);
   }
 }
+// inject ptFloat
+const st=document.createElement('style');
+st.textContent='@keyframes ptFloat{0%{transform:translateY(0) scale(1);opacity:.9}100%{transform:translateY(-300px) scale(0);opacity:0}}';
+document.head.appendChild(st);
 
 function setOS(t){
-  if(os===t) return;os=t;
-  const b=document.getElementById(t==='ios'?'iosBtn':'dBtn');
-  b.classList.add('pop');setTimeout(()=>b.classList.remove('pop'),250);
+  if(os===t)return;os=t;
+  const b=document.getElementById(t==='ios'?'iosBtn':'andBtn');
+  b.classList.add('os-pop');setTimeout(()=>b.classList.remove('os-pop'),250);
   document.getElementById('iosBtn').classList.toggle('active',os==='ios');
-  document.getElementById('dBtn').classList.toggle('active',os==='android');
-  clearIn();
+  document.getElementById('andBtn').classList.toggle('active',os==='android');
+  clearInput();
 }
 
-function filt(q){
-  if(!q) return[];
+function filter(q){
+  if(!q)return[];
   const l=q.toLowerCase();
   return DB[os].filter(d=>d.toLowerCase().includes(l)).slice(0,12);
 }
-function hl(text,q){
-  if(!q) return text;
+function highlight(text,q){
+  if(!q)return text;
   return text.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi'),'<mark>$1</mark>');
 }
 function renderDrop(q){
   const drop=document.getElementById('acDrop');
-  const res=filt(q);
+  const res=filter(q);
   if(!res.length||!q){drop.classList.remove('open');acOpen=false;return;}
   drop.innerHTML=res.map((d,i)=>{
     const t=getTier(d);
-    return `<div class="ac-item" data-idx="${i}" data-val="${d}" onmousedown="pick('${d.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')" >
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--sub)" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
-      <span>${hl(d,q)}</span>
-      <span class="tier-badge">${t.tier}</span>
+    return `<div class="ac-item" data-idx="${i}" data-val="${d}" onmousedown="pick('${d.replace(/'/g,"\\'")}')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--mute)" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+      <span>${highlight(d,q)}</span>
+      <span class="tier-pill">${t.tier}</span>
     </div>`;
   }).join('');
   drop.classList.add('open');acOpen=true;acIdx=-1;
 }
-function onInp(){
+
+function onInput(){
   const v=document.getElementById('devIn').value.trim();
-  document.getElementById('acX').style.display=v?'flex':'none';
+  document.getElementById('acClear').style.display=v?'flex':'none';
   renderDrop(v);
-  if(DB[os].includes(v)) confDev(v); else clearConf();
+  if(DB[os].includes(v))confirmDev(v);else clearConfirm();
 }
-function onFoc(){
+function onFocus(){
   const v=document.getElementById('devIn').value.trim();
-  if(v) renderDrop(v);
+  if(v)renderDrop(v);
 }
 function onKey(e){
   const drop=document.getElementById('acDrop');
   const items=[...drop.querySelectorAll('.ac-item')];
-  if(!acOpen) return;
+  if(!acOpen)return;
   if(e.key==='ArrowDown'){e.preventDefault();acIdx=Math.min(acIdx+1,items.length-1);items.forEach((el,i)=>el.classList.toggle('focus',i===acIdx));}
   else if(e.key==='ArrowUp'){e.preventDefault();acIdx=Math.max(acIdx-1,0);items.forEach((el,i)=>el.classList.toggle('focus',i===acIdx));}
   else if(e.key==='Enter'){if(acIdx>=0&&items[acIdx])pick(items[acIdx].dataset.val);drop.classList.remove('open');acOpen=false;}
@@ -1288,10 +1092,10 @@ function onKey(e){
 function pick(n){
   document.getElementById('devIn').value=n;
   document.getElementById('acDrop').classList.remove('open');
-  document.getElementById('acX').style.display='flex';
-  acOpen=false;confDev(n);
+  document.getElementById('acClear').style.display='flex';
+  acOpen=false;confirmDev(n);
 }
-function confDev(n){
+function confirmDev(n){
   const t=getTier(n);
   document.getElementById('dcName').textContent=n;
   document.getElementById('dcTier').textContent=`${t.tier} · ${t.hz}`;
@@ -1299,37 +1103,37 @@ function confDev(n){
   document.getElementById('issuesEl').classList.add('show');
   buildIssues();checkReady();
 }
-function clearConf(){
+function clearConfirm(){
   document.getElementById('devConf').classList.remove('show');
   document.getElementById('issuesEl').classList.remove('show');
   sel.clear();checkReady();
 }
-function clearIn(){
+function clearInput(){
   document.getElementById('devIn').value='';
   document.getElementById('acDrop').classList.remove('open');
-  document.getElementById('acX').style.display='none';
-  clearConf();hideResult();
+  document.getElementById('acClear').style.display='none';
+  acOpen=false;clearConfirm();hideResult();
 }
 document.addEventListener('click',e=>{
-  if(!e.target.closest('.ac-wrap')){
-    document.getElementById('acDrop').classList.remove('open');acOpen=false;
-  }
+  if(!e.target.closest('.ac-wrap')){document.getElementById('acDrop').classList.remove('open');acOpen=false;}
 });
+
 function buildIssues(){
   const g=document.getElementById('issueGrid');g.innerHTML='';
   ISSUES.forEach((iss,i)=>{
     const b=document.createElement('button');
     b.className='issue-tag'+(sel.has(iss.id)?' on':'');
-    b.dataset.id=iss.id;b.title=iss.desc;
-    b.innerHTML=`<span class="i-dot"></span><span>${iss.label}</span>`;
-    b.style.animation=`slideIn .35s var(--smooth) ${i*.05}s both`;
+    b.dataset.id=iss.id;
+    b.title=iss.desc;
+    b.style.animationDelay=i*.04+'s';
+    b.innerHTML=`<span class="tag-dot"></span><span>${iss.label}</span>`;
     b.onclick=()=>toggleIssue(iss.id);
     g.appendChild(b);
   });
 }
 function toggleIssue(id){
   sel.has(id)?sel.delete(id):sel.add(id);
-  document.querySelectorAll('.issue-tag').forEach(p=>p.classList.toggle('on',sel.has(p.dataset.id)));
+  document.querySelectorAll('.issue-tag').forEach(el=>el.classList.toggle('on',sel.has(el.dataset.id)));
   checkReady();
 }
 function checkReady(){
@@ -1337,97 +1141,104 @@ function checkReady(){
   document.getElementById('genBtn').disabled=!(DB[os].includes(v)&&sel.size>0);
 }
 
-function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return Math.abs(h>>>0);}
-function rng(seed,mn,mx){return mn+(seed%(mx-mn+1))}
-
 function generate(){
   const name=document.getElementById('devIn').value.trim();
-  if(!DB[os].includes(name)||!sel.size) return;
+  if(!DB[os].includes(name)||!sel.size)return;
   burst();
-  const msgs=['scanning device...','computing recoil...','personalizing values...','calibrating display...','done ✓'];
+  const msgs=['scanning device...','computing recoil pattern...','calibrating sensitivity...','personalizing values...','done ✓'];
   let mi=0;
-  const lm=document.getElementById('lmsg'),lf=document.getElementById('lfill');
-  lm.textContent=msgs[0];lf.style.width='0%';
+  const lm=document.getElementById('lmsg'),lp=document.getElementById('lprog');
+  lm.textContent=msgs[0];lp.style.width='0%';
   const iv=setInterval(()=>{
     mi++;
-    if(mi<msgs.length){lm.style.animation='none';void lm.offsetWidth;lm.style.animation='';lm.textContent=msgs[mi];}
-    lf.style.width=((mi/(msgs.length-1))*100)+'%';
-  },400);
+    if(mi<msgs.length)lm.textContent=msgs[mi];
+    lp.style.width=(mi/(msgs.length-1)*100)+'%';
+  },420);
   document.getElementById('loading').classList.add('show');
   setTimeout(()=>{
-    clearInterval(iv);lf.style.width='100%';
-    setTimeout(()=>{document.getElementById('loading').classList.remove('show');_gen(name);},350);
-  },2000);
+    clearInterval(iv);lp.style.width='100%';
+    setTimeout(()=>{document.getElementById('loading').classList.remove('show');_generate(name);},320);
+  },2100);
 }
 
-function _gen(name){
+function _generate(name){
   const tier=getTier(name);
-  const il=[...sel];
-  const h=hash(name+il.join(''));
+  const issues=[...sel];
+  const h=hash(name+issues.join(''));
   const m=tier.mult;
   let adj={look:0,red:0,x2:0,x4:0,sniper:0,cam:0,gyro:0};
-  il.forEach(id=>{const a=ISSUE_ADJ[id];Object.keys(adj).forEach(k=>{adj[k]+=a[k];});});
-  if(il.length>1) Object.keys(adj).forEach(k=>{adj[k]=Math.round(adj[k]/il.length);});
+  issues.forEach(id=>{const a=ISSUE_ADJ[id];Object.keys(adj).forEach(k=>{adj[k]+=a[k];});});
+  if(issues.length>1)Object.keys(adj).forEach(k=>{adj[k]=Math.round(adj[k]/issues.length);});
   function sv(seed,base,off,mn,mx){
-    const raw=rng(seed,base-4,base+4)+off+Math.round((m-1)*14);
+    const raw=rng(seed,base-4,base+5)+off+Math.round((m-1)*16);
     return Math.max(mn,Math.min(mx,raw));
   }
-  const look  =sv(h,     170,adj.look,  130,200);
-  const red   =sv(h>>2,  165,adj.red,   130,200);
-  const x2    =sv(h>>4,  158,adj.x2,    125,195);
-  const x4    =sv(h>>6,  145,adj.x4,    120,185);
-  const sniper=sv(h>>8,  132,adj.sniper,110,170);
-  const cam   =sv(h>>10, 155,adj.cam,   130,195);
-  const gyro  =sv(h>>12, 140,adj.gyro,  100,180);
-  const fire  =rng(Math.floor(Math.random()*1e9),30,60);
+  const look  =sv(h,     168,adj.look,  130,200);
+  const red   =sv(h>>2,  163,adj.red,   130,200);
+  const x2    =sv(h>>4,  156,adj.x2,    125,195);
+  const x4    =sv(h>>6,  143,adj.x4,    120,185);
+  const sniper=sv(h>>8,  130,adj.sniper,105,168);
+  const cam   =sv(h>>10, 152,adj.cam,   128,194);
+  const gyro  =sv(h>>12, 138,adj.gyro,  95,178);
+  const fire  =rng(Math.floor(Math.random()*1e9),35,58);
 
-  document.getElementById('rDev').textContent=name;
+  // header
+  document.getElementById('rDevice').textContent=name;
   document.getElementById('rOS').textContent=os==='ios'?'Apple iOS':'Android';
   document.getElementById('rTier').textContent=`${tier.tier} · ${tier.hz}`;
-  document.getElementById('rIssue').textContent=il.map(id=>ISSUES.find(x=>x.id===id)?.label||id).join(' + ');
-  document.getElementById('rAna').innerHTML=il.map(id=>ISSUE_ANA[id]||'').filter(Boolean).join(' ');
+  // issue chips
+  const ic=document.getElementById('rIssues');
+  ic.innerHTML=issues.map(id=>`<span class="issue-chip">${ISSUES.find(x=>x.id===id)?.label||id}</span>`).join('');
 
-  document.getElementById('statRow').innerHTML=[
+  // stats
+  document.getElementById('statGrid').innerHTML=[
     {val:tier.hz,label:'Refresh Rate'},
     {val:tier.tier,label:'Device Tier'},
-    {val:fire,label:'Nút bắn'},
-  ].map(s=>`<div class="stat-box"><div class="stat-v">${s.val}</div><div class="stat-l">${s.label}</div></div>`).join('');
+    {val:fire,label:'Nút bắn (Fire)'},
+  ].map(s=>`<div class="stat-card"><div class="stat-val">${s.val}</div><div class="stat-lbl">${s.label}</div></div>`).join('');
 
-  const rows=[
-    {n:'Nhìn xung quanh',s:'Camera tự do',v:look,max:200,hl:false},
-    {n:'Hồng tâm (Red Dot)',s:'ADS ống ngắm 1x',v:red,max:200,hl:false},
-    {n:'Ống ngắm 2x',s:'Tầm trung',v:x2,max:200,hl:false},
-    {n:'Ống ngắm 4x',s:'Tầm xa',v:x4,max:200,hl:false},
-    {n:'Sniper / 6x',s:'Tầm cực xa',v:sniper,max:200,hl:false},
-    {n:'Camera tự do',s:'Nút camera',v:cam,max:200,hl:false},
-    {n:'Gyroscope',s:'Bù recoil con quay',v:gyro,max:200,hl:false},
-    {n:'Nút bắn (Fire)',s:'Cá nhân hóa · 30–60',v:fire,max:60,hl:true},
+  // analysis
+  document.getElementById('anaBody').innerHTML=issues.map(id=>ISSUE_ANA[id]||'').filter(Boolean).join(' ');
+
+  // sens rows
+  const rowData=[
+    {n:'Nhìn xung quanh',  s:'Camera tự do',          v:look,   max:200,hl:false},
+    {n:'Hồng tâm (Red Dot)',s:'ADS ống ngắm 1x',       v:red,    max:200,hl:false},
+    {n:'Ống ngắm 2x',      s:'Tầm trung',              v:x2,     max:200,hl:false},
+    {n:'Ống ngắm 4x',      s:'Tầm xa',                 v:x4,     max:200,hl:false},
+    {n:'Sniper / 6x',      s:'Tầm cực xa',             v:sniper, max:200,hl:false},
+    {n:'Camera tự do',     s:'Xem xung quanh',         v:cam,    max:200,hl:false},
+    {n:'Gyroscope',        s:'Bù recoil con quay hồi', v:gyro,   max:200,hl:false},
+    {n:'Nút bắn (Fire)',   s:'Cá nhân hoá · 35–58',    v:fire,   max:60, hl:true},
   ];
   const sr=document.getElementById('sensRows');
-  sr.innerHTML=rows.map((r,i)=>`
-    <div class="s-row${r.hl?' hl':''}" style="animation-delay:${i*.07}s">
-      <div><div class="row-n">${r.n}</div><div class="row-s">${r.s}</div>
-      <div class="row-bar"><div class="row-fill" id="rf${i}"></div></div></div>
-      <div></div>
-      <div class="row-v" id="rv${i}">–</div>
+  sr.innerHTML=rowData.map((r,i)=>`
+    <div class="s-row${r.hl?' gold-row':''}" style="animation-delay:${i*.07}s">
+      <div>
+        <div class="row-name">${r.n}</div>
+        <div class="row-sub">${r.s}</div>
+        <div class="row-bar-wrap"><div class="row-bar-fill" id="rbf${i}"></div></div>
+      </div>
+      <div class="row-val" id="rv${i}">–</div>
     </div>`).join('');
 
-  rows.forEach((r,i)=>{
+  rowData.forEach((r,i)=>{
     setTimeout(()=>{
       const el=document.getElementById('rv'+i);
-      el.textContent=r.v;el.classList.add('flash');
-      setTimeout(()=>el.classList.remove('flash'),400);
-      setTimeout(()=>{document.getElementById('rf'+i).style.width=(r.v/r.max*100)+'%';},80);
-    },i*90+200);
+      if(el){el.textContent=r.v;el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),400);}
+      const bf=document.getElementById('rbf'+i);
+      if(bf)setTimeout(()=>{bf.style.width=(r.v/r.max*100)+'%';},80);
+    },i*90+250);
   });
 
+  // tips
   const tl=document.getElementById('tipsList');tl.innerHTML='';
   const seen=new Set();let ti=0;
-  il.forEach(id=>{(TIPS[id]||[]).forEach(t=>{
+  issues.forEach(id=>{(TIPS_MAP[id]||[]).forEach(t=>{
     if(!seen.has(t)){seen.add(t);
       const li=document.createElement('li');
-      li.style.animationDelay=(ti*.1+.3)+'s';
-      li.innerHTML=`<span class="tip-d"></span>${t}`;
+      li.style.animationDelay=(ti*.08+.3)+'s';
+      li.innerHTML=`<span class="tip-bullet"></span><span>${t}</span>`;
       tl.appendChild(li);ti++;
     }
   });});
@@ -1443,7 +1254,7 @@ function hideResult(){
   r.classList.remove('show');r.style.display='none';
 }
 function doReset(){
-  hideResult();clearIn();window.scrollTo({top:0,behavior:'smooth'});
+  hideResult();clearInput();window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
 </body>
