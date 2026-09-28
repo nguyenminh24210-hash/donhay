@@ -8,379 +8,372 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:16px;-webkit-text-size-adjust:100%;touch-action:manipulation}
+html{font-size:16px;-webkit-text-size-adjust:100%;touch-action:manipulation;scroll-behavior:smooth}
 :root{
-  --bg:#080b10;
-  --s1:#0d1117;
-  --s2:#13181f;
-  --s3:#1a2130;
-  --b1:#1e2a38;
-  --b2:#2a3a50;
+  --bg:#06080d;
+  --s1:#0c1018;
+  --s2:#111820;
+  --s3:#172030;
+  --b1:#1c2738;
+  --b2:#263548;
   --acc:#ff6b00;
-  --acc2:#ff9500;
-  --accg:linear-gradient(135deg,#ff6b00,#ff9500);
+  --acc2:#ff9d00;
+  --accg:linear-gradient(135deg,#ff6b00,#ff9d00);
   --red:#ff2d55;
+  --green:#30d158;
   --txt:#e8edf5;
   --sub:#7a8fa8;
   --mute:#2e3d52;
   --mono:'JetBrains Mono',monospace;
   --body:'Space Grotesk',sans-serif;
+  --rad:14px;
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
 }
+body{font-family:var(--body);background:var(--bg);color:var(--txt);min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
 
-body{
-  font-family:var(--body);
-  background:var(--bg);
-  color:var(--txt);
-  min-height:100dvh;
-  overflow-x:hidden;
-  -webkit-font-smoothing:antialiased;
-}
-
-/* AMBIENT */
-.ambient{
-  position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:
-    radial-gradient(ellipse 60% 45% at 15% -5%,rgba(255,107,0,.06),transparent),
-    radial-gradient(ellipse 50% 40% at 85% 105%,rgba(255,45,85,.04),transparent),
-    radial-gradient(ellipse 30% 25% at 50% 50%,rgba(255,149,0,.02),transparent);
-}
-
-/* PARTICLES */
+/* ════ BACKGROUND LAYERS ════ */
+.bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);animation:orbDrift ease-in-out infinite alternate;}
+.orb1{width:500px;height:500px;top:-200px;left:-150px;background:radial-gradient(circle,rgba(255,107,0,.09),transparent 70%);animation-duration:12s;animation-delay:0s;}
+.orb2{width:400px;height:400px;bottom:-150px;right:-100px;background:radial-gradient(circle,rgba(255,45,85,.07),transparent 70%);animation-duration:15s;animation-delay:-5s;}
+.orb3{width:300px;height:300px;top:40%;left:40%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,157,0,.05),transparent 70%);animation-duration:10s;animation-delay:-3s;}
+@keyframes orbDrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(40px,30px) scale(1.1)}}
+.orb1{animation-name:orb1Drift}
+@keyframes orb1Drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(30px,50px) scale(1.08)}}
+.grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(255,107,0,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,107,0,.018) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 90% 90% at 50% 50%,black 30%,transparent);animation:gridShift 30s linear infinite;}
+@keyframes gridShift{0%{background-position:0 0}100%{background-position:60px 60px}}
+.scan-line{position:fixed;left:0;right:0;height:2px;z-index:0;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,107,0,.15),rgba(255,157,0,.2),rgba(255,107,0,.15),transparent);animation:scanDown 8s linear infinite;filter:blur(1px);}
+@keyframes scanDown{0%{top:-2px;opacity:0}5%{opacity:1}95%{opacity:.6}100%{top:100vh;opacity:0}}
 .particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .p{position:absolute;border-radius:50%;animation:float linear infinite;opacity:0}
-@keyframes float{
-  0%{transform:translateY(100vh) scale(0);opacity:0}
-  10%{opacity:.4}
-  90%{opacity:.2}
-  100%{transform:translateY(-10vh) scale(1.5);opacity:0}
+@keyframes float{0%{transform:translateY(100vh) scale(0) rotate(0deg);opacity:0}8%{opacity:.6}92%{opacity:.2}100%{transform:translateY(-10vh) scale(1.8) rotate(180deg);opacity:0}}
+
+/* ════ WELCOME GATE ════ */
+#welcomeGate{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(6,8,13,.97);
+  backdrop-filter:blur(20px);
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
 }
-
-/* LAYOUT */
-.wrap{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:0 16px 80px}
-
-/* HEADER */
-.header{padding:24px 0 28px;text-align:center;position:relative}
-.logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px}
-.logo-icon{
-  width:40px;height:40px;border-radius:10px;
+.wg-box{
+  max-width:400px;width:100%;
+  background:var(--s1);
+  border:1px solid var(--b2);
+  border-radius:20px;
+  padding:36px 28px 28px;
+  text-align:center;
+  position:relative;overflow:hidden;
+  animation:wgIn .6s var(--ease-spring) both;
+}
+@keyframes wgIn{
+  from{opacity:0;transform:scale(.88) translateY(24px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+.wg-box::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--accg);border-radius:20px 20px 0 0;
+}
+.wg-icon{
+  width:64px;height:64px;border-radius:18px;
   background:var(--accg);
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 20px rgba(255,107,0,.35);
+  margin:0 auto 20px;
+  box-shadow:0 0 40px rgba(255,107,0,.5),0 0 0 1px rgba(255,107,0,.3);
   animation:pulseGlow 3s ease-in-out infinite;
 }
-@keyframes pulseGlow{
-  0%,100%{box-shadow:0 0 20px rgba(255,107,0,.35)}
-  50%{box-shadow:0 0 35px rgba(255,107,0,.6)}
+.wg-icon svg{width:30px;height:30px;fill:#fff}
+.wg-title{
+  font-size:22px;font-weight:700;color:#fff;
+  line-height:1.3;margin-bottom:10px;
 }
-.logo-icon svg{width:22px;height:22px;fill:#fff}
-.logo-text{font-size:26px;font-weight:700;color:#fff;letter-spacing:-.5px}
-.logo-text span{color:var(--acc)}
-.header-sub{font-size:12px;color:var(--sub);letter-spacing:.04em}
-.ff-badge{
-  display:inline-flex;align-items:center;gap:5px;
-  margin-top:12px;padding:5px 12px;
-  background:rgba(255,107,0,.1);border:1px solid rgba(255,107,0,.25);
-  border-radius:99px;font-size:11px;color:var(--acc);font-weight:600;
+.wg-title span{
+  background:var(--accg);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;
 }
-
-/* CARD */
-.card{
-  background:var(--s1);border:1px solid var(--b1);
-  border-radius:16px;padding:20px;margin-bottom:16px;
-  transition:border-color .3s;
+.wg-desc{
+  font-size:13px;color:var(--sub);line-height:1.8;
+  margin-bottom:28px;
 }
-.card:focus-within{border-color:var(--b2)}
-.card-label{
-  font-size:11px;font-weight:600;color:var(--sub);
-  letter-spacing:.06em;margin-bottom:14px;
-  display:flex;align-items:center;gap:6px;
-}
-.card-label::before{
-  content:'';width:3px;height:3px;border-radius:50%;
-  background:var(--acc);display:block;
-}
-
-/* OS TABS */
-.os-tabs{display:flex;gap:8px;margin-bottom:16px}
-.os-tab{
-  flex:1;padding:11px 0;border:1px solid var(--b1);border-radius:10px;
-  background:transparent;color:var(--sub);font-family:var(--body);
-  font-size:13px;font-weight:600;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  transition:all .25s;
-}
-.os-tab.active{
-  background:var(--s3);border-color:var(--b2);color:#fff;
-  box-shadow:inset 0 0 0 1px var(--b2);
-}
-.os-tab svg{width:15px;height:15px;opacity:.6;transition:opacity .2s}
-.os-tab.active svg{opacity:1}
-
-/* SEARCH / AUTOCOMPLETE */
-.ac-wrap{position:relative}
-.ac-input{
-  width:100%;background:var(--s2);
-  border:1px solid var(--b1);color:var(--txt);
-  border-radius:10px;padding:13px 44px 13px 44px;
-  font-size:14px;font-family:var(--body);outline:none;
-  transition:border-color .2s,box-shadow .2s;
-  -webkit-appearance:none;
-}
-.ac-input:focus{border-color:rgba(255,107,0,.4);box-shadow:0 0 0 3px rgba(255,107,0,.1)}
-.ac-input::placeholder{color:var(--mute)}
-.ac-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--mute);pointer-events:none}
-.ac-clear{
-  position:absolute;right:12px;top:50%;transform:translateY(-50%);
-  background:none;border:none;color:var(--mute);cursor:pointer;
-  padding:4px;display:none;transition:color .2s;
-}
-.ac-clear:hover{color:var(--sub)}
-.ac-dropdown{
-  position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:50;
-  background:var(--s2);border:1px solid var(--b2);border-radius:10px;
-  overflow:hidden;display:none;
-  box-shadow:0 16px 40px rgba(0,0,0,.5);
-  max-height:220px;overflow-y:auto;
-}
-.ac-dropdown.open{display:block;animation:dropIn .15s cubic-bezier(.23,1,.32,1)}
-@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.ac-item{
-  padding:11px 14px;font-size:13px;cursor:pointer;
-  display:flex;align-items:center;gap:8px;
-  transition:background .15s;color:var(--txt);
-  border-bottom:1px solid rgba(255,255,255,.04);
-}
-.ac-item:last-child{border-bottom:none}
-.ac-item:hover,.ac-item.focused{background:var(--s3)}
-.ac-item mark{background:none;color:var(--acc);font-weight:700}
-.ac-tier-badge{
-  margin-left:auto;font-family:var(--mono);font-size:9px;
-  padding:2px 6px;border-radius:4px;
-  background:rgba(255,107,0,.1);color:var(--acc);
-  letter-spacing:.04em;flex-shrink:0;
-}
-
-/* DEVICE CONFIRM */
-.device-confirm{
-  display:none;margin-top:10px;padding:10px 14px;
-  background:rgba(255,107,0,.05);border:1px solid rgba(255,107,0,.18);
-  border-radius:8px;font-size:12px;color:var(--acc);font-weight:600;
-  align-items:center;gap:8px;
-  animation:fadeIn .25s ease;
-}
-@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
-.device-confirm.show{display:flex}
-.device-confirm .dc-tier{margin-left:auto;font-family:var(--mono);font-size:10px;opacity:.7}
-
-/* ISSUE GRID */
-.issue-wrap{display:none;animation:fadeIn .3s ease}
-.issue-wrap.show{display:block}
-.issue-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.issue-pill{
-  display:flex;align-items:center;gap:6px;
-  padding:9px 14px;border:1px solid var(--b1);border-radius:99px;
-  font-size:12px;font-weight:500;color:var(--sub);
-  background:var(--s2);cursor:pointer;
-  transition:all .2s;user-select:none;
-}
-.issue-pill:hover{border-color:var(--b2);color:var(--txt)}
-.issue-pill.sel{
-  border-color:var(--acc);color:#fff;
-  background:rgba(255,107,0,.12);
-  box-shadow:0 0 12px rgba(255,107,0,.15);
-}
-.issue-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.5}
-.issue-pill.sel .issue-dot{opacity:1;background:var(--acc)}
-
-/* GEN BUTTON */
-.gen-btn{
-  width:100%;padding:16px;
+.wg-desc strong{color:var(--txt)}
+.wg-btns{display:flex;flex-direction:column;gap:10px}
+.wg-ok{
+  width:100%;padding:15px;
   background:var(--accg);color:#fff;
   border:none;border-radius:12px;
+  font-family:var(--body);font-size:14px;font-weight:700;
+  cursor:pointer;
+  box-shadow:0 4px 20px rgba(255,107,0,.35);
+  transition:transform .2s var(--ease-spring),box-shadow .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.wg-ok:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,107,0,.5)}
+.wg-ok:active{transform:scale(.97)}
+.wg-admin{
+  width:100%;padding:13px;
+  background:rgba(255,107,0,.07);
+  border:1px solid rgba(255,107,0,.25);
+  color:var(--acc);
+  border-radius:12px;
+  font-family:var(--body);font-size:13px;font-weight:600;
+  cursor:pointer;
+  transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  text-decoration:none;
+}
+.wg-admin:hover{background:rgba(255,107,0,.14);border-color:rgba(255,107,0,.5)}
+.wg-skip{
+  width:100%;padding:11px;
+  background:transparent;border:1px solid var(--b2);
+  color:var(--mute);border-radius:12px;
+  font-family:var(--body);font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .2s;letter-spacing:.04em;
+}
+.wg-skip:hover{color:var(--sub);border-color:var(--b1)}
+
+/* ════ LAYOUT ════ */
+.wrap{position:relative;z-index:1;max-width:620px;margin:0 auto;padding:0 16px 100px}
+
+/* ════ HEADER ════ */
+.header{padding:30px 0 34px;text-align:center;position:relative;animation:headerIn .8s var(--ease-out) both}
+@keyframes headerIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px}
+.logo-icon{width:50px;height:50px;border-radius:14px;background:var(--accg);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px rgba(255,107,0,.3),0 0 40px rgba(255,107,0,.45),0 4px 20px rgba(0,0,0,.4);animation:pulseGlow 3s ease-in-out infinite;position:relative;overflow:hidden;}
+.logo-icon::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.25),transparent 60%);}
+.logo-icon::after{content:'';position:absolute;width:150%;height:40px;top:-20px;left:-25%;background:rgba(255,255,255,.15);transform:rotate(-25deg);animation:logoSheen 4s ease-in-out 1s infinite;}
+@keyframes logoSheen{0%,70%,100%{transform:rotate(-25deg) translateX(-150%)}40%{transform:rotate(-25deg) translateX(150%)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 1px rgba(255,107,0,.3),0 0 40px rgba(255,107,0,.4),0 4px 20px rgba(0,0,0,.4)}50%{box-shadow:0 0 0 2px rgba(255,107,0,.5),0 0 60px rgba(255,107,0,.7),0 8px 30px rgba(0,0,0,.5)}}
+.logo-icon svg{width:26px;height:26px;fill:#fff;position:relative;z-index:1}
+.logo-text{font-size:32px;font-weight:700;color:#fff;letter-spacing:-1px;line-height:1}
+.logo-text span{background:var(--accg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.header-sub{font-size:12.5px;color:var(--sub);letter-spacing:.05em;margin-top:4px}
+.ff-badge{display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:7px 16px;background:rgba(255,107,0,.08);border:1px solid rgba(255,107,0,.2);border-radius:99px;font-size:11px;color:var(--acc);font-weight:600;letter-spacing:.04em;animation:badgePulse 2s ease-in-out infinite;}
+@keyframes badgePulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,0,0)}50%{box-shadow:0 0 0 4px rgba(255,107,0,.08)}}
+.ff-dot{width:6px;height:6px;border-radius:50%;background:var(--acc);animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(.7)}}
+
+/* ════ CARDS ════ */
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);padding:22px;margin-bottom:14px;transition:border-color .35s,box-shadow .35s,transform .25s;position:relative;overflow:visible;animation:cardIn .6s var(--ease-out) both;}
+@keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.card:nth-child(1){animation-delay:.1s}
+.card:nth-child(2){animation-delay:.2s}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;border-radius:var(--rad) var(--rad) 0 0;background:linear-gradient(90deg,transparent,rgba(255,107,0,.2),transparent);pointer-events:none;}
+.card:focus-within{border-color:rgba(255,107,0,.3);box-shadow:0 0 0 1px rgba(255,107,0,.15),0 8px 32px rgba(0,0,0,.3);transform:translateY(-1px);}
+.card-label{font-size:10.5px;font-weight:700;color:var(--sub);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.card-label::before{content:'';width:3px;height:13px;border-radius:99px;background:var(--accg);display:block;flex-shrink:0;}
+
+/* ════ OS TABS ════ */
+.os-tabs{display:flex;gap:8px;margin-bottom:18px}
+.os-tab{flex:1;padding:13px 0;border:1px solid var(--b1);border-radius:11px;background:transparent;color:var(--sub);font-family:var(--body);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .28s var(--ease-out);position:relative;overflow:hidden;}
+.os-tab::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,107,0,.06),rgba(255,157,0,.04));opacity:0;transition:opacity .25s;}
+.os-tab:active{transform:scale(.97)}
+.os-tab.active{background:var(--s3);border-color:rgba(255,107,0,.4);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,107,0,.15),0 0 20px rgba(255,107,0,.1);}
+.os-tab.active::after{opacity:1}
+.os-tab svg{width:16px;height:16px;opacity:.5;transition:all .25s;position:relative;z-index:1}
+.os-tab span{position:relative;z-index:1;transition:color .25s}
+.os-tab.active svg{opacity:1}
+.os-tab.switching{animation:tabPop .25s var(--ease-spring)}
+@keyframes tabPop{0%{transform:scale(1)}40%{transform:scale(.95)}100%{transform:scale(1)}}
+
+/* ════ AUTOCOMPLETE ════ */
+.ac-wrap{position:relative}
+.ac-input{width:100%;background:var(--s2);border:1px solid var(--b1);color:var(--txt);border-radius:10px;padding:14px 46px 14px 46px;font-size:14px;font-family:var(--body);outline:none;transition:border-color .25s,box-shadow .25s,background .25s;-webkit-appearance:none;}
+.ac-input:focus{border-color:rgba(255,107,0,.5);box-shadow:0 0 0 3px rgba(255,107,0,.1),0 4px 16px rgba(0,0,0,.2);background:var(--s3);}
+.ac-input::placeholder{color:var(--mute)}
+.ac-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--mute);pointer-events:none;transition:color .25s;}
+.ac-input:focus~.ac-icon{color:var(--acc)}
+.ac-clear{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:var(--b1);border:none;color:var(--sub);cursor:pointer;width:24px;height:24px;border-radius:50%;display:none;align-items:center;justify-content:center;transition:all .2s;}
+.ac-clear:hover{background:var(--b2);color:var(--txt);transform:translateY(-50%) rotate(90deg)}
+.ac-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:200;background:var(--s2);border:1px solid var(--b2);border-radius:13px;overflow:hidden;display:none;box-shadow:0 24px 60px rgba(0,0,0,.7),0 0 0 1px rgba(255,107,0,.08);max-height:240px;overflow-y:auto;}
+.ac-dropdown.open{display:block;animation:dropIn .18s var(--ease-out)}
+@keyframes dropIn{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.ac-item{padding:12px 16px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .12s;color:var(--txt);border-bottom:1px solid rgba(255,255,255,.04);}
+.ac-item:last-child{border-bottom:none}
+.ac-item:hover,.ac-item.focused{background:var(--s3)}
+.ac-item:active{background:rgba(255,107,0,.08)}
+.ac-item mark{background:none;color:var(--acc);font-weight:700}
+.ac-tier-badge{margin-left:auto;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:5px;background:rgba(255,107,0,.1);color:var(--acc);letter-spacing:.04em;flex-shrink:0;border:1px solid rgba(255,107,0,.15);}
+
+/* ════ DEVICE CONFIRM ════ */
+.device-confirm{display:none;margin-top:10px;padding:11px 15px;background:rgba(48,209,88,.06);border:1px solid rgba(48,209,88,.18);border-radius:9px;font-size:12px;color:var(--green);font-weight:600;align-items:center;gap:9px;}
+.device-confirm.show{display:flex;animation:confirmPop .3s var(--ease-spring);}
+@keyframes confirmPop{from{opacity:0;transform:scale(.96) translateY(-4px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.dc-tier{margin-left:auto;font-family:var(--mono);font-size:10px;opacity:.6;color:var(--sub)}
+
+/* ════ ISSUES ════ */
+.issue-wrap{display:none}
+.issue-wrap.show{display:block;animation:fadeSlideUp .35s var(--ease-out)}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.issue-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.issue-pill{display:flex;align-items:center;gap:7px;padding:10px 16px;border:1px solid var(--b1);border-radius:99px;font-size:12px;font-weight:600;color:var(--sub);background:var(--s2);cursor:pointer;transition:all .22s var(--ease-out);user-select:none;position:relative;overflow:hidden;}
+.issue-pill::before{content:'';position:absolute;inset:0;border-radius:99px;background:var(--accg);opacity:0;transition:opacity .22s;}
+.issue-pill:hover{border-color:var(--b2);color:var(--txt);transform:translateY(-1px)}
+.issue-pill:active{transform:scale(.95)}
+.issue-pill.sel{border-color:var(--acc);color:#fff;box-shadow:0 0 18px rgba(255,107,0,.22),inset 0 0 0 1px rgba(255,107,0,.2);animation:pillPop .25s var(--ease-spring);}
+.issue-pill.sel::before{opacity:.1}
+@keyframes pillPop{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
+.issue-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.4;transition:all .22s;position:relative;z-index:1;}
+.issue-pill.sel .issue-dot{opacity:1;background:var(--acc);box-shadow:0 0 6px rgba(255,107,0,.8);}
+.issue-pill span:last-child{position:relative;z-index:1}
+
+/* ════ GEN BUTTON — fixed at bottom, no overlap ════ */
+.gen-btn-wrap{
+  position:sticky;bottom:0;left:0;right:0;z-index:10;
+  padding:14px 0 20px;
+  background:linear-gradient(to top, var(--bg) 60%, transparent);
+  margin-top:8px;
+}
+.gen-btn{
+  width:100%;padding:18px;
+  background:var(--accg);color:#fff;
+  border:none;border-radius:13px;
   font-family:var(--body);font-size:15px;font-weight:700;
   cursor:pointer;position:relative;overflow:hidden;
-  transition:opacity .2s,transform .15s,box-shadow .2s;
-  letter-spacing:.01em;
-  box-shadow:0 4px 20px rgba(255,107,0,.25);
+  transition:opacity .2s,transform .18s var(--ease-spring),box-shadow .25s;
+  letter-spacing:.02em;
+  box-shadow:0 4px 24px rgba(255,107,0,.35),0 0 0 1px rgba(255,107,0,.2),0 1px 0 rgba(255,255,255,.1) inset;
+  text-shadow:0 1px 3px rgba(0,0,0,.2);
 }
-.gen-btn:hover:not(:disabled){
-  opacity:.93;transform:translateY(-1px);
-  box-shadow:0 8px 28px rgba(255,107,0,.38);
-}
-.gen-btn:active:not(:disabled){transform:translateY(0)}
-.gen-btn:disabled{opacity:.25;cursor:not-allowed;box-shadow:none}
-.gen-btn .shimmer{
-  position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
-  transform:translateX(-100%);transition:transform .6s;
-}
-.gen-btn:hover:not(:disabled) .shimmer{transform:translateX(100%)}
+.gen-btn:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(255,107,0,.5),0 0 0 1px rgba(255,107,0,.35);}
+.gen-btn:not(:disabled):active{transform:scale(.97) translateY(0)}
+.gen-btn:disabled{opacity:.2;cursor:not-allowed;box-shadow:none}
+.gen-btn .shimmer{position:absolute;inset:0;background:linear-gradient(90deg,transparent 20%,rgba(255,255,255,.25) 50%,transparent 80%);transform:translateX(-100%);transition:transform .7s ease;}
+.gen-btn:not(:disabled):hover .shimmer{transform:translateX(100%)}
+.gen-btn .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.3);transform:scale(0);animation:rippleOut .6s ease-out forwards;pointer-events:none;}
+@keyframes rippleOut{to{transform:scale(4);opacity:0}}
+.gen-btn svg{vertical-align:middle;margin-right:8px;opacity:.9}
 
-/* LOADING */
-.loading-overlay{
-  display:none;position:fixed;inset:0;z-index:300;
-  background:rgba(8,11,16,.92);backdrop-filter:blur(10px);
-  align-items:center;justify-content:center;flex-direction:column;gap:20px;
-}
-.loading-overlay.show{display:flex}
-.loader-ring{
-  width:56px;height:56px;border-radius:50%;
-  border:2px solid var(--b2);
-  border-top-color:var(--acc);
-  animation:spin .65s linear infinite;
-  box-shadow:0 0 20px rgba(255,107,0,.2);
-}
+/* ════ LOADING ════ */
+.loading-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(6,8,13,.95);backdrop-filter:blur(16px);align-items:center;justify-content:center;flex-direction:column;gap:24px;}
+.loading-overlay.show{display:flex;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.loader-wrap{position:relative;width:70px;height:70px}
+.loader-ring{position:absolute;inset:0;border-radius:50%;border:2px solid var(--b1);border-top-color:var(--acc);animation:spin .7s linear infinite;}
+.loader-ring2{position:absolute;inset:8px;border-radius:50%;border:1px solid rgba(255,107,0,.15);border-bottom-color:rgba(255,157,0,.5);animation:spin .9s linear infinite reverse;}
+.loader-core{position:absolute;inset:18px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,0,.25),transparent);animation:corePulse 1.4s ease-in-out infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loader-msg{font-size:13px;color:var(--sub);font-family:var(--mono);letter-spacing:.05em}
-.loader-progress{
-  width:180px;height:2px;background:var(--b1);border-radius:99px;overflow:hidden;
-}
-.loader-fill{
-  height:100%;background:var(--accg);border-radius:99px;
-  width:0;transition:width .4s ease;
-}
+@keyframes corePulse{0%,100%{opacity:.4;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+.loader-msg{font-size:13px;color:var(--sub);font-family:var(--mono);letter-spacing:.07em;animation:msgFade .3s ease}
+@keyframes msgFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.loader-progress{width:220px;height:2px;background:var(--b1);border-radius:99px;overflow:hidden;}
+.loader-fill{height:100%;background:var(--accg);border-radius:99px;width:0;transition:width .4s var(--ease-out);box-shadow:0 0 8px rgba(255,107,0,.6);}
 
-/* RESULT */
+/* ════ RESULT ════ */
 .result-wrap{display:none}
-.result-wrap.show{display:block;animation:revealUp .4s cubic-bezier(.23,1,.32,1)}
-@keyframes revealUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-
-/* RESULT HEADER */
-.result-header{
-  background:var(--s1);border:1px solid var(--b1);
-  border-radius:16px;padding:20px;margin-bottom:12px;
-  position:relative;overflow:hidden;
-}
-.result-header::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,107,0,.06),transparent 60%);
-  pointer-events:none;
-}
-.rh-device{font-size:22px;font-weight:700;color:#fff;margin-bottom:8px}
-.rh-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-.tag{
-  font-family:var(--mono);font-size:10px;padding:4px 9px;
-  border-radius:5px;background:var(--s3);border:1px solid var(--b2);
-  color:var(--sub);letter-spacing:.04em;
-}
+.result-wrap.show{display:block;animation:revealUp .45s var(--ease-out)}
+@keyframes revealUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.result-header{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);padding:24px;margin-bottom:14px;position:relative;overflow:hidden;}
+.result-header::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accg);animation:headerBarIn .6s var(--ease-out);}
+@keyframes headerBarIn{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1);transform-origin:left}}
+.result-header-glow{position:absolute;top:-40px;left:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,107,0,.08),transparent 70%);pointer-events:none;}
+.rh-device{font-size:22px;font-weight:700;color:#fff;margin-bottom:10px;line-height:1.2;animation:textReveal .5s var(--ease-out) .1s both;}
+@keyframes textReveal{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.rh-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tag{font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:6px;background:var(--s3);border:1px solid var(--b2);color:var(--sub);letter-spacing:.05em;animation:tagIn .4s var(--ease-out) both;}
+.tag:nth-child(1){animation-delay:.15s}
+.tag:nth-child(2){animation-delay:.22s}
+.tag:nth-child(3){animation-delay:.29s}
+@keyframes tagIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
 .tag.fire{background:rgba(255,107,0,.1);border-color:rgba(255,107,0,.25);color:var(--acc)}
-.issue-display{
-  padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;
-  background:rgba(255,45,85,.08);border:1px solid rgba(255,45,85,.2);
-  color:#ff6b8a;display:inline-block;
-}
-
-/* ANALYSIS */
-.ana-card{
-  background:var(--s1);border:1px solid var(--b1);border-left:2px solid var(--acc);
-  border-radius:12px;padding:16px 18px;margin-bottom:12px;
-}
-.ana-label{font-size:10px;font-weight:700;color:var(--acc);letter-spacing:.1em;font-family:var(--mono);margin-bottom:8px}
-.ana-text{font-size:13px;line-height:1.75;color:var(--sub)}
-.ana-text strong{color:var(--txt)}
-
-/* SENS TABLE */
-.sens-table{
-  background:var(--s1);border:1px solid var(--b1);
-  border-radius:16px;overflow:hidden;margin-bottom:12px;
-}
-.st-head{
-  display:grid;grid-template-columns:1fr 90px 60px;
-  padding:10px 16px;border-bottom:1px solid var(--b1);gap:8px;
-}
-.st-head span{font-size:10px;font-weight:700;color:var(--mute);letter-spacing:.06em;font-family:var(--mono)}
+.issue-display{padding:9px 15px;border-radius:9px;font-size:12px;font-weight:600;background:rgba(255,45,85,.08);border:1px solid rgba(255,45,85,.18);color:#ff6b8a;display:inline-block;animation:tagIn .4s var(--ease-out) .35s both;}
+.stats-row{display:flex;gap:10px;margin-bottom:14px}
+.stat-chip{flex:1;background:var(--s1);border:1px solid var(--b1);border-radius:11px;padding:13px 14px;text-align:center;transition:all .25s;animation:cardIn .5s var(--ease-out) both;}
+.stat-chip:nth-child(1){animation-delay:.05s}
+.stat-chip:nth-child(2){animation-delay:.12s}
+.stat-chip:nth-child(3){animation-delay:.19s}
+.stat-chip:hover{border-color:var(--b2);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.stat-val{font-family:var(--mono);font-size:17px;font-weight:700;color:#fff}
+.stat-label{font-size:10px;color:var(--mute);margin-top:3px;letter-spacing:.04em}
+.ana-card{background:var(--s1);border:1px solid var(--b1);border-left:3px solid var(--acc);border-radius:12px;padding:18px 20px;margin-bottom:14px;position:relative;overflow:hidden;animation:cardIn .5s var(--ease-out) .1s both;}
+.ana-card::before{content:'';position:absolute;top:0;right:0;bottom:0;width:60px;background:linear-gradient(270deg,rgba(255,107,0,.04),transparent);pointer-events:none;}
+.ana-label{font-size:10px;font-weight:700;color:var(--acc);letter-spacing:.12em;font-family:var(--mono);margin-bottom:9px}
+.ana-text{font-size:13px;line-height:1.85;color:var(--sub)}
+.ana-text strong{color:var(--txt);font-weight:600}
+.sens-table{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);overflow:hidden;margin-bottom:14px;animation:cardIn .5s var(--ease-out) .15s both;}
+.st-head{display:grid;grid-template-columns:1fr 100px 68px;padding:12px 18px;border-bottom:1px solid var(--b1);gap:8px;background:rgba(255,107,0,.025);}
+.st-head span{font-size:10px;font-weight:700;color:var(--mute);letter-spacing:.08em;font-family:var(--mono)}
 .st-head span:last-child{text-align:right}
-
-.sens-row{
-  display:grid;grid-template-columns:1fr 90px 60px;
-  align-items:center;padding:15px 16px;
-  border-bottom:1px solid rgba(255,255,255,.04);gap:10px;
-  transition:background .15s;position:relative;
-}
+.sens-row{display:grid;grid-template-columns:1fr 100px 68px;align-items:center;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.04);gap:10px;transition:background .15s;position:relative;}
 .sens-row:last-child{border-bottom:none}
 .sens-row:hover{background:rgba(255,255,255,.02)}
-.sens-row.highlight{
-  background:rgba(255,107,0,.04);
-  border-left:2px solid rgba(255,107,0,.4);
-  padding-left:14px;
-}
+.sens-row.highlight{background:linear-gradient(90deg,rgba(255,107,0,.06),rgba(255,107,0,.02),transparent);border-left:3px solid var(--acc);padding-left:15px;}
+.sens-row{opacity:0;transform:translateX(-8px);animation:rowIn .4s var(--ease-out) forwards}
+@keyframes rowIn{to{opacity:1;transform:translateX(0)}}
 .row-name{font-size:13px;font-weight:600;color:var(--txt)}
 .row-sub{font-size:11px;color:var(--mute);margin-top:2px}
-.row-bar{width:100%;height:3px;background:var(--mute);border-radius:99px;overflow:hidden;margin-top:3px}
-.row-fill{height:100%;width:0;background:var(--accg);border-radius:99px;transition:width 1.2s cubic-bezier(.23,1,.32,1)}
-.highlight .row-fill{background:linear-gradient(90deg,var(--acc),#ffdb00)}
-.row-val{
-  font-family:var(--mono);font-size:22px;font-weight:700;
-  color:#fff;text-align:right;
-  transition:color .3s;
-}
-.highlight .row-val{color:var(--acc)}
-.row-new{
-  position:absolute;right:60px;top:12px;
-  font-size:9px;font-family:var(--mono);
-  padding:2px 5px;border-radius:3px;
-  background:rgba(255,107,0,.15);color:var(--acc);
-  letter-spacing:.06em;opacity:0;
-  animation:fadeTag .4s ease 1.5s forwards;
-}
-@keyframes fadeTag{to{opacity:1}}
+.row-bar{width:100%;height:3px;background:var(--b1);border-radius:99px;overflow:hidden;margin-top:6px;}
+.row-fill{height:100%;width:0;border-radius:99px;transition:width 1.4s var(--ease-out);background:var(--accg);box-shadow:0 0 6px rgba(255,107,0,.4);}
+.highlight .row-fill{background:linear-gradient(90deg,var(--acc),#ffd500);box-shadow:0 0 10px rgba(255,200,0,.5);}
+.row-val{font-family:var(--mono);font-size:24px;font-weight:700;color:#fff;text-align:right;transition:all .3s var(--ease-out);}
+.highlight .row-val{color:var(--acc);text-shadow:0 0 24px rgba(255,107,0,.5);filter:drop-shadow(0 0 6px rgba(255,107,0,.3));}
+.row-val.flash{animation:valFlash .3s ease}
+@keyframes valFlash{0%{color:#fff;transform:scale(1.15)}100%{transform:scale(1)}}
+.tips-card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:18px 20px;margin-bottom:14px;animation:cardIn .5s var(--ease-out) .2s both;}
+.tips-title{font-size:10px;font-weight:700;color:var(--sub);letter-spacing:.09em;text-transform:uppercase;margin-bottom:14px;font-family:var(--mono)}
+.tips-list{list-style:none;display:flex;flex-direction:column;gap:12px}
+.tips-list li{font-size:13px;color:var(--sub);display:flex;gap:11px;line-height:1.65;align-items:flex-start;animation:tipIn .4s var(--ease-out) both;}
+@keyframes tipIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+.tip-dot{width:5px;height:5px;border-radius:50%;background:var(--acc);flex-shrink:0;margin-top:7px;opacity:.65;box-shadow:0 0 4px rgba(255,107,0,.5);}
+.div{height:1px;background:linear-gradient(90deg,transparent,var(--b2),transparent);margin:24px 0;animation:divIn .6s var(--ease-out)}
+@keyframes divIn{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.result-note{font-size:11px;color:var(--mute);line-height:1.75;text-align:center;margin-bottom:18px;font-family:var(--mono);letter-spacing:.02em;}
+.reset-btn{width:100%;padding:15px;background:transparent;color:var(--sub);border:1px solid var(--b2);border-radius:10px;font-family:var(--body);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .25s var(--ease-out);position:relative;overflow:hidden;}
+.reset-btn::before{content:'';position:absolute;inset:0;background:rgba(255,107,0,.06);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease-out);}
+.reset-btn:hover{border-color:rgba(255,107,0,.4);color:var(--acc)}
+.reset-btn:hover::before{transform:scaleX(1)}
+.reset-btn:active{transform:scale(.98)}
 
-/* TIPS */
-.tips-card{
-  background:var(--s1);border:1px solid var(--b1);
-  border-radius:12px;padding:16px 18px;margin-bottom:12px;
-}
-.tips-title{font-size:11px;font-weight:600;color:var(--sub);letter-spacing:.04em;margin-bottom:12px}
-.tips-list{list-style:none;display:flex;flex-direction:column;gap:10px}
-.tips-list li{
-  font-size:13px;color:var(--sub);display:flex;gap:10px;
-  line-height:1.6;align-items:flex-start;
-}
-.tip-dot{
-  width:5px;height:5px;border-radius:50%;background:var(--acc);
-  flex-shrink:0;margin-top:7px;opacity:.6;
-}
-
-/* NOTE */
-.result-note{
-  font-size:11px;color:var(--mute);line-height:1.7;
-  text-align:center;margin-bottom:16px;
-  font-family:var(--mono);letter-spacing:.02em;
-}
-
-/* RESET */
-.reset-btn{
-  width:100%;padding:14px;background:transparent;
-  color:var(--sub);border:1px solid var(--b2);
-  border-radius:10px;font-family:var(--body);font-size:13px;
-  font-weight:500;cursor:pointer;transition:all .2s;
-}
-.reset-btn:hover{border-color:var(--acc);color:var(--acc)}
-
-/* DIVIDER */
-.div{height:1px;background:var(--b1);margin:24px 0}
-
-/* SCROLLBAR */
 ::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--b2);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,107,0,.4)}
 .ac-dropdown::-webkit-scrollbar{width:3px}
-
-/* MOBILE */
-@media(max-width:480px){
-  .rh-device{font-size:18px}
-  .row-val{font-size:18px}
-  .row-new{right:52px}
-}
+@media(max-width:480px){.rh-device{font-size:18px}.row-val{font-size:19px}.logo-text{font-size:27px}.stat-val{font-size:15px}.wrap{padding:0 12px 100px}}
 </style>
 </head>
 <body>
-<div class="ambient"></div>
+
+<!-- WELCOME GATE -->
+<div id="welcomeGate">
+  <div class="wg-box">
+    <div class="wg-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <div class="wg-title">Xin chào đến với<br><span>Hệ Thống SensGen</span></div>
+    <div class="wg-desc">
+      Tạo độ nhạy Free Fire <strong>tự động theo dòng máy</strong> của bạn.<br>
+      Phân tích chip · màn hình · vấn đề aim cá nhân.
+    </div>
+    <div class="wg-btns">
+      <button class="wg-ok" onclick="closeGate()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        OK — Vào hệ thống
+      </button>
+      <a class="wg-admin" href="https://zalo.me/g/kcxhjyespoj6yty7zymw" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Vào Box Admin
+      </a>
+      <button class="wg-skip" onclick="closeGate()">Bỏ qua</button>
+    </div>
+  </div>
+</div>
+
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+<div class="grid-bg"></div>
+<div class="scan-line"></div>
 <div class="particles" id="particles"></div>
 
-<!-- LOADING -->
 <div class="loading-overlay" id="loading">
-  <div class="loader-ring"></div>
+  <div class="loader-wrap">
+    <div class="loader-ring"></div>
+    <div class="loader-ring2"></div>
+    <div class="loader-core"></div>
+  </div>
   <div class="loader-msg" id="loadMsg">scanning device...</div>
   <div class="loader-progress"><div class="loader-fill" id="loadFill"></div></div>
 </div>
@@ -395,22 +388,21 @@ body{
     </div>
     <div class="header-sub">Công cụ tối ưu độ nhạy chuẩn cho từng máy</div>
     <div class="ff-badge">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-      FREE FIRE only
+      <div class="ff-dot"></div>
+      FREE FIRE · Sensitivity Optimizer
     </div>
   </div>
 
-  <!-- OS -->
   <div class="card">
     <div class="card-label">Hệ điều hành</div>
     <div class="os-tabs">
       <button class="os-tab active" id="iosBtn" onclick="setOS('ios')">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-        iOS / iPadOS
+        <span>iOS / iPadOS</span>
       </button>
       <button class="os-tab" id="androidBtn" onclick="setOS('android')">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48A5.84 5.84 0 0 0 12 1.5c-.96 0-1.86.23-2.66.63L7.88.65c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.3 1.3C7.14 3.53 6 5.11 6 7h12c0-1.89-1.14-3.47-2.47-4.84zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/></svg>
-        Android
+        <span>Android</span>
       </button>
     </div>
 
@@ -418,146 +410,110 @@ body{
     <div class="ac-wrap">
       <svg class="ac-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input class="ac-input" id="deviceInput"
-        placeholder="Nhập tên máy... (vd: iPhone 14 Pro)"
+        placeholder="Nhập tên máy... (vd: iPhone 15 Pro, Redmi Note 14)"
         autocomplete="off" autocorrect="off" spellcheck="false"
         oninput="onInput()" onfocus="onFocus()" onkeydown="onKey(event)">
       <button class="ac-clear" id="acClear" onclick="clearInput()">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
       <div class="ac-dropdown" id="acDrop"></div>
     </div>
     <div class="device-confirm" id="deviceConfirm">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
       <span id="dcName">–</span>
       <span class="dc-tier" id="dcTier">–</span>
     </div>
   </div>
 
-  <!-- ISSUES -->
   <div class="issue-wrap" id="issueWrap">
     <div class="card">
-      <div class="card-label">Vấn đề aim gặp phải (chọn 1 hoặc nhiều)</div>
+      <div class="card-label">Vấn đề aim gặp phải</div>
       <div class="issue-grid" id="issueGrid"></div>
     </div>
   </div>
 
-  <!-- GEN -->
-  <button class="gen-btn" id="genBtn" onclick="generate()" disabled>
-    <span class="shimmer"></span>
-    Phân tích &amp; tạo độ nhạy Free Fire
-  </button>
+  <!-- GEN BUTTON — sticky bottom wrap, clears above all content -->
+  <div class="gen-btn-wrap">
+    <button class="gen-btn" id="genBtn" onclick="generate()" disabled>
+      <span class="shimmer"></span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Phân tích &amp; tạo độ nhạy Free Fire
+    </button>
+  </div>
 
-  <!-- RESULT -->
   <div class="result-wrap" id="result">
     <div class="div"></div>
-
     <div class="result-header">
+      <div class="result-header-glow"></div>
       <div class="rh-device" id="rDevice">–</div>
       <div class="rh-tags">
         <span class="tag" id="rOS">–</span>
         <span class="tag" id="rTier">–</span>
-        <span class="tag fire">FREE FIRE</span>
+        <span class="tag fire">⚡ FREE FIRE</span>
       </div>
       <div class="issue-display" id="rIssues">–</div>
     </div>
-
+    <div class="stats-row" id="statsRow"></div>
     <div class="ana-card">
-      <div class="ana-label">PHÂN TÍCH AIM</div>
+      <div class="ana-label">📊 PHÂN TÍCH AIM</div>
       <div class="ana-text" id="rAna">–</div>
     </div>
-
     <div class="sens-table">
       <div class="st-head">
-        <span>Chế độ ngắm</span><span></span><span>Độ nhạy</span>
+        <span>CHẾ ĐỘ NGẮM</span><span></span><span>ĐỘ NHẠY</span>
       </div>
-      <!-- rows injected by JS -->
       <div id="sensRows"></div>
     </div>
-
     <div class="tips-card">
-      <div class="tips-title">GỢI Ý TINH CHỈNH</div>
+      <div class="tips-title">💡 Gợi ý tinh chỉnh</div>
       <ul class="tips-list" id="tipsList"></ul>
     </div>
-
     <div class="result-note">
-      Giá trị tính theo chip · màn hình · tình trạng aim.<br>Thử và điều chỉnh ±5 nếu cần. Mỗi ngón tay khác nhau.
+      Giá trị tính theo chip · màn hình · tình trạng aim.<br>Thử và điều chỉnh ±5 nếu cần · Mỗi ngón tay mỗi khác.
     </div>
-
-    <button class="reset-btn" onclick="reset()">← Tạo lại</button>
+    <button class="reset-btn" onclick="reset()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.56"/></svg>
+      Tạo lại
+    </button>
   </div>
 </div>
 
 <script>
+// ── WELCOME GATE ──
+function closeGate(){
+  const g=document.getElementById('welcomeGate');
+  g.style.transition='opacity .4s ease, transform .4s ease';
+  g.style.opacity='0';
+  g.style.transform='scale(1.04)';
+  setTimeout(()=>{g.style.display='none'},420);
+}
+
 // ── PARTICLES ──
 (function(){
   const c=document.getElementById('particles');
-  for(let i=0;i<18;i++){
+  for(let i=0;i<22;i++){
     const p=document.createElement('div');
     p.className='p';
-    const s=Math.random()*4+2;
-    p.style.cssText=`
-      width:${s}px;height:${s}px;
-      left:${Math.random()*100}%;
-      background:rgba(255,${Math.floor(Math.random()*80+80)},0,${Math.random()*.3+.1});
-      animation-duration:${Math.random()*15+12}s;
-      animation-delay:${Math.random()*10}s;
-    `;
+    const s=Math.random()*4+1.5;
+    p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;background:rgba(255,${Math.floor(Math.random()*90+80)},0,${Math.random()*.4+.1});animation-duration:${Math.random()*18+12}s;animation-delay:${Math.random()*12}s;`;
     c.appendChild(p);
   }
 })();
 
-// ── DATA ──
+// ── GEN BTN RIPPLE ──
+document.getElementById('genBtn').addEventListener('click',function(e){
+  const r=document.createElement('span');r.className='ripple';
+  const rect=this.getBoundingClientRect();
+  const size=Math.max(rect.width,rect.height);
+  r.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+  this.appendChild(r);setTimeout(()=>r.remove(),700);
+});
+
+// ── DEVICE DATABASE ──
 const DEVICES={
-ios:[
-  "iPhone 6s","iPhone 6s Plus","iPhone SE (1st Gen)",
-  "iPhone 7","iPhone 7 Plus","iPhone 8","iPhone 8 Plus",
-  "iPhone X","iPhone XR","iPhone XS","iPhone XS Max",
-  "iPhone 11","iPhone 11 Pro","iPhone 11 Pro Max",
-  "iPhone SE (2nd Gen)",
-  "iPhone 12 mini","iPhone 12","iPhone 12 Pro","iPhone 12 Pro Max",
-  "iPhone 13 mini","iPhone 13","iPhone 13 Pro","iPhone 13 Pro Max",
-  "iPhone SE (3rd Gen)",
-  "iPhone 14","iPhone 14 Plus","iPhone 14 Pro","iPhone 14 Pro Max",
-  "iPhone 15","iPhone 15 Plus","iPhone 15 Pro","iPhone 15 Pro Max",
-  "iPhone 16","iPhone 16 Plus","iPhone 16 Pro","iPhone 16 Pro Max","iPhone 16e",
-  "iPhone 17","iPhone 17 Air","iPhone 17 Pro","iPhone 17 Pro Max",
-  "iPhone 18","iPhone 18 Pro","iPhone 18 Pro Max",
-  "iPad Air 5","iPad Air M2","iPad Air M3",
-  "iPad Pro 11 M2","iPad Pro 12.9 M2","iPad Pro 11 M4","iPad Pro 13 M4",
-  "iPad mini 6","iPad mini 7",
-],
-android:[
-  "Samsung Galaxy S21","Samsung Galaxy S21+","Samsung Galaxy S21 Ultra",
-  "Samsung Galaxy S22","Samsung Galaxy S22+","Samsung Galaxy S22 Ultra",
-  "Samsung Galaxy S23","Samsung Galaxy S23+","Samsung Galaxy S23 Ultra","Samsung Galaxy S23 FE",
-  "Samsung Galaxy S24","Samsung Galaxy S24+","Samsung Galaxy S24 Ultra",
-  "Samsung Galaxy S25","Samsung Galaxy S25+","Samsung Galaxy S25 Ultra","Samsung Galaxy S25 Edge",
-  "Samsung Galaxy S26","Samsung Galaxy S26+","Samsung Galaxy S26 Ultra",
-  "Samsung Galaxy Z Fold 5","Samsung Galaxy Z Fold 6","Samsung Galaxy Z Fold 7",
-  "Samsung Galaxy Z Flip 5","Samsung Galaxy Z Flip 6","Samsung Galaxy Z Flip 7",
-  "Samsung Galaxy A54","Samsung Galaxy A55","Samsung Galaxy A56",
-  "Samsung Galaxy A35","Samsung Galaxy A36",
-  "Xiaomi 13","Xiaomi 13 Pro","Xiaomi 13 Ultra",
-  "Xiaomi 14","Xiaomi 14 Pro","Xiaomi 14 Ultra",
-  "Xiaomi 15","Xiaomi 15 Ultra","Xiaomi 15 Pro",
-  "Redmi Note 12 Pro","Redmi Note 13","Redmi Note 13 Pro","Redmi Note 13 Pro+",
-  "Redmi Note 14","Redmi Note 14 Pro","Redmi Note 14 Pro+",
-  "Redmi 12","Redmi 13","Redmi 13C",
-  "POCO F5","POCO F5 Pro","POCO F6","POCO F6 Pro","POCO F7","POCO F7 Ultra","POCO F7 Pro",
-  "POCO X6 Pro","POCO X7 Pro","POCO X7","POCO M7 Pro",
-  "OPPO Find X6 Pro","OPPO Find X7 Ultra","OPPO Find X8 Pro","OPPO Find X9 Pro",
-  "OPPO Reno 12 Pro","OPPO Reno 13 Pro",
-  "OnePlus 11","OnePlus 12","OPPO K12x","OnePlus 13","OnePlus Nord 4",
-  "vivo X90 Pro","vivo X100 Pro","vivo X200 Pro","vivo V40 Pro","vivo V50 Pro",
-  "realme GT 6","realme GT 7","realme GT 7 Pro","realme 14 Pro+",
-  "Google Pixel 8","Google Pixel 8 Pro","Google Pixel 9","Google Pixel 9 Pro","Google Pixel 10","Google Pixel 10 Pro",
-  "ASUS ROG Phone 7","ASUS ROG Phone 8","ASUS ROG Phone 8 Pro","ASUS ROG Phone 9","ASUS ROG Phone 9 Pro",
-  "HONOR Magic6 Pro","HONOR Magic7 Pro","HONOR 200 Pro","HONOR 300 Pro",
-  "Nubia Red Magic 9 Pro","Nubia Red Magic 10 Pro",
-  "Sony Xperia 1 VI","Sony Xperia 1 VII",
-  "Motorola Edge 60 Pro","Motorola Razr 60 Ultra",
-  "Infinix Zero 40 5G","Tecno Phantom X2 Pro",
-]};
+ios:["iPhone 6","iPhone 6 Plus","iPhone 6s","iPhone 6s Plus","iPhone SE (1st Gen)","iPhone 7","iPhone 7 Plus","iPhone 8","iPhone 8 Plus","iPhone X","iPhone XR","iPhone XS","iPhone XS Max","iPhone 11","iPhone 11 Pro","iPhone 11 Pro Max","iPhone SE (2nd Gen)","iPhone 12 mini","iPhone 12","iPhone 12 Pro","iPhone 12 Pro Max","iPhone 13 mini","iPhone 13","iPhone 13 Pro","iPhone 13 Pro Max","iPhone SE (3rd Gen)","iPhone 14","iPhone 14 Plus","iPhone 14 Pro","iPhone 14 Pro Max","iPhone 15","iPhone 15 Plus","iPhone 15 Pro","iPhone 15 Pro Max","iPhone 16","iPhone 16 Plus","iPhone 16 Pro","iPhone 16 Pro Max","iPhone 16e","iPhone 17","iPhone 17 Air","iPhone 17 Pro","iPhone 17 Pro Max","iPhone 17e","iPhone 18","iPhone 18 Plus","iPhone 18 Pro","iPhone 18 Pro Max","iPad","iPad 2","iPad 3","iPad 4","iPad 5","iPad 6","iPad 7","iPad 8","iPad 9","iPad 10","iPad A16","iPad Air","iPad Air 2","iPad Air 3","iPad Air 4","iPad Air 5","iPad Air M2","iPad Air M3","iPad mini","iPad mini 2","iPad mini 3","iPad mini 4","iPad mini 5","iPad mini 6","iPad mini 7","iPad mini A17 Pro","iPad Pro 9.7","iPad Pro 10.5","iPad Pro 11","iPad Pro 11 M1","iPad Pro 11 M2","iPad Pro 11 M4","iPad Pro 11 M5","iPad Pro 12.9","iPad Pro 12.9 M1","iPad Pro 12.9 M2","iPad Pro 12.9 M4","iPad Pro 12.9 M5","iPad Pro 13 M4","iPad Pro 13 M5"],
+android:["Samsung Galaxy S","Samsung Galaxy S2","Samsung Galaxy S3","Samsung Galaxy S4","Samsung Galaxy S5","Samsung Galaxy S6","Samsung Galaxy S6 Edge","Samsung Galaxy S6 Edge+","Samsung Galaxy S7","Samsung Galaxy S7 Edge","Samsung Galaxy S8","Samsung Galaxy S8+","Samsung Galaxy S8 Active","Samsung Galaxy S9","Samsung Galaxy S9+","Samsung Galaxy S10e","Samsung Galaxy S10","Samsung Galaxy S10+","Samsung Galaxy S10 5G","Samsung Galaxy S20","Samsung Galaxy S20+","Samsung Galaxy S20 Ultra","Samsung Galaxy S20 FE","Samsung Galaxy S20 FE 5G","Samsung Galaxy S21","Samsung Galaxy S21+","Samsung Galaxy S21 Ultra","Samsung Galaxy S21 FE","Samsung Galaxy S22","Samsung Galaxy S22+","Samsung Galaxy S22 Ultra","Samsung Galaxy S23","Samsung Galaxy S23+","Samsung Galaxy S23 Ultra","Samsung Galaxy S23 FE","Samsung Galaxy S24","Samsung Galaxy S24+","Samsung Galaxy S24 Ultra","Samsung Galaxy S24 FE","Samsung Galaxy S25","Samsung Galaxy S25+","Samsung Galaxy S25 Ultra","Samsung Galaxy S25 Edge","Samsung Galaxy S25 FE","Samsung Galaxy S26","Samsung Galaxy S26+","Samsung Galaxy S26 Ultra","Samsung Galaxy Note","Samsung Galaxy Note 2","Samsung Galaxy Note 3","Samsung Galaxy Note 4","Samsung Galaxy Note Edge","Samsung Galaxy Note 5","Samsung Galaxy Note 7","Samsung Galaxy Note FE","Samsung Galaxy Note 8","Samsung Galaxy Note 9","Samsung Galaxy Note 10","Samsung Galaxy Note 10+","Samsung Galaxy Note 10+ 5G","Samsung Galaxy Note 20","Samsung Galaxy Note 20 5G","Samsung Galaxy Note 20 Ultra","Samsung Galaxy Note 20 Ultra 5G","Samsung Galaxy Fold","Samsung Galaxy Z Fold2","Samsung Galaxy Z Fold3","Samsung Galaxy Z Fold4","Samsung Galaxy Z Fold5","Samsung Galaxy Z Fold6","Samsung Galaxy Z Fold7","Samsung Galaxy Z Flip","Samsung Galaxy Z Flip 5G","Samsung Galaxy Z Flip3","Samsung Galaxy Z Flip4","Samsung Galaxy Z Flip5","Samsung Galaxy Z Flip6","Samsung Galaxy Z Flip7","Samsung Galaxy A10","Samsung Galaxy A10e","Samsung Galaxy A10s","Samsung Galaxy A11","Samsung Galaxy A12","Samsung Galaxy A13","Samsung Galaxy A14","Samsung Galaxy A14 5G","Samsung Galaxy A15","Samsung Galaxy A15 5G","Samsung Galaxy A16","Samsung Galaxy A16 5G","Samsung Galaxy A17","Samsung Galaxy A20","Samsung Galaxy A20s","Samsung Galaxy A21","Samsung Galaxy A21s","Samsung Galaxy A22","Samsung Galaxy A22 5G","Samsung Galaxy A23","Samsung Galaxy A23 5G","Samsung Galaxy A24","Samsung Galaxy A25 5G","Samsung Galaxy A26 5G","Samsung Galaxy A30","Samsung Galaxy A30s","Samsung Galaxy A31","Samsung Galaxy A32","Samsung Galaxy A32 5G","Samsung Galaxy A33 5G","Samsung Galaxy A34 5G","Samsung Galaxy A35 5G","Samsung Galaxy A36 5G","Samsung Galaxy A50","Samsung Galaxy A50s","Samsung Galaxy A51","Samsung Galaxy A51 5G","Samsung Galaxy A52","Samsung Galaxy A52 5G","Samsung Galaxy A52s 5G","Samsung Galaxy A53 5G","Samsung Galaxy A54 5G","Samsung Galaxy A55 5G","Samsung Galaxy A56 5G","Samsung Galaxy A70","Samsung Galaxy A70s","Samsung Galaxy A71","Samsung Galaxy A71 5G","Samsung Galaxy A72","Samsung Galaxy A73 5G","Samsung Galaxy M10","Samsung Galaxy M11","Samsung Galaxy M12","Samsung Galaxy M13","Samsung Galaxy M14","Samsung Galaxy M15","Samsung Galaxy M20","Samsung Galaxy M21","Samsung Galaxy M22","Samsung Galaxy M23","Samsung Galaxy M30","Samsung Galaxy M30s","Samsung Galaxy M31","Samsung Galaxy M32","Samsung Galaxy M33","Samsung Galaxy M34","Samsung Galaxy M35","Samsung Galaxy M51","Samsung Galaxy M52 5G","Samsung Galaxy M53 5G","Samsung Galaxy M54 5G","Samsung Galaxy M55 5G","Samsung Galaxy J2","Samsung Galaxy J3","Samsung Galaxy J4","Samsung Galaxy J4+","Samsung Galaxy J5","Samsung Galaxy J6","Samsung Galaxy J6+","Samsung Galaxy J7","Samsung Galaxy J7 Pro","Samsung Galaxy J7 Duo","Samsung Galaxy J8","Xiaomi Mi 5","Xiaomi Mi 6","Xiaomi Mi 8","Xiaomi Mi 9","Xiaomi Mi 9T","Xiaomi Mi 9T Pro","Xiaomi Mi 10","Xiaomi Mi 10 Pro","Xiaomi Mi 10T","Xiaomi Mi 10T Pro","Xiaomi Mi 11","Xiaomi Mi 11 Lite","Xiaomi Mi 11 Lite 5G","Xiaomi Mi 11 Ultra","Xiaomi 12","Xiaomi 12 Pro","Xiaomi 12T","Xiaomi 12T Pro","Xiaomi 13","Xiaomi 13 Pro","Xiaomi 13 Ultra","Xiaomi 13T","Xiaomi 13T Pro","Xiaomi 14","Xiaomi 14 Pro","Xiaomi 14 Ultra","Xiaomi 14T","Xiaomi 14T Pro","Xiaomi 15","Xiaomi 15 Pro","Xiaomi 15 Ultra","Xiaomi 15T","Xiaomi 15T Pro","Redmi 5","Redmi 6","Redmi 6A","Redmi 7","Redmi 7A","Redmi 8","Redmi 8A","Redmi 9","Redmi 9A","Redmi 9C","Redmi 9T","Redmi 10","Redmi 10A","Redmi 10C","Redmi 11","Redmi 12","Redmi 12C","Redmi 13","Redmi 13C","Redmi 14C","Redmi 15","Redmi 15 5G","Redmi 15C","Redmi Note 5","Redmi Note 6 Pro","Redmi Note 7","Redmi Note 7 Pro","Redmi Note 8","Redmi Note 8 Pro","Redmi Note 9","Redmi Note 9 Pro","Redmi Note 9S","Redmi Note 9T","Redmi Note 10","Redmi Note 10 5G","Redmi Note 10S","Redmi Note 10 Pro","Redmi Note 11","Redmi Note 11S","Redmi Note 11 Pro","Redmi Note 11 Pro 5G","Redmi Note 12","Redmi Note 12 5G","Redmi Note 12 Pro","Redmi Note 12 Pro 5G","Redmi Note 12 Pro+ 5G","Redmi Note 13","Redmi Note 13 5G","Redmi Note 13 Pro","Redmi Note 13 Pro 5G","Redmi Note 13 Pro+ 5G","Redmi Note 14","Redmi Note 14 5G","Redmi Note 14 Pro","Redmi Note 14 Pro 5G","Redmi Note 14 Pro+ 5G","Redmi Note 15","Redmi Note 15 5G","Redmi Note 15 Pro","Redmi Note 15 Pro 5G","Redmi Note 15 Pro+ 5G","POCO F1","POCO F2 Pro","POCO F3","POCO F4","POCO F4 GT","POCO F5","POCO F5 Pro","POCO F6","POCO F6 Pro","POCO F7","POCO F7 Pro","POCO F7 Ultra","POCO F8 Pro","POCO X2","POCO X3","POCO X3 NFC","POCO X3 Pro","POCO X3 GT","POCO X4 Pro 5G","POCO X4 GT","POCO X5","POCO X5 Pro 5G","POCO X6","POCO X6 Pro","POCO X7","POCO X7 Pro","POCO M3","POCO M3 Pro 5G","POCO M4","POCO M4 Pro","POCO M4 Pro 5G","POCO M5","POCO M5s","POCO M6","POCO M6 Pro","POCO M7","POCO M7 Pro 5G","POCO C40","POCO C50","POCO C55","POCO C65","POCO C75","OPPO Find X2","OPPO Find X2 Pro","OPPO Find X3","OPPO Find X3 Pro","OPPO Find X5","OPPO Find X5 Pro","OPPO Find X6","OPPO Find X6 Pro","OPPO Find X7","OPPO Find X7 Ultra","OPPO Find X8","OPPO Find X8 Pro","OPPO Find X8 Ultra","OPPO Find X9","OPPO Find X9 Pro","OPPO Reno 2","OPPO Reno 3","OPPO Reno 4","OPPO Reno 5","OPPO Reno 5 Pro","OPPO Reno 6","OPPO Reno 6 Pro","OPPO Reno 7","OPPO Reno 7 Pro","OPPO Reno 8","OPPO Reno 8 Pro","OPPO Reno 9","OPPO Reno 10","OPPO Reno 10 Pro","OPPO Reno 11","OPPO Reno 11 Pro","OPPO Reno 12","OPPO Reno 12 Pro","OPPO Reno 13","OPPO Reno 13 Pro","OPPO Reno 14","OPPO Reno 15","OPPO A12","OPPO A15","OPPO A16","OPPO A17","OPPO A18","OPPO A52","OPPO A53","OPPO A54","OPPO A55","OPPO A57","OPPO A58","OPPO A74","OPPO A76","OPPO A77","OPPO A78","OPPO A79","OPPO A96","OPPO A98","OPPO K10","OPPO K11","OPPO K12","OPPO K12x","OPPO K13","vivo X50","vivo X50 Pro","vivo X60","vivo X60 Pro","vivo X70","vivo X70 Pro","vivo X80","vivo X80 Pro","vivo X90","vivo X90 Pro","vivo X90 Pro+","vivo X100","vivo X100 Pro","vivo X100 Ultra","vivo X200","vivo X200 Pro","vivo X200 Ultra","vivo X300","vivo X300 Pro","vivo V20","vivo V21","vivo V23","vivo V25","vivo V27","vivo V29","vivo V30","vivo V30 Pro","vivo V40","vivo V40 Pro","vivo V50","vivo V50 Pro","vivo V60","vivo Y12","vivo Y15","vivo Y16","vivo Y17","vivo Y20","vivo Y21","vivo Y22","vivo Y27","vivo Y28","vivo Y35","vivo Y36","vivo Y50","vivo Y55","vivo Y56","vivo Y72","vivo Y76","realme 5","realme 5 Pro","realme 6","realme 6 Pro","realme 7","realme 7 Pro","realme 8","realme 8 Pro","realme 9","realme 9 Pro","realme 10","realme 10 Pro","realme 11","realme 11 Pro","realme 12","realme 12 Pro","realme 13","realme 13 Pro","realme 14","realme 14 Pro","realme 14 Pro+","realme GT","realme GT 2","realme GT 2 Pro","realme GT 3","realme GT 5","realme GT 5 Pro","realme GT 6","realme GT 6T","realme GT 7","realme GT 7 Pro","realme C11","realme C12","realme C15","realme C17","realme C20","realme C21","realme C25","realme C30","realme C31","realme C33","realme C35","realme C51","realme C53","realme C55","realme C61","realme C63","realme C65","OnePlus 6","OnePlus 6T","OnePlus 7","OnePlus 7 Pro","OnePlus 7T","OnePlus 7T Pro","OnePlus 8","OnePlus 8 Pro","OnePlus 8T","OnePlus 9","OnePlus 9 Pro","OnePlus 9RT","OnePlus 10 Pro","OnePlus 10T","OnePlus 11","OnePlus 11R","OnePlus 12","OnePlus 12R","OnePlus 13","OnePlus 13R","OnePlus Nord","OnePlus Nord 2","OnePlus Nord 3","OnePlus Nord 4","OnePlus Nord CE","OnePlus Nord CE 2","OnePlus Nord CE 3","OnePlus Nord CE 4","Google Pixel 3","Google Pixel 3 XL","Google Pixel 3a","Google Pixel 3a XL","Google Pixel 4","Google Pixel 4 XL","Google Pixel 4a","Google Pixel 4a 5G","Google Pixel 5","Google Pixel 5a","Google Pixel 6","Google Pixel 6 Pro","Google Pixel 6a","Google Pixel 7","Google Pixel 7 Pro","Google Pixel 7a","Google Pixel 8","Google Pixel 8 Pro","Google Pixel 8a","Google Pixel 9","Google Pixel 9 Pro","Google Pixel 9 Pro XL","Google Pixel 9a","Google Pixel 10","Google Pixel 10 Pro","Google Pixel 10 Pro XL","Google Pixel 10a","ASUS ROG Phone","ASUS ROG Phone 2","ASUS ROG Phone 3","ASUS ROG Phone 5","ASUS ROG Phone 5s","ASUS ROG Phone 6","ASUS ROG Phone 6D","ASUS ROG Phone 7","ASUS ROG Phone 8","ASUS ROG Phone 8 Pro","ASUS ROG Phone 9","ASUS ROG Phone 9 Pro","ASUS Zenfone 8","ASUS Zenfone 9","ASUS Zenfone 10","ASUS Zenfone 11 Ultra","Sony Xperia 1","Sony Xperia 1 II","Sony Xperia 1 III","Sony Xperia 1 IV","Sony Xperia 1 V","Sony Xperia 1 VI","Sony Xperia 1 VII","Sony Xperia 5","Sony Xperia 5 II","Sony Xperia 5 III","Sony Xperia 5 IV","Sony Xperia 5 V","Sony Xperia 10","Sony Xperia 10 II","Sony Xperia 10 III","Sony Xperia 10 IV","Sony Xperia 10 V","Sony Xperia 10 VI","Motorola Moto G5","Motorola Moto G6","Motorola Moto G7","Motorola Moto G8","Motorola Moto G9","Motorola Moto G10","Motorola Moto G20","Motorola Moto G30","Motorola Moto G50","Motorola Moto G60","Motorola Moto G84","Motorola Moto G85","Motorola Moto G86","Motorola Edge 20","Motorola Edge 30","Motorola Edge 40","Motorola Edge 50","Motorola Edge 60","Motorola Edge 60 Pro","Motorola Razr 40","Motorola Razr 40 Ultra","Motorola Razr 50","Motorola Razr 50 Ultra","Motorola Razr 60","Motorola Razr 60 Ultra","HONOR 50","HONOR 60","HONOR 70","HONOR 80","HONOR 90","HONOR 100","HONOR 200","HONOR 200 Pro","HONOR 300","HONOR 300 Pro","HONOR 400","HONOR 400 Pro","HONOR Magic5 Pro","HONOR Magic6 Pro","HONOR Magic7 Pro","HONOR Magic V2","HONOR Magic V3","HONOR Magic V5","Nubia RedMagic 6","Nubia RedMagic 6 Pro","Nubia RedMagic 7","Nubia RedMagic 7 Pro","Nubia RedMagic 8 Pro","Nubia RedMagic 9 Pro","Nubia RedMagic 10 Pro","Nubia RedMagic 11 Pro","Infinix Hot 10","Infinix Hot 11","Infinix Hot 12","Infinix Hot 20","Infinix Hot 30","Infinix Hot 40","Infinix Hot 50","Infinix Hot 60","Infinix Note 10","Infinix Note 11","Infinix Note 12","Infinix Note 30","Infinix Note 40","Infinix Note 50","Infinix Zero 30","Infinix Zero 40 5G","Tecno Camon 18","Tecno Camon 19","Tecno Camon 20","Tecno Camon 30","Tecno Camon 40","Tecno Pova 3","Tecno Pova 4","Tecno Pova 5","Tecno Pova 6","Tecno Pova 7","Tecno Phantom X","Tecno Phantom X2","Tecno Phantom X2 Pro","Huawei P30","Huawei P30 Pro","Huawei P40","Huawei P40 Pro","Huawei P50","Huawei P50 Pro","Huawei P60","Huawei P60 Pro","Huawei Pura 70","Huawei Pura 70 Pro","Huawei Pura 70 Ultra","Huawei Mate 20","Huawei Mate 20 Pro","Huawei Mate 30","Huawei Mate 30 Pro","Huawei Mate 40","Huawei Mate 40 Pro","Huawei Mate 50","Huawei Mate 50 Pro","Huawei Mate 60","Huawei Mate 60 Pro","Huawei Mate 70","Huawei Mate 70 Pro","Nothing Phone (1)","Nothing Phone (2)","Nothing Phone (2a)","Nothing Phone (2a) Plus","Nothing Phone (3)","TCL 20 Pro","TCL 30","TCL 40","TCL 50","Sharp Aquos R6","Sharp Aquos R7","Sharp Aquos R8","Sharp Aquos R9","Sharp Aquos Sense7","Sharp Aquos Sense8","Sharp Aquos Sense9"]
+};
 
 const ISSUES=[
   {id:"nặng tâm",label:"Nặng tâm",desc:"Aim kéo xuống khi giữ bắn"},
@@ -568,7 +524,6 @@ const ISSUES=[
   {id:"rung tâm",label:"Rung tâm",desc:"Tâm dao động liên tục"},
   {id:"trượt địch",label:"Trượt địch",desc:"Aim trượt qua người địch"},
 ];
-
 const ISSUE_ANA={
   "nặng tâm":`Tình trạng <strong>nặng tâm</strong> xảy ra khi độ nhạy Look quá cao hoặc gyroscope bị ảnh hưởng bởi trọng lực. Cấu hình bên dưới giảm Look và tăng ADS để bù recoil tự nhiên hơn.`,
   "lố đầu":`Tình trạng <strong>lố đầu</strong> do ADS quá thấp, ngón tay compensate quá mức kéo lên. Cần tăng nhẹ độ nhạy các ống ngắm để recoil không cần kéo nhiều.`,
@@ -578,7 +533,6 @@ const ISSUE_ANA={
   "rung tâm":`Tình trạng <strong>rung tâm</strong> là dấu hiệu độ nhạy không khớp refresh rate màn hình. 90Hz và 120Hz cần ngưỡng khác nhau. Cấu hình được tối ưu riêng theo display tier.`,
   "trượt địch":`Tình trạng <strong>trượt địch</strong> — tracking speed không theo kịp địch di chuyển ngang. ADS quá thấp là nguyên nhân chính. Cần tăng các ống ngắm để cải thiện lead shot.`,
 };
-
 const ISSUE_ADJ={
   "nặng tâm":  {look:-5,red:4,x2:4,x4:3,sniper:2,cam:0,gyro:-3},
   "lố đầu":   {look:0,red:5,x2:6,x4:4,sniper:3,cam:0,gyro:2},
@@ -588,7 +542,6 @@ const ISSUE_ADJ={
   "rung tâm": {look:-4,red:-3,x2:-4,x4:-3,sniper:-2,cam:-2,gyro:-4},
   "trượt địch":{look:4,red:6,x2:7,x4:5,sniper:3,cam:4,gyro:4},
 };
-
 const TIPS={
   "nặng tâm":["Giảm thêm 3–5 điểm 'Nhìn xung quanh' nếu vẫn còn nặng","Bật gyroscope nếu có — bù recoil tự nhiên hơn","Tư thế cầm máy ổn định hơn khi bắn liên thanh"],
   "lố đầu":["Tăng nhẹ ADS hồng tâm +3 nếu vẫn thấy lố","Luyện pull-down khi bắn SMG ở tầm gần","Giảm độ nhạy tầm xa nếu scope 4x vẫn lố nhiều"],
@@ -600,171 +553,122 @@ const TIPS={
 };
 
 function getTier(name){
-  const fl=["Pro Max","Ultra","ROG","Red Magic","Magic7","Magic6","Pixel 9","Pixel 10","S25","S26","iPhone 17","iPhone 18","iPhone 16 Pro","iPhone 15 Pro","Find X8","Find X9","Z Fold 7"];
-  const hi=["Plus","S24","S23","Note 14 Pro","Note 13 Pro","POCO F7","POCO F6","OnePlus 13","vivo X200","realme GT 7","iPhone 14","iPhone 15","iPhone 13 Pro","Pixel 8","ROG Phone"];
+  const fl=["Pro Max","Ultra","ROG Phone","RedMagic","Magic7","Magic6","Pixel 9","Pixel 10","S25","S26","iPhone 17","iPhone 18","iPhone 16 Pro","iPhone 15 Pro","Find X8","Find X9","Z Fold 7","Z Flip7"];
+  const hi=["Plus","S24","S23","Note 14 Pro","Note 13 Pro","POCO F7","POCO F6","OnePlus 13","vivo X200","realme GT 7","iPhone 14","iPhone 15","iPhone 13 Pro","Pixel 8","ROG Phone 7","ROG Phone 8"];
   for(const k of fl) if(name.includes(k)) return{tier:"FLAGSHIP",hz:"120Hz+",mult:1.0};
   for(const k of hi) if(name.includes(k)) return{tier:"HIGH-END",hz:"90–120Hz",mult:1.06};
   return{tier:"MID-RANGE",hz:"60–90Hz",mult:1.13};
 }
 
-// ── STATE ──
-let os='ios', selIssues=new Set(), acIdx=-1, acOpen=false;
+let os='ios',selIssues=new Set(),acIdx=-1,acOpen=false;
 const allDevices=()=>DEVICES[os];
 
-// ── PARTICLES PULSE ON GENERATE ──
 function pulseBurst(){
   const c=document.getElementById('particles');
-  for(let i=0;i<8;i++){
-    const p=document.createElement('div');
-    p.className='p';
-    const s=Math.random()*6+3;
-    p.style.cssText=`
-      width:${s}px;height:${s}px;
-      left:${20+Math.random()*60}%;
-      background:rgba(255,${Math.floor(Math.random()*80+80)},0,.8);
-      animation-duration:${Math.random()*3+2}s;
-      animation-delay:0s;
-    `;
-    c.appendChild(p);
-    setTimeout(()=>p.remove(),5000);
+  for(let i=0;i<14;i++){
+    const p=document.createElement('div');p.className='p';
+    const s=Math.random()*7+3;
+    p.style.cssText=`width:${s}px;height:${s}px;left:${15+Math.random()*70}%;background:rgba(255,${Math.floor(Math.random()*80+80)},0,.9);animation-duration:${Math.random()*2.5+1.5}s;animation-delay:${Math.random()*.3}s;`;
+    c.appendChild(p);setTimeout(()=>p.remove(),4500);
   }
 }
 
-// ── OS SWITCH ──
 function setOS(type){
+  if(os===type) return;
   os=type;
+  const btn=document.getElementById(type==='ios'?'iosBtn':'androidBtn');
+  btn.classList.add('switching');
+  setTimeout(()=>btn.classList.remove('switching'),300);
   document.getElementById('iosBtn').classList.toggle('active',os==='ios');
   document.getElementById('androidBtn').classList.toggle('active',os==='android');
   clearInput();
 }
 
-// ── AUTOCOMPLETE ──
 function filterDevices(q){
   if(!q) return[];
   const ql=q.toLowerCase();
-  return allDevices().filter(d=>d.toLowerCase().includes(ql)).slice(0,8);
+  return allDevices().filter(d=>d.toLowerCase().includes(ql)).slice(0,10);
 }
-
 function highlightMatch(text,q){
   if(!q) return text;
-  const re=new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  const re=new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi');
   return text.replace(re,'<mark>$1</mark>');
 }
-
 function renderDropdown(q){
   const drop=document.getElementById('acDrop');
   const results=filterDevices(q);
-  if(!results.length || !q){drop.classList.remove('open');acOpen=false;return;}
+  if(!results.length||!q){drop.classList.remove('open');acOpen=false;return;}
   drop.innerHTML=results.map((d,i)=>{
     const t=getTier(d);
-    return `<div class="ac-item" data-idx="${i}" data-val="${d}" onmousedown="pickDevice('${d.replace(/'/g,"\\'")}')">
+    return `<div class="ac-item" data-idx="${i}" data-val="${d}" onmousedown="pickDevice('${d.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--mute)" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
       <span>${highlightMatch(d,q)}</span>
       <span class="ac-tier-badge">${t.tier}</span>
     </div>`;
   }).join('');
-  drop.classList.add('open');
-  acOpen=true;
-  acIdx=-1;
+  drop.classList.add('open');acOpen=true;acIdx=-1;
 }
-
 function onInput(){
   const v=document.getElementById('deviceInput').value.trim();
-  document.getElementById('acClear').style.display=v?'block':'none';
+  document.getElementById('acClear').style.display=v?'flex':'none';
   renderDropdown(v);
-  if(DEVICES[os].includes(v)){
-    confirmDevice(v);
-  } else {
-    clearConfirm();
-  }
+  if(DEVICES[os].includes(v)){confirmDevice(v);}else{clearConfirm();}
 }
-
 function onFocus(){
   const v=document.getElementById('deviceInput').value.trim();
   if(v) renderDropdown(v);
 }
-
 function onKey(e){
   const drop=document.getElementById('acDrop');
   const items=[...drop.querySelectorAll('.ac-item')];
   if(!acOpen) return;
-  if(e.key==='ArrowDown'){
-    e.preventDefault();
-    acIdx=Math.min(acIdx+1,items.length-1);
-    items.forEach((el,i)=>el.classList.toggle('focused',i===acIdx));
-  } else if(e.key==='ArrowUp'){
-    e.preventDefault();
-    acIdx=Math.max(acIdx-1,0);
-    items.forEach((el,i)=>el.classList.toggle('focused',i===acIdx));
-  } else if(e.key==='Enter'){
-    if(acIdx>=0 && items[acIdx]){
-      pickDevice(items[acIdx].dataset.val);
-    }
-    drop.classList.remove('open');
-    acOpen=false;
-  } else if(e.key==='Escape'){
-    drop.classList.remove('open');
-    acOpen=false;
-  }
+  if(e.key==='ArrowDown'){e.preventDefault();acIdx=Math.min(acIdx+1,items.length-1);items.forEach((el,i)=>el.classList.toggle('focused',i===acIdx));}
+  else if(e.key==='ArrowUp'){e.preventDefault();acIdx=Math.max(acIdx-1,0);items.forEach((el,i)=>el.classList.toggle('focused',i===acIdx));}
+  else if(e.key==='Enter'){if(acIdx>=0&&items[acIdx])pickDevice(items[acIdx].dataset.val);drop.classList.remove('open');acOpen=false;}
+  else if(e.key==='Escape'){drop.classList.remove('open');acOpen=false;}
 }
-
 function pickDevice(name){
   document.getElementById('deviceInput').value=name;
   document.getElementById('acDrop').classList.remove('open');
-  document.getElementById('acClear').style.display='block';
-  acOpen=false;
-  confirmDevice(name);
+  document.getElementById('acClear').style.display='flex';
+  acOpen=false;confirmDevice(name);
 }
-
 function confirmDevice(name){
   const t=getTier(name);
   document.getElementById('dcName').textContent=name;
   document.getElementById('dcTier').textContent=`${t.tier} · ${t.hz}`;
   document.getElementById('deviceConfirm').classList.add('show');
   document.getElementById('issueWrap').classList.add('show');
-  buildIssueGrid();
-  checkReady();
+  buildIssueGrid();checkReady();
 }
-
 function clearConfirm(){
   document.getElementById('deviceConfirm').classList.remove('show');
   document.getElementById('issueWrap').classList.remove('show');
-  selIssues.clear();
-  checkReady();
+  selIssues.clear();checkReady();
 }
-
 function clearInput(){
   document.getElementById('deviceInput').value='';
   document.getElementById('acDrop').classList.remove('open');
   document.getElementById('acClear').style.display='none';
-  clearConfirm();
-  selIssues.clear();
-  hideResult();
+  clearConfirm();hideResult();
 }
-
-// close dropdown on outside click
 document.addEventListener('click',e=>{
   if(!e.target.closest('.ac-wrap')){
-    document.getElementById('acDrop').classList.remove('open');
-    acOpen=false;
+    document.getElementById('acDrop').classList.remove('open');acOpen=false;
   }
 });
-
-// ── ISSUE GRID ──
 function buildIssueGrid(){
-  const g=document.getElementById('issueGrid');
-  g.innerHTML='';
-  ISSUES.forEach(issue=>{
+  const g=document.getElementById('issueGrid');g.innerHTML='';
+  ISSUES.forEach((issue,idx)=>{
     const b=document.createElement('button');
     b.className='issue-pill'+(selIssues.has(issue.id)?' sel':'');
-    b.dataset.id=issue.id;
-    b.title=issue.desc;
-    b.innerHTML=`<span class="issue-dot"></span>${issue.label}`;
+    b.dataset.id=issue.id;b.title=issue.desc;
+    b.innerHTML=`<span class="issue-dot"></span><span>${issue.label}</span>`;
+    b.style.animation=`fadeSlideUp .35s var(--ease-out) ${idx*.05}s both`;
     b.onclick=()=>toggleIssue(issue.id);
     g.appendChild(b);
   });
 }
-
 function toggleIssue(id){
   selIssues.has(id)?selIssues.delete(id):selIssues.add(id);
   document.querySelectorAll('.issue-pill').forEach(p=>{
@@ -772,18 +676,11 @@ function toggleIssue(id){
   });
   checkReady();
 }
-
 function checkReady(){
   const v=document.getElementById('deviceInput').value.trim();
   document.getElementById('genBtn').disabled=!(DEVICES[os].includes(v)&&selIssues.size>0);
 }
-
-// ── GENERATE ──
-function hash(s){
-  let h=2166136261;
-  for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}
-  return Math.abs(h>>>0);
-}
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return Math.abs(h>>>0);}
 function rng(seed,mn,mx){return mn+(seed%(mx-mn+1))}
 
 function generate(){
@@ -794,21 +691,16 @@ function generate(){
   let mi=0;
   const lm=document.getElementById('loadMsg');
   const lf=document.getElementById('loadFill');
-  lm.textContent=msgs[0]; lf.style.width='0%';
+  lm.textContent=msgs[0];lf.style.width='0%';
   const iv=setInterval(()=>{
-    mi++;
-    if(mi<msgs.length) lm.textContent=msgs[mi];
+    mi++;if(mi<msgs.length){lm.style.animation='none';void lm.offsetWidth;lm.style.animation='';lm.textContent=msgs[mi];}
     lf.style.width=((mi/(msgs.length-1))*100)+'%';
-  },380);
+  },400);
   document.getElementById('loading').classList.add('show');
   setTimeout(()=>{
-    clearInterval(iv);
-    lf.style.width='100%';
-    setTimeout(()=>{
-      document.getElementById('loading').classList.remove('show');
-      _generate(name);
-    },300);
-  },1800);
+    clearInterval(iv);lf.style.width='100%';
+    setTimeout(()=>{document.getElementById('loading').classList.remove('show');_generate(name);},350);
+  },2000);
 }
 
 function _generate(name){
@@ -816,19 +708,13 @@ function _generate(name){
   const il=[...selIssues];
   const h=hash(name+il.join(''));
   const m=tier.mult;
-
   let adj={look:0,red:0,x2:0,x4:0,sniper:0,cam:0,gyro:0};
-  il.forEach(id=>{
-    const a=ISSUE_ADJ[id];
-    Object.keys(adj).forEach(k=>{adj[k]+=a[k];});
-  });
+  il.forEach(id=>{const a=ISSUE_ADJ[id];Object.keys(adj).forEach(k=>{adj[k]+=a[k];});});
   if(il.length>1) Object.keys(adj).forEach(k=>{adj[k]=Math.round(adj[k]/il.length);});
-
   function sv(seed,base,off,mn,mx){
     const raw=rng(seed,base-4,base+4)+off+Math.round((m-1)*14);
     return Math.max(mn,Math.min(mx,raw));
   }
-
   const look  =sv(h,     170,adj.look,  130,200);
   const red   =sv(h>>2,  165,adj.red,   130,200);
   const x2    =sv(h>>4,  158,adj.x2,    125,195);
@@ -836,18 +722,21 @@ function _generate(name){
   const sniper=sv(h>>8,  132,adj.sniper,110,170);
   const cam   =sv(h>>10, 155,adj.cam,   130,195);
   const gyro  =sv(h>>12, 140,adj.gyro,  100,180);
-  const fire  =rng(Math.floor(Math.random()*1e9),38,72);
+  const fire  =rng(Math.floor(Math.random()*1e9),30,60);
 
-  // fill header
   document.getElementById('rDevice').textContent=name;
   document.getElementById('rOS').textContent=os==='ios'?'Apple iOS':'Android';
   document.getElementById('rTier').textContent=`${tier.tier} · ${tier.hz}`;
   document.getElementById('rIssues').textContent=il.map(id=>ISSUES.find(x=>x.id===id)?.label||id).join(' + ');
-
-  // analysis
   document.getElementById('rAna').innerHTML=il.map(id=>ISSUE_ANA[id]||'').filter(Boolean).join(' ');
 
-  // rows
+  const sr2=document.getElementById('statsRow');
+  sr2.innerHTML=[
+    {val:tier.hz,label:'Refresh Rate'},
+    {val:tier.tier,label:'Device Tier'},
+    {val:fire,label:'Nút bắn'},
+  ].map(s=>`<div class="stat-chip"><div class="stat-val">${s.val}</div><div class="stat-label">${s.label}</div></div>`).join('');
+
   const rows=[
     {name:'Nhìn xung quanh',sub:'Camera tự do',val:look,max:200,hi:false},
     {name:'Hồng tâm (Red Dot)',sub:'ADS ống ngắm 1x',val:red,max:200,hi:false},
@@ -856,12 +745,12 @@ function _generate(name){
     {name:'Sniper / 6x',sub:'Tầm cực xa',val:sniper,max:200,hi:false},
     {name:'Camera tự do',sub:'Nút camera',val:cam,max:200,hi:false},
     {name:'Gyroscope',sub:'Bù recoil con quay',val:gyro,max:200,hi:false},
-    {name:'Nút bắn (Fire)',sub:'Cá nhân hóa mỗi lần',val:fire,max:72,hi:true},
+    {name:'Nút bắn (Fire)',sub:'Cá nhân hóa · 30–60',val:fire,max:60,hi:true},
   ];
 
   const sr=document.getElementById('sensRows');
   sr.innerHTML=rows.map((r,i)=>`
-    <div class="sens-row${r.hi?' highlight':''}">
+    <div class="sens-row${r.hi?' highlight':''}" style="animation-delay:${i*.07}s">
       <div>
         <div class="row-name">${r.name}</div>
         <div class="row-sub">${r.sub}</div>
@@ -874,45 +763,39 @@ function _generate(name){
 
   rows.forEach((r,i)=>{
     setTimeout(()=>{
-      document.getElementById('rv'+i).textContent=r.val;
-      setTimeout(()=>{
-        document.getElementById('rf'+i).style.width=(r.val/r.max*100)+'%';
-      },60);
-    },i*80);
+      const el=document.getElementById('rv'+i);
+      el.textContent=r.val;el.classList.add('flash');
+      setTimeout(()=>el.classList.remove('flash'),400);
+      setTimeout(()=>{document.getElementById('rf'+i).style.width=(r.val/r.max*100)+'%';},80);
+    },i*90+200);
   });
 
-  // tips
-  const tl=document.getElementById('tipsList');
-  tl.innerHTML='';
-  const seen=new Set();
+  const tl=document.getElementById('tipsList');tl.innerHTML='';
+  const seen=new Set();let tipIdx=0;
   il.forEach(id=>{
     (TIPS[id]||[]).forEach(t=>{
       if(!seen.has(t)){
         seen.add(t);
         const li=document.createElement('li');
+        li.style.animationDelay=(tipIdx*.1+.3)+'s';
         li.innerHTML=`<span class="tip-dot"></span>${t}`;
-        tl.appendChild(li);
+        tl.appendChild(li);tipIdx++;
       }
     });
   });
 
   const r=document.getElementById('result');
-  r.style.display='none';
-  void r.offsetWidth;
-  r.style.display='block';
-  r.classList.add('show');
-  setTimeout(()=>r.scrollIntoView({behavior:'smooth',block:'start'}),120);
+  r.style.display='none';void r.offsetWidth;
+  r.style.display='block';r.classList.add('show');
+  setTimeout(()=>r.scrollIntoView({behavior:'smooth',block:'start'}),150);
 }
 
 function hideResult(){
   const r=document.getElementById('result');
-  r.classList.remove('show');
-  r.style.display='none';
+  r.classList.remove('show');r.style.display='none';
 }
-
 function reset(){
-  hideResult();
-  clearInput();
+  hideResult();clearInput();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
